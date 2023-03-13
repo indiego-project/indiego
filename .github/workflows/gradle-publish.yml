@@ -2,15 +2,10 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "release" ]
+    branches: [ "be_develop" ]
     paths:
       - server/**
       - .github/**
-#   pull_request:
-#     branches: [ "release" ]
-#     paths:
-#       - server/**
-#       - .github/**
 
 permissions:
   contents: read
