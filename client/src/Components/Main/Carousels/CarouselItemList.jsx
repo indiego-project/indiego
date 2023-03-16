@@ -20,13 +20,9 @@ const ItemsContainer = styled.div`
   align-items: center;
   width: 250px;
   height: 100%;
-  margin-left: ${(props) => props.currentIdx * -250}px;
+  transform: ${(props) => `translateX(${props.currentIdx * -100}%)`};
   transition: ${(props) =>
-    props.transition ? "all 0.5s ease-in-out" : "unset"};
-
-  @media screen and (max-width: ${breakpoint.mobile}) {
-    margin-left: ${(props) => props.currentIdx * -100}%;
-  }
+    props.transition ? "transform 0.5s ease-in-out" : "unset"};
 `;
 
 export default function CarouselItemList({ data, currentIdx, transition }) {

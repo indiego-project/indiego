@@ -8,7 +8,6 @@ import CarouselItemList from "../Components/Main/Carousels/CarouselItemList.jsx"
 import Boards from "../Components/Main/Boards/Boards.jsx";
 import Overlay from "../Components/Main/Popups/Overlay.jsx";
 import LocationPopup from "../Components/Main/Popups/LocationPopup.jsx";
-import LongCarousel from "../Components/Main/Carousels/LongCarousel.jsx";
 import DatePopup from "../Components/Main/Popups/DatePopup.jsx";
 
 import { dtFontSize, primary } from "../styles/mixins.js";
@@ -87,52 +86,6 @@ const CarouselDisplay = styled.div`
     @media screen and (max-width: ${breakpoint.mobile}) {
       width: 100%;
     }
-  }
-`;
-
-const LongCarouselContainer = styled.div`
-  width: 100%;
-  height: 35vh;
-  min-height: 300px;
-  max-height: 350px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* padding: 0 13vw; */
-
-  .longcarousel_display {
-    width: 100%;
-    height: max-content;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .longcarousel_header_container {
-    display: flex;
-    width: 100%;
-    margin-left: 10px;
-    justify-content: flex-start;
-  }
-
-  .longcarousel_display {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 68vw;
-    height: 35vh;
-  }
-
-  .my_location {
-    margin-left: 30px;
-    font-weight: 600;
-  }
-
-  h1 {
-    color: ${primary.primary500};
-    font-size: ${dtFontSize.large};
-    text-align: center;
-    padding-top: 18px;
   }
 `;
 
@@ -236,7 +189,7 @@ export default function Home() {
                 <h1>우리 동네 인기 공연</h1>
                 <Carousel
                   width={"70%"}
-                  minWidth={"320px"}
+                  minWidth={"300px"}
                   maxWidth={"480px"}
                   height={"100%"}
                   status="별점순"
@@ -249,7 +202,7 @@ export default function Home() {
                 <h1>우리 동네 새로운 공연</h1>
                 <Carousel
                   width={"70%"}
-                  minWidth={"320px"}
+                  minWidth={"300px"}
                   maxWidth={"480px"}
                   height={"100%"}
                   status="최신순"
@@ -260,9 +213,6 @@ export default function Home() {
             </CarouselDisplay>
           </CarouselDisplayBox>
         </CarouselContainer>
-        <LongCarouselContainer>
-          <LongCarousel userInfo={userInfo} />
-        </LongCarouselContainer>
         <BoardsContainer>
           <h1 className="title">커뮤니티 인기 게시글</h1>
           <BoardsGrid>

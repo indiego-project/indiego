@@ -141,7 +141,7 @@ export default function Carousel({
     queryKey: ["fetchShowData", status],
     queryFn: fetchShowData,
     onSuccess: fetchShowDataOnSuccess,
-    keepPreviousData: true,
+    retry: false,
   });
 
   useInterval(() => {
