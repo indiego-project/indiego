@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PaymentConfig {
 
-    @Value("${pgmodule.app-id}")
-    private String apiKey;
-    @Value("${pgmodule.secret-key}")
-    private String apiSecret;
+//    @Value("${pgmodule.app-id}")
+//    private String apiKey;
+//    @Value("${pgmodule.secret-key}")
+//    private String apiSecret;
+
 }
