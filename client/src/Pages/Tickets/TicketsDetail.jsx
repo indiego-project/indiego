@@ -42,7 +42,7 @@ const Container = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     width: 100%;
@@ -57,7 +57,7 @@ const ContentHeaderContainer = styled.div`
   justify-content: space-between;
   min-height: 140px;
   padding: 40px;
-  width: 80%;
+  width: 90%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     min-height: 100px;
@@ -342,7 +342,7 @@ const TicketInfoContainer = styled.div`
 const TopRightContainer = styled.div`
   border: 1px solid ${sub.sub300};
   display: flex;
-  width: 22%;
+  width: 25%;
   background-color: white;
   border-radius: 10px;
   justify-content: space-between;
