@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./client
+        working-directory: ./client 
 
     steps:
       - name: Checkout
@@ -29,9 +29,10 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+          cache-dependency-path: ./client/package-lock.json
 
       - name: Npm Install
-        run: npm i
+        run: npm ci
 
       - name: Project Build
         run: npm run build
