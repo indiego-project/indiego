@@ -7,6 +7,7 @@ export const useInterval = (callback, delay) => {
 
   useEffect(() => {
     const tick = () => {
+      console.log("tick is runninng");
       savedCallback.current();
     };
 

@@ -4,7 +4,6 @@ import React from "react";
 import Item from "./Item.jsx";
 
 import styled from "styled-components";
-import breakpoint from "../../../styles/breakpoint.js";
 
 const RendererContainer = styled.div`
   display: flex;

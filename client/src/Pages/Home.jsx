@@ -15,7 +15,6 @@ import breakpoint from "../styles/breakpoint.js";
 import instance from "../api/core/default.js";
 
 import styled from "styled-components";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 const MainContainer = styled.div`

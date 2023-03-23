@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import Spinner from "../../Spinner";
 
@@ -13,7 +11,6 @@ import { useInterval } from "../../../utils/useInterval";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { add } from "date-fns";
 
 const CarouselContainer = styled.div`
   width: ${(props) => props.width};
@@ -122,9 +119,8 @@ export default function Carousel({
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
   const fetchShowData = () => {
-    return axios.get(`${serverURI}/shows/sorts`, {
-      params: { status, address },
-    });
+    const params = { status, address };
+    return axios.get(`${serverURI}/shows`, { params });
   };
 
   const fetchShowDataOnSuccess = (response) => {
@@ -145,8 +141,14 @@ export default function Carousel({
   });
 
   useInterval(() => {
-    setCurrentIdx(currentIdx + 1);
-    setTransition(true);
+    if (data.length > 0) {
+      setCurrentIdx(currentIdx + 1);
+      setTransition(true);
+
+      if (currentIdx > data.length + 1) {
+        setCurrentIdx(1);
+      }
+    }
   }, 3500);
 
   const pageButtonClickHandler = (num) => {
