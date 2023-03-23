@@ -73,6 +73,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+task copyPrivate(type: Copy) {
+	copy {
+		from './submodule-indiego'
+		include "*.yml"
+		into 'src/main/resources'
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
