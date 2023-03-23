@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
+import CarouselItemList from "./CarouselItemList";
 
 import Spinner from "../../Spinner";
 
@@ -13,10 +14,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 const CarouselContainer = styled.div`
-  width: ${(props) => props.width};
-  max-width: ${(props) => props.maxWidth};
-  min-width: ${(props) => props.minWidth};
-  height: ${(props) => props.height};
+  width: 70%;
+  max-width: 480px;
+  min-width: 300px;
+  height: 100%;
   background-color: ${sub.sub200};
   border-radius: 20px;
   display: flex;
@@ -101,25 +102,15 @@ const Rank = styled.h2`
   }
 `;
 
-export default function Carousel({
-  width,
-  height,
-  carouselItemList,
-  isRankMode,
-  minWidth,
-  maxWidth,
-  status,
-  address,
-}) {
+export default function Carousel({ isRankMode, status, address }) {
   const [currentIdx, setCurrentIdx] = useState(1);
   const [data, setData] = useState([]);
   const [transition, setTransition] = useState(true);
-
-  const CarouselItemList = carouselItemList;
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
   const fetchShowData = () => {
     const params = { status, address };
+    console.log(params);
     return axios.get(`${serverURI}/shows`, { params });
   };
 
@@ -173,19 +164,16 @@ export default function Carousel({
   }, [currentIdx]);
 
   return (
-    <CarouselContainer
-      width={width}
-      height={height}
-      minWidth={minWidth}
-      maxWidth={maxWidth}
-    >
-      <PrevButton
-        onClick={() => {
-          pageButtonClickHandler(-1);
-        }}
-      >
-        <img src={Arrow} alt="prev" />
-      </PrevButton>
+    <CarouselContainer>
+      {data.length > 0 && (
+        <PrevButton
+          onClick={() => {
+            pageButtonClickHandler(-1);
+          }}
+        >
+          <img src={Arrow} alt="prev" />
+        </PrevButton>
+      )}
       {isLoading ? (
         <Spinner />
       ) : (
@@ -198,7 +186,7 @@ export default function Carousel({
           />
         )
       )}
-      {isRankMode && (
+      {isRankMode && data.length > 0 && (
         <Rank>
           {currentIdx === 0
             ? data.length - 2
@@ -207,13 +195,15 @@ export default function Carousel({
             : currentIdx}
         </Rank>
       )}
-      <NextButton
-        onClick={() => {
-          pageButtonClickHandler(1);
-        }}
-      >
-        <img src={Arrow} alt="next" />
-      </NextButton>
+      {data.length > 0 && (
+        <NextButton
+          onClick={() => {
+            pageButtonClickHandler(1);
+          }}
+        >
+          <img src={Arrow} alt="next" />
+        </NextButton>
+      )}
     </CarouselContainer>
   );
 }

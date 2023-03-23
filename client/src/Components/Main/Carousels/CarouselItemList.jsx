@@ -7,6 +7,8 @@ import styled from "styled-components";
 
 const RendererContainer = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 250px;
   height: 100%;
   overflow: hidden;
@@ -27,11 +29,15 @@ const ItemsContainer = styled.div`
 export default function CarouselItemList({ data, currentIdx, transition }) {
   return (
     <RendererContainer>
-      <ItemsContainer transition={transition} currentIdx={currentIdx}>
-        {data.map((item, index) => {
-          return <Item data={item} key={index} />;
-        })}
-      </ItemsContainer>
+      {data.length > 0 ? (
+        <ItemsContainer transition={transition} currentIdx={currentIdx}>
+          {data.map((item, index) => {
+            return <Item data={item} key={index} />;
+          })}
+        </ItemsContainer>
+      ) : (
+        <p> 공연이 존재하지 않습니다.</p>
+      )}
     </RendererContainer>
   );
 }

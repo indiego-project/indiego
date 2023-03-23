@@ -4,13 +4,12 @@ import Banner from "../Components/Main/Banner.jsx";
 import SearchBar from "../Components/Main/SearchBar.jsx";
 import Button from "../Components/Main/Button.jsx";
 import Carousel from "../Components/Main/Carousels/Carousel.jsx";
-import CarouselItemList from "../Components/Main/Carousels/CarouselItemList.jsx";
 import Boards from "../Components/Main/Boards/Boards.jsx";
 import Overlay from "../Components/Main/Popups/Overlay.jsx";
 import LocationPopup from "../Components/Main/Popups/LocationPopup.jsx";
 import DatePopup from "../Components/Main/Popups/DatePopup.jsx";
 
-import { dtFontSize, primary } from "../styles/mixins.js";
+import { dtFontSize, primary, sub } from "../styles/mixins.js";
 import breakpoint from "../styles/breakpoint.js";
 import instance from "../api/core/default.js";
 
@@ -39,7 +38,7 @@ const CarouselContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 40px 0;
+  margin: 80px 0 60px 0;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin: 30px 0;
@@ -86,6 +85,16 @@ const CarouselDisplay = styled.div`
       width: 100%;
     }
   }
+
+  .loading_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: ${sub.sub200};
+  }
 `;
 
 const BoardsContainer = styled.div`
@@ -131,7 +140,7 @@ const BoardsGrid = styled.div`
 export default function Home() {
   const [LocationPopupOpen, setLocationPopupOpen] = useState(false);
   const [DatePopupOpen, setDatePopupOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState();
+  const [userAddress, setUserAddress] = useState("");
   const isLogin = !!localStorage.getItem("accessToken");
 
   const locationPopupOnClickHandler = () => {
@@ -142,97 +151,109 @@ export default function Home() {
     setDatePopupOpen(true);
   };
 
-  const fetchUserInfoAtHome = () => {
+  const fetchUserAddressAtHome = () => {
     const userId = JSON.parse(localStorage.getItem("userInfoStorage")).id;
     return instance.get(`/members/${userId}`);
   };
 
-  const fetchUserInfoAtHomeOnSuccess = (res) => {
-    const data = res.data.data;
-    setUserInfo(data);
+  const fetchUserAddressAtHomeOnSuccess = (res) => {
+    let userAddress = res.data.data.profile[0].address;
+    userAddress = userAddress === "없음" ? "강남구" : userAddress;
+    console.log(userAddress);
+    setUserAddress(userAddress);
   };
 
-  useQuery({
-    queryKey: ["fetchUserInfoAtHome", isLogin],
-    queryFn: fetchUserInfoAtHome,
-    onSuccess: fetchUserInfoAtHomeOnSuccess,
+  const { isLoading: userAddressLoading } = useQuery({
+    queryKey: ["fetchUserAddressAtHome", isLogin],
+    queryFn: fetchUserAddressAtHome,
+    onSuccess: fetchUserAddressAtHomeOnSuccess,
     enabled: isLogin,
   });
 
+  console.log(userAddressLoading);
+
   return (
-    <>
-      {/* <Header /> */}
-      <MainContainer>
-        {LocationPopupOpen && (
-          <Overlay>
-            <LocationPopup popupHandler={setLocationPopupOpen} />
-          </Overlay>
-        )}
-        {DatePopupOpen && (
-          <Overlay>
-            <DatePopup popupHandler={setDatePopupOpen}></DatePopup>
-          </Overlay>
-        )}
-        <Banner />
-        <ButtonsContainer>
-          <Button clickEvent={locationPopupOnClickHandler}>
-            지역별 공연 현황
-          </Button>
-          <Button clickEvent={datePopupOnClickHanlder}>날짜별 공연 현황</Button>
-        </ButtonsContainer>
-        <SearchBar navigateTo="/tickets" fetchMode={false} defaultValue={""} />
-        <CarouselContainer>
-          <CarouselDisplayBox>
-            <CarouselDisplay>
-              <div className="carousel_box">
-                <h1>우리 동네 인기 공연</h1>
+    <MainContainer>
+      {LocationPopupOpen && (
+        <Overlay>
+          <LocationPopup popupHandler={setLocationPopupOpen} />
+        </Overlay>
+      )}
+      {DatePopupOpen && (
+        <Overlay>
+          <DatePopup popupHandler={setDatePopupOpen}></DatePopup>
+        </Overlay>
+      )}
+      <Banner />
+      <ButtonsContainer>
+        <Button clickEvent={locationPopupOnClickHandler}>
+          지역별 공연 현황
+        </Button>
+        <Button clickEvent={datePopupOnClickHanlder}>날짜별 공연 현황</Button>
+      </ButtonsContainer>
+      <SearchBar navigateTo="/tickets" fetchMode={false} defaultValue={""} />
+      <CarouselContainer>
+        <CarouselDisplayBox>
+          <CarouselDisplay>
+            <div className="carousel_box">
+              <h1>우리 동네 인기 공연</h1>
+              {isLogin ? (
+                userAddress ? (
+                  <Carousel
+                    status="별점순"
+                    address={userAddress}
+                    isRankMode={true}
+                  ></Carousel>
+                ) : (
+                  <div className="loading_container">
+                    <p>사용자 지역정보를 불러오고 있습니다.</p>
+                  </div>
+                )
+              ) : (
                 <Carousel
-                  width={"70%"}
-                  minWidth={"300px"}
-                  maxWidth={"480px"}
-                  height={"100%"}
                   status="별점순"
-                  address={"강남구" || userInfo?.profile[0].address}
-                  carouselItemList={CarouselItemList}
+                  address={"강남구"}
                   isRankMode={true}
                 ></Carousel>
-              </div>
-              <div className="carousel_box">
-                <h1>우리 동네 새로운 공연</h1>
-                <Carousel
-                  width={"70%"}
-                  minWidth={"300px"}
-                  maxWidth={"480px"}
-                  height={"100%"}
-                  status="최신순"
-                  address={"강남구" || userInfo?.profile[0].address}
-                  carouselItemList={CarouselItemList}
-                ></Carousel>
-              </div>
-            </CarouselDisplay>
-          </CarouselDisplayBox>
-        </CarouselContainer>
-        <BoardsContainer>
-          <h1 className="title">커뮤니티 인기 게시글</h1>
-          <BoardsGrid>
-            <Boards path="free" category="자유게시판">
-              자유게시판
-            </Boards>
-            <Boards path="employ" category="구인게시판">
-              구인게시판
-            </Boards>
-            <Boards path="request" category="초청게시판">
-              초청게시판
-            </Boards>
-            <Boards path="advertise" category="홍보게시판">
-              홍보게시판
-            </Boards>
-            <Boards path="review" category="후기게시판">
-              공연후기
-            </Boards>
-          </BoardsGrid>
-        </BoardsContainer>
-      </MainContainer>
-    </>
+              )}
+            </div>
+            <div className="carousel_box">
+              <h1>우리 동네 새로운 공연</h1>
+              {isLogin ? (
+                userAddress ? (
+                  <Carousel status="최신순" address={userAddress}></Carousel>
+                ) : (
+                  <div className="loading_container">
+                    <p>사용자 지역정보를 불러오고 있습니다.</p>
+                  </div>
+                )
+              ) : (
+                <Carousel status="별점순" address={"강남구"}></Carousel>
+              )}
+            </div>
+          </CarouselDisplay>
+        </CarouselDisplayBox>
+      </CarouselContainer>
+      <BoardsContainer>
+        <h1 className="title">커뮤니티 인기 게시글</h1>
+        <BoardsGrid>
+          <Boards path="free" category="자유게시판">
+            자유게시판
+          </Boards>
+          <Boards path="employ" category="구인게시판">
+            구인게시판
+          </Boards>
+          <Boards path="request" category="초청게시판">
+            초청게시판
+          </Boards>
+          <Boards path="advertise" category="홍보게시판">
+            홍보게시판
+          </Boards>
+          <Boards path="review" category="후기게시판">
+            공연후기
+          </Boards>
+        </BoardsGrid>
+      </BoardsContainer>
+    </MainContainer>
   );
 }
