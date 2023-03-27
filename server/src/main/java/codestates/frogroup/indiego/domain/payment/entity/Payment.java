@@ -6,6 +6,7 @@ import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,21 +22,28 @@ public class Payment extends BaseTime {
     private Long id;
 
     @Column(nullable = false)
+    private Long amount;
+
+    @Column(nullable = false, unique = true)
+    private String orderId;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
     @Column(nullable = false)
-    private Long amount;
-
-    @Column(nullable = false)
-    private String orderId;
-
-    @Column(nullable = false)
     private String orderName;
 
-    @ManyToOne
-    @JoinColumn
+    @Column(nullable = false)
+    private boolean paymentApproved;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "customer")
     private Member customer;
+
+//    @Column(nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private PaymentStatus paymentStatus;
 
     public PaymentResponseDto toResponseDto() {
         return PaymentResponseDto.builder()
@@ -44,10 +52,9 @@ public class Payment extends BaseTime {
                 .orderId(orderId)
                 .orderName(orderName)
                 .customerEmail(customer.getEmail())
-//                .customerName(customer.getProfile().getName())
+                .customerName(customer.getProfile().getNickname()) // 필요하지 않을 수도 있음
                 .createdAt(getCreatedAt())
                 .build();
     }
-
 
 }
