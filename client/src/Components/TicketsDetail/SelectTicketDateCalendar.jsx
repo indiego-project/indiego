@@ -10,14 +10,14 @@ import {
   misc,
   mbFontSize,
   secondary,
-} from "../../../styles/mixins";
-import breakpoint from "../../../styles/breakpoint";
+} from "../../styles/mixins";
+import breakpoint from "../../styles/breakpoint";
 
 import styled from "styled-components";
 import dayjs from "dayjs";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "../../Spinner";
+import Spinner from "../Spinner";
 
 const Container = styled.div`
   width: 100%;
@@ -237,33 +237,15 @@ const SpinnerExtended = styled(Spinner)`
   top: 40%;
 `;
 
-export default function Calendar({ setSelectedDate, setDateInfo }) {
+export default function Calendar({ setDate, ticketData }) {
   const now = dayjs();
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
   const [selectedDay, setSelectedDay] = useState(now.date());
   const [hasShow, setHasShow] = useState();
-
-  const serverURI = process.env.REACT_APP_SERVER_URI;
-
-  const fetchHasShowArr = () => {
-    return axios.get(`${serverURI}/shows/marker`, {
-      params: { year: selectedYear, month: selectedMonth, day: selectedDay },
-    });
-  };
-
-  const fetchHasShowArrOnSuccess = (response) => {
-    let data = response.data.data;
-    setHasShow(data);
-  };
-
-  const { refetch: refetchHasShowArr } = useQuery({
-    queryKey: ["fetchHasShowArr", selectedYear, selectedMonth],
-    queryFn: fetchHasShowArr,
-    onSuccess: fetchHasShowArrOnSuccess,
-    enabled: !!selectedMonth,
-  });
+  const [selectedDate, setSelectedDate] = useState("");
+  const [dateInfo, setDateInfo] = useState();
 
   // 이전 날짜를 계산해서 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
@@ -296,36 +278,29 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
       .set("year", selectedYear)
       .set("month", selectedMonth - 1)
       .set("date", selectedDay);
-    if (!hasShow) {
-      setSelectedDate(now.format("YYYY년 MM월 DD일"));
-      setDateInfo({
-        year: selected.year(),
-        month: selected.month() + 1,
-        day: selected.date(),
-      });
-    } else {
-      let newDaysArr = new Array(selected.daysInMonth()).fill(1);
-      newDaysArr.reduce((acc, current, index, arr) => {
-        arr[index] = acc + 1;
-        return acc + current;
-      });
-      newDaysArr = newDaysArr.map((day) => {
-        if (hasShow.indexOf(day) !== -1) {
-          return { day, hasShow: true };
-        } else {
-          return { day, hasShow: false };
-        }
-      });
-      newDaysArr.forEach((day) => {
-        const whatDay = selected.date(day.day).$W;
-        if (whatDay === 0 || whatDay === 6) {
-          day.weekend = true;
-        }
-      });
-      newDaysArr = addPreviousMonthDays(selected, newDaysArr);
-      setDaysArr(newDaysArr);
-    }
-  }, [hasShow]);
+    setSelectedDate(now.format("YYYY년 MM월 DD일"));
+    setDateInfo({
+      year: selected.year(),
+      month: selected.month() + 1,
+      day: selected.date(),
+    });
+    let newDaysArr = new Array(selected.daysInMonth()).fill(1);
+    newDaysArr.reduce((acc, current, index, arr) => {
+      arr[index] = acc + 1;
+      return acc + current;
+    });
+    newDaysArr = newDaysArr.map((day) => {
+      return { day, hasShow: false };
+    });
+    newDaysArr.forEach((day) => {
+      const whatDay = selected.date(day.day).$W;
+      if (whatDay === 0 || whatDay === 6) {
+        day.weekend = true;
+      }
+    });
+    newDaysArr = addPreviousMonthDays(selected, newDaysArr);
+    setDaysArr(newDaysArr);
+  }, [selectedMonth, selectedYear]);
 
   // 월과 년도가 변경되면 hasShow를 다시 불러오며, 관련 상태를 업데이트 해주는 함수
   useEffect(() => {
@@ -333,7 +308,6 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
       .set("year", selectedYear)
       .set("month", selectedMonth - 1)
       .daysInMonth();
-
     if (selectedDay > currentMonthDays) {
       setSelectedDay(currentMonthDays);
       setSelectedDate(
@@ -344,7 +318,6 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
         month: selectedMonth,
         day: currentMonthDays,
       });
-      refetchHasShowArr();
     } else {
       setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selectedDay}일`);
       setDateInfo({
@@ -352,19 +325,22 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
         month: selectedMonth,
         day: selectedDay,
       });
-      refetchHasShowArr();
     }
   }, [selectedMonth, selectedYear]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
-    setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selected}일`);
-    setDateInfo({
-      year: selectedYear,
-      month: selectedMonth,
-      day: selected,
-    });
+    // setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selected}일`);
+    // setDateInfo({
+    //   year: selectedYear,
+    //   month: selectedMonth,
+    //   day: selected,
+    // });
+    setDate(`
+    ${selectedYear}-${
+      selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+    }-${selected <= 9 ? "0" + selected : selected}`);
   };
 
   const monthSelectorOnClickHandler = (num) => {
@@ -378,6 +354,8 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
       setSelectedMonth(selectedMonth + num);
     }
   };
+
+  console.log(ticketData);
 
   return (
     <Container>
@@ -410,32 +388,26 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
           <p className="item days">금</p>
           <p className="item days last">토</p>
         </CalendarGrid>
-        {!hasShow ? (
-          <SpinnerExtended />
-        ) : (
-          <DateGrid>
-            {daysArr.map((day, index) => {
-              console.log(selectedDay, day.day);
-              return (
-                <div className="date_container" key={index}>
-                  <p
-                    tabIndex={0}
-                    className={`${
-                      selectedDay === day.day && !day.previous ? "selected" : ""
-                    } date 
-                  ${day.previous ? "previous" : ""} 
-                  ${day.weekend ? "weekend" : ""}
-                  `}
-                    onClick={dateOnClickHandler}
-                  >
-                    {day.day}
-                  </p>
-                  {day.hasShow && <p className="dot">.</p>}
-                </div>
-              );
-            })}
-          </DateGrid>
-        )}
+        <DateGrid>
+          {daysArr.map((day, index) => {
+            return (
+              <div className="date_container" key={index}>
+                <p
+                  tabIndex={0}
+                  className={`${
+                    selectedDay === day.day && !day.previous ? "selected" : ""
+                  } date 
+                ${day.previous ? "previous" : ""} 
+                ${day.weekend ? "weekend" : ""}
+                `}
+                  onClick={dateOnClickHandler}
+                >
+                  {day.day}
+                </p>
+              </div>
+            );
+          })}
+        </DateGrid>
       </CalendarFlex>
     </Container>
   );

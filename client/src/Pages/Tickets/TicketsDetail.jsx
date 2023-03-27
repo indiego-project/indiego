@@ -3,6 +3,7 @@ import TicketsDetailTap from "../../Components/TicketsDetail/TicketsDetailTapMen
 import KakaoMapButton from "../../Components/TicketsDetail/KakaoMapButton.jsx";
 import TicketDeleteModal from "../../Components/TicketsDetail/TicketDeleteModal.jsx";
 import ReactDatePicker from "../../Components/Board/TicketsCreate/ReactDatePicker.jsx";
+import SelectTicketDateCalendar from "../../Components/TicketsDetail/SelectTicketDateCalendar.jsx";
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -348,7 +349,7 @@ const TopRightContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   margin-left: 10px;
-  min-height: 500px;
+  min-height: 900px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin-left: 0;
@@ -587,6 +588,7 @@ export default function TicketsDetail() {
     }
     postReservation();
   };
+  console.log(date);
   return (
     <>
       <TicketDeleteModal ticketId={params.id} />
@@ -667,7 +669,11 @@ export default function TicketsDetail() {
               </div>
               <div className="middle-container">
                 <span className="sub-title">예매 날짜 선택</span>
-                <ReactDatePicker setDate={setDate}></ReactDatePicker>
+                {/* <ReactDatePicker setDate={setDate}></ReactDatePicker> */}
+                <SelectTicketDateCalendar
+                  setDate={setDate}
+                  ticketData={ticketData}
+                />
                 {dateError ? (
                   <span className="error-message">공연 기간이 아닙니다</span>
                 ) : (
