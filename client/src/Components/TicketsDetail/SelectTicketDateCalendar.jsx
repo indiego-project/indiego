@@ -290,7 +290,23 @@ export default function Calendar({ setDate, ticketData }) {
       return acc + current;
     });
     newDaysArr = newDaysArr.map((day) => {
-      return { day, hasShow: false };
+      return {
+        day,
+        dateInfo: `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${day <= 9 ? "0" + day : day}`,
+      };
+    });
+    newDaysArr.forEach((day) => {
+      const dateInfo = new Date(day.dateInfo);
+      if (
+        dateInfo >= new Date(ticketData.showAt) &&
+        dateInfo <= new Date(ticketData.expiredAt)
+      ) {
+        day.hasShow = true;
+      } else {
+        day.hasShow = false;
+      }
     });
     newDaysArr.forEach((day) => {
       const whatDay = selected.date(day.day).$W;
@@ -300,6 +316,7 @@ export default function Calendar({ setDate, ticketData }) {
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
+    console.log(newDaysArr);
   }, [selectedMonth, selectedYear]);
 
   // 월과 년도가 변경되면 hasShow를 다시 불러오며, 관련 상태를 업데이트 해주는 함수
@@ -319,7 +336,6 @@ export default function Calendar({ setDate, ticketData }) {
         day: currentMonthDays,
       });
     } else {
-      setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selectedDay}일`);
       setDateInfo({
         year: selectedYear,
         month: selectedMonth,
@@ -331,12 +347,6 @@ export default function Calendar({ setDate, ticketData }) {
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
-    // setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selected}일`);
-    // setDateInfo({
-    //   year: selectedYear,
-    //   month: selectedMonth,
-    //   day: selected,
-    // });
     setDate(`
     ${selectedYear}-${
       selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
