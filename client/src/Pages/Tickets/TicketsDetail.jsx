@@ -670,10 +670,7 @@ export default function TicketsDetail() {
               <div className="middle-container">
                 <span className="sub-title">예매 날짜 선택</span>
                 {/* <ReactDatePicker setDate={setDate}></ReactDatePicker> */}
-                <SelectTicketDateCalendar
-                  setDate={setDate}
-                  ticketData={ticketData}
-                />
+                <SelectTicketDateCalendar setDate={setDate} />
                 {dateError ? (
                   <span className="error-message">공연 기간이 아닙니다</span>
                 ) : (

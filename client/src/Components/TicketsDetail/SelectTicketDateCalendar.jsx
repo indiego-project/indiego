@@ -12,6 +12,7 @@ import {
   secondary,
 } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
+import useTicketDataStore from "../../store/useTicketDataStore";
 
 import styled from "styled-components";
 import dayjs from "dayjs";
@@ -171,6 +172,8 @@ const DateGrid = styled.div`
     height: 30px;
     padding: 5px;
     font-size: ${dtFontSize.small};
+    color: ${sub.sub300};
+    pointer-events: none;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.xsmall};
@@ -184,19 +187,6 @@ const DateGrid = styled.div`
         color: white;
       }
     }
-
-    :hover {
-      background-color: ${primary.primary300};
-      color: white;
-      border-radius: 100%;
-      cursor: pointer;
-    }
-
-    :focus-within {
-      background-color: ${primary.primary300};
-      color: white;
-      border-radius: 100%;
-    }
   }
 
   .date.previous {
@@ -209,10 +199,15 @@ const DateGrid = styled.div`
   }
 
   .date.selected.weekend {
-    color: white;
+    color: ${sub.sub300};
   }
 
   .date.weekend {
+    color: ${sub.sub300};
+    pointer-events: none;
+  }
+
+  .date.hasShow.weekend {
     color: ${misc.red};
 
     :hover {
@@ -221,6 +216,25 @@ const DateGrid = styled.div`
 
     :focus-within {
       color: white;
+    }
+  }
+
+  .date.hasShow {
+    color: ${sub.sub500};
+    cursor: pointer;
+    pointer-events: stroke;
+
+    :hover {
+      background-color: ${primary.primary300};
+      color: white;
+      border-radius: 100%;
+      cursor: pointer;
+    }
+
+    :focus-within {
+      background-color: ${primary.primary300};
+      color: white;
+      border-radius: 100%;
     }
   }
 
@@ -237,16 +251,15 @@ const SpinnerExtended = styled(Spinner)`
   top: 40%;
 `;
 
-export default function Calendar({ setDate, ticketData }) {
+export default function Calendar({ setDate }) {
   const now = dayjs();
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
   const [selectedDay, setSelectedDay] = useState(now.date());
-  const [hasShow, setHasShow] = useState();
   const [selectedDate, setSelectedDate] = useState("");
   const [dateInfo, setDateInfo] = useState();
-
+  const { ticketData, setTicketData } = useTicketDataStore((state) => state);
   // 이전 날짜를 계산해서 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
     const yearAndDate = `${dateObj.year()}-${dateObj.month() + 1}-`;
@@ -307,8 +320,6 @@ export default function Calendar({ setDate, ticketData }) {
       } else {
         day.hasShow = false;
       }
-    });
-    newDaysArr.forEach((day) => {
       const whatDay = selected.date(day.day).$W;
       if (whatDay === 0 || whatDay === 6) {
         day.weekend = true;
@@ -316,10 +327,10 @@ export default function Calendar({ setDate, ticketData }) {
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
-    console.log(newDaysArr);
-  }, [selectedMonth, selectedYear]);
+    console.log(ticketData);
+  }, [daysArr]);
 
-  // 월과 년도가 변경되면 hasShow를 다시 불러오며, 관련 상태를 업데이트 해주는 함수
+  // 월과 년도가 변경되면 관련 상태를 업데이트 해주는 함수
   useEffect(() => {
     const currentMonthDays = dayjs()
       .set("year", selectedYear)
@@ -409,6 +420,7 @@ export default function Calendar({ setDate, ticketData }) {
                   } date 
                 ${day.previous ? "previous" : ""} 
                 ${day.weekend ? "weekend" : ""}
+                ${day.hasShow ? "hasShow" : ""}
                 `}
                   onClick={dateOnClickHandler}
                 >
