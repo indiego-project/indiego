@@ -12,9 +12,13 @@ import codestates.frogroup.indiego.global.security.auth.userdetails.AuthMember;
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.global.security.auth.utils.Responder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -62,15 +67,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}, loginDto.getRole={}",
                 loginDto.getEmail(),loginDto.getPassword() ,loginDto.getRole());
 
-        checkRole(request, loginDto);
+        //올바른 권한으로 로그인하는지 확인
+        checkRole(loginDto);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
 
-    private void checkRole(HttpServletRequest request, LoginDto loginDto){
-        if(!request.isUserInRole(loginDto.getRole())){
+    public void checkRole( LoginDto loginDto){
+        if(!memberService.findVerifiedMember(loginDto.getEmail()).getRoles().get(0).equals(loginDto.getRole()) ){
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
     }
