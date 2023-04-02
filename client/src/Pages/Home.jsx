@@ -25,6 +25,7 @@ const MainContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: max-content;
+  overflow-y: hidden;
 `;
 
 const ButtonsContainer = styled.div`
@@ -148,10 +149,14 @@ export default function Home() {
   const isLogin = !!localStorage.getItem("accessToken");
 
   const locationPopupOnClickHandler = () => {
+    const body = document.querySelector("body");
+    body.classList.add("modal_open");
     setLocationPopupOpen(true);
   };
 
   const datePopupOnClickHanlder = () => {
+    const body = document.querySelector("body");
+    body.classList.add("modal_open");
     setDatePopupOpen(true);
   };
 
@@ -175,7 +180,7 @@ export default function Home() {
   });
 
   return (
-    <MainContainer>
+    <MainContainer popupOpen={LocationPopupOpen || DatePopupOpen}>
       {LocationPopupOpen && (
         <Overlay>
           <Suspense fallback={<div>...loading</div>}>
