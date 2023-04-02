@@ -258,8 +258,8 @@ export default function Calendar({ setDate }) {
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
   const [selectedDay, setSelectedDay] = useState(now.date());
   const [selectedDate, setSelectedDate] = useState("");
-  const [dateInfo, setDateInfo] = useState();
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+
   // 이전 날짜를 계산해서 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
     const yearAndDate = `${dateObj.year()}-${dateObj.month() + 1}-`;
@@ -292,11 +292,6 @@ export default function Calendar({ setDate }) {
       .set("month", selectedMonth - 1)
       .set("date", selectedDay);
     setSelectedDate(now.format("YYYY년 MM월 DD일"));
-    setDateInfo({
-      year: selected.year(),
-      month: selected.month() + 1,
-      day: selected.date(),
-    });
     let newDaysArr = new Array(selected.daysInMonth()).fill(1);
     newDaysArr.reduce((acc, current, index, arr) => {
       arr[index] = acc + 1;
@@ -311,10 +306,9 @@ export default function Calendar({ setDate }) {
       };
     });
     newDaysArr.forEach((day) => {
-      const dateInfo = new Date(day.dateInfo);
       if (
-        dateInfo >= new Date(ticketData.showAt) &&
-        dateInfo <= new Date(ticketData.expiredAt)
+        new Date(day.dateInfo) >= new Date(ticketData.showAt) &&
+        new Date(day.dateInfo) <= new Date(ticketData.expiredAt)
       ) {
         day.hasShow = true;
       } else {
@@ -327,33 +321,8 @@ export default function Calendar({ setDate }) {
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
-    console.log(ticketData);
-  }, [daysArr]);
-
-  // 월과 년도가 변경되면 관련 상태를 업데이트 해주는 함수
-  useEffect(() => {
-    const currentMonthDays = dayjs()
-      .set("year", selectedYear)
-      .set("month", selectedMonth - 1)
-      .daysInMonth();
-    if (selectedDay > currentMonthDays) {
-      setSelectedDay(currentMonthDays);
-      setSelectedDate(
-        `${selectedYear}년 ${selectedMonth}월 ${currentMonthDays}일`
-      );
-      setDateInfo({
-        year: selectedYear,
-        month: selectedMonth,
-        day: currentMonthDays,
-      });
-    } else {
-      setDateInfo({
-        year: selectedYear,
-        month: selectedMonth,
-        day: selectedDay,
-      });
-    }
-  }, [selectedMonth, selectedYear]);
+    console.log(daysArr);
+  }, [selectedMonth, selectedYear, ticketData]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
@@ -375,8 +344,6 @@ export default function Calendar({ setDate }) {
       setSelectedMonth(selectedMonth + num);
     }
   };
-
-  console.log(ticketData);
 
   return (
     <Container>
