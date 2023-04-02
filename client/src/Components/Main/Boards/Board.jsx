@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 const BoardContainer = styled.div`
   width: 100%;
   height: 80px;
-  background-color: ${sub.sub100};
   display: flex;
   border: 1px solid ${sub.sub300};
   border-width: ${(props) => (props.isLast ? "0 0 0 0" : `0 0 1px 0`)};
@@ -61,7 +60,7 @@ const ImageContainer = styled.div`
 const PostDetailContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 75%;
+  width: 65%;
   min-width: 100px;
   padding: 12px 0;
   justify-content: space-between;
