@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 
 import Banner from "../Components/Main/Banner.jsx";
 import SearchBar from "../Components/Main/SearchBar.jsx";
@@ -6,8 +6,12 @@ import Button from "../Components/Main/Button.jsx";
 import Carousel from "../Components/Main/Carousels/Carousel.jsx";
 import Boards from "../Components/Main/Boards/Boards.jsx";
 import Overlay from "../Components/Main/Popups/Overlay.jsx";
-import LocationPopup from "../Components/Main/Popups/LocationPopup.jsx";
-import DatePopup from "../Components/Main/Popups/DatePopup.jsx";
+const LocationPopup = React.lazy(() =>
+  import("../Components/Main/Popups/LocationPopup.jsx")
+);
+const DatePopup = React.lazy(() =>
+  import("../Components/Main/Popups/DatePopup.jsx")
+);
 
 import { dtFontSize, primary, sub } from "../styles/mixins.js";
 import breakpoint from "../styles/breakpoint.js";
@@ -21,6 +25,7 @@ const MainContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: max-content;
+  overflow-y: hidden;
 `;
 
 const ButtonsContainer = styled.div`
@@ -144,10 +149,14 @@ export default function Home() {
   const isLogin = !!localStorage.getItem("accessToken");
 
   const locationPopupOnClickHandler = () => {
+    const body = document.querySelector("body");
+    body.classList.add("modal_open");
     setLocationPopupOpen(true);
   };
 
   const datePopupOnClickHanlder = () => {
+    const body = document.querySelector("body");
+    body.classList.add("modal_open");
     setDatePopupOpen(true);
   };
 
@@ -158,8 +167,8 @@ export default function Home() {
 
   const fetchUserAddressAtHomeOnSuccess = (res) => {
     let userAddress = res.data.data.profile[0].address;
-    userAddress = userAddress === "없음" ? "강남구" : userAddress;
-    console.log(userAddress);
+    userAddress =
+      userAddress === userAddress ?? "없음" ? "강남구" : userAddress;
     setUserAddress(userAddress);
   };
 
@@ -170,18 +179,20 @@ export default function Home() {
     enabled: isLogin,
   });
 
-  console.log(userAddressLoading);
-
   return (
-    <MainContainer>
+    <MainContainer popupOpen={LocationPopupOpen || DatePopupOpen}>
       {LocationPopupOpen && (
         <Overlay>
-          <LocationPopup popupHandler={setLocationPopupOpen} />
+          <Suspense fallback={<div>...loading</div>}>
+            <LocationPopup popupHandler={setLocationPopupOpen} />
+          </Suspense>
         </Overlay>
       )}
       {DatePopupOpen && (
         <Overlay>
-          <DatePopup popupHandler={setDatePopupOpen}></DatePopup>
+          <Suspense fallback={<div>...loading</div>}>
+            <DatePopup popupHandler={setDatePopupOpen}></DatePopup>
+          </Suspense>
         </Overlay>
       )}
       <Banner />
@@ -228,7 +239,7 @@ export default function Home() {
                   </div>
                 )
               ) : (
-                <Carousel status="별점순" address={"강남구"}></Carousel>
+                <Carousel status="최신순" address={"강남구"}></Carousel>
               )}
             </div>
           </CarouselDisplay>

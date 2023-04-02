@@ -11,7 +11,7 @@ const ListItemContainer = styled.div`
   height: max-content;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${sub.sub500};
+  border: 1px solid ${sub.sub300};
   border-width: 0 0 1px 0;
   color: ${sub.sub800};
   margin-top: 10px;

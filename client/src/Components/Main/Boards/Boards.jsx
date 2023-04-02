@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Board from "./Board.jsx";
 import Spinner from "../../Spinner.jsx";
 
-import { primary, dtFontSize } from "../../../styles/mixins";
+import { primary, dtFontSize, sub } from "../../../styles/mixins";
 
 import styled from "styled-components";
 import axios from "axios";
@@ -32,8 +32,8 @@ const BoardList = styled.ul`
   height: 300px;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   border-radius: 10px;
+  background-color: ${sub.sub100};
 
   a {
     text-decoration: none;
@@ -42,6 +42,14 @@ const BoardList = styled.ul`
     :hover {
       color: ${primary.primary500};
     }
+  }
+
+  .null_data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -73,8 +81,11 @@ export default function Boards({ category, children, path }) {
       <BoardList>
         {isLoading ? (
           <Spinner />
+        ) : !data.length ? (
+          <div className="null_data">
+            <p>데이터가 없습니다.</p>
+          </div>
         ) : (
-          data &&
           data.map((data, index, datas) => {
             if (index === datas.length - 1) {
               return (
