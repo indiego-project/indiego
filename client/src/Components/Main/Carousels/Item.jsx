@@ -10,7 +10,8 @@ import breakpoint from "../../../styles/breakpoint";
 const ItemContainer = styled.div`
   display: flex;
   justify-content: center;
-  width: 250px;
+  max-width: 250px;
+  width: 100%;
   height: 100%;
   box-sizing: content-box;
 
@@ -21,10 +22,6 @@ const ItemContainer = styled.div`
     :hover {
       color: none;
     }
-  }
-
-  @media screen and (max-width: ${breakpoint.mobile}) {
-    width: 250px;
   }
 `;
 

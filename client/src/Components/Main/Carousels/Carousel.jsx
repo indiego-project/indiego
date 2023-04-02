@@ -16,7 +16,7 @@ import axios from "axios";
 const CarouselContainer = styled.div`
   width: 70%;
   max-width: 480px;
-  min-width: 300px;
+  min-width: 350px;
   height: 100%;
   background-color: ${sub.sub200};
   border-radius: 20px;

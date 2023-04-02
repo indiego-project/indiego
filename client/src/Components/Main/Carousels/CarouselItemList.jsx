@@ -12,7 +12,6 @@ const RendererContainer = styled.div`
   width: 250px;
   height: 100%;
   overflow: hidden;
-  max-width: 250px;
 `;
 
 const ItemsContainer = styled.div`
