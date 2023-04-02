@@ -10,6 +10,8 @@ import Search from "../../assets/search.svg";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+import { useTicketSearchStore } from "../../store/useTicketSearchStore";
+
 const SearchBarContainer = styled.div`
   margin-top: 20px;
   width: 100%;
@@ -145,30 +147,23 @@ const InputContainer = styled.div`
   }
 `;
 
-export default function SearchBar({
-  className,
-  navigateTo,
-  defaultValue,
-  additionalParams,
-}) {
+// 모든 검색 로직 (상세 필터 포함)을 url에 담아 새로고침 시켜야함
+
+export default function SearchBar({ className, children }) {
   const [isSearchOptionsClicked, setIsSearchOptionsClicked] = useState(false);
-  const [searchOption, setSearchOption] = useState("공연명");
-  const [searchInput, setSearchInput] = useState(defaultValue);
   const navigate = useNavigate();
 
-  let searchURI = `${navigateTo}?search=${searchInput}&filter=${searchOption}`;
-
-  additionalParams?.forEach((param) => {
-    if (Array.isArray(param)) {
-      searchURI += "&" + param[0] + "=" + param[1];
-    }
-  });
+  const { search } = useTicketSearchStore((state) => state.searchParams);
+  const { filter } = useTicketSearchStore((state) => state.searchParams);
+  const { setSearch } = useTicketSearchStore((state) => state);
+  const { setFilter } = useTicketSearchStore((state) => state);
+  const { getSearchUrl } = useTicketSearchStore((state) => state);
 
   const searchOptionsContainerEventHandler = (e, props) => {
     if (props === "blur") {
       const next = e.relatedTarget;
       if (next instanceof HTMLLIElement) {
-        setSearchOption(next.innerText);
+        setFilter(next.innerText);
         setIsSearchOptionsClicked(false);
       } else {
         setIsSearchOptionsClicked(false);
@@ -179,23 +174,23 @@ export default function SearchBar({
   };
 
   const searchInputOnChangeHandler = (e) => {
-    setSearchInput(e.target.value);
+    setSearch(e.target.value);
   };
 
   const searchInputOnKeyUpHandler = (e) => {
-    if (searchInput && e.key === "Enter") {
-      navigate(searchURI);
+    if (search && e.key === "Enter") {
+      navigate(getSearchUrl());
     }
   };
 
   const searchIconClickHandler = () => {
-    if (searchInput) {
-      navigate(searchURI);
+    if (search) {
+      navigate(getSearchUrl());
     }
   };
 
   return (
-    <SearchBarContainer className={className}>
+    <SearchBarContainer className={className} defaultValue={""}>
       <OptionContainer className="option_container">
         <OptionSelector
           tabIndex="0"
@@ -205,7 +200,7 @@ export default function SearchBar({
             searchOptionsContainerEventHandler(e, "blur");
           }}
         >
-          <p>{searchOption}</p>
+          <p>{filter}</p>
           {/* traingle icon */}
           <svg
             width="20"
@@ -227,7 +222,7 @@ export default function SearchBar({
       <InputContainer className="input_container">
         <input
           placeholder="검색어를 입력하세요."
-          value={searchInput}
+          value={search}
           onChange={searchInputOnChangeHandler}
           onKeyUp={searchInputOnKeyUpHandler}
         />
@@ -242,6 +237,7 @@ export default function SearchBar({
           <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
         </svg>
       </InputContainer>
+      {children}
     </SearchBarContainer>
   );
 }

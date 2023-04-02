@@ -27,6 +27,8 @@ const ItemGrid = styled.div`
 
   .null_info {
     position: absolute;
+    width: 100%;
+    height: 100%;
     left: 40%;
 
     @media screen and (max-width: 500px) {
@@ -39,7 +41,9 @@ export default function ItemList({ data }) {
   return (
     <ItemGrid>
       {data.length === 0 ? (
-        <p className="null_info">공연이 존재하지 않습니다</p>
+        <div className="null_info">
+          <p>공연이 존재하지 않습니다</p>
+        </div>
       ) : (
         data.map((item, index) => {
           return <CardItem data={item} key={index} />;
