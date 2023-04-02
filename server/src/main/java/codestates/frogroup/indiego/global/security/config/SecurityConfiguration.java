@@ -74,6 +74,10 @@ public class SecurityConfiguration {
 						.antMatchers(HttpMethod.DELETE, "/articles/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
 						.anyRequest().permitAll()
 				)
+				.addFilterBefore(
+						new ExceptionHandlerFilter(),
+						JwtAuthenticationFilter.class
+				)
 				.oauth2Login(oauth2 -> oauth2
 						.successHandler(new OAuth2MemberSuccessHandler(tokenProvider,memberService,redisDao,aes128Config))
 						.userInfoEndpoint() // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당

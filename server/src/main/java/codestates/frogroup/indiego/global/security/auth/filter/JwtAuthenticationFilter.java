@@ -68,27 +68,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 loginDto.getEmail(),loginDto.getPassword() ,loginDto.getRole());
 
         //올바른 권한으로 로그인하는지 확인
-        checkRole(loginDto);
+        memberService.checkRole(loginDto);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
 
-    public void checkRole( LoginDto loginDto){
-        String role = memberService.findVerifiedMember(loginDto.getEmail()).getRoles().get(0);
-        if(role =="NON_CERTIFIED_PERFORMER" ||  role =="PERFORMER"){
-            if(!loginDto.getRole().equals("PERFORMER") ){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-            }
-        }
-        if(role == "USER"){
-            if(loginDto.getRole() != "USER" ){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-            }
-        }
 
-    }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,

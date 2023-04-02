@@ -71,7 +71,7 @@ public class JwtAuthenticationFilterTest {
         when(memberService.findVerifiedMember(loginDto.getEmail())).thenReturn(member);
 
         // when, then
-        assertThatCode(() -> jwtAuthenticationFilter.checkRole(loginDto))
+        assertThatCode(() -> memberService.checkRole(loginDto))
                 .doesNotThrowAnyException();
     }
 

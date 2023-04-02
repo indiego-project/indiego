@@ -88,8 +88,8 @@ public class MemberController {
     //권한바꾸는 patchmaping 추가하기, security config 수정하기
     @PatchMapping("performer/{member-id}")
     public ResponseEntity certifyPerformer(@Positive @PathVariable("member-id") Long memberId){
-        memberService.certifyPerformer(memberId);
-        return new ResponseEntity<>(new SingleResponseDto<>("퍼포머 인증 완료되었습니다."), HttpStatus.OK);
+        MemberDto.GetResponse response =  memberService.certifyPerformer(memberId);
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @DeleteMapping("/{member-id}")
