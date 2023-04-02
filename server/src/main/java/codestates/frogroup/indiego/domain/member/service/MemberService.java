@@ -222,4 +222,18 @@ public class MemberService {
 
         memberRepository.delete(verifiedMember);
     }
+
+    //퍼포머 인증
+    public void certifyPerformer(Long memberId){
+        Member member = findVerifiedMember(memberId);
+        if(!member.getRoles().get(0).equals("NON_CERTIFIED_PERFORMER") ){
+            log.info("###권한 확인{}", member.getRoles().toString());
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
+        }
+        List<String> roles = member.getRoles();
+        roles.set(0, "PERFOMER");
+        member.setRoles(roles);
+        memberRepository.save(member);
+
+    }
 }

@@ -76,9 +76,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     public void checkRole( LoginDto loginDto){
-        if(!memberService.findVerifiedMember(loginDto.getEmail()).getRoles().get(0).equals(loginDto.getRole()) ){
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        String role = memberService.findVerifiedMember(loginDto.getEmail()).getRoles().get(0);
+        if(role =="NON_CERTIFIED_PERFORMER" ||  role =="PERFORMER"){
+            if(!loginDto.getRole().equals("PERFORMER") ){
+                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+            }
         }
+        if(role == "USER"){
+            if(loginDto.getRole() != "USER" ){
+                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+            }
+        }
+
     }
 
     @Override
