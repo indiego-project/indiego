@@ -41,7 +41,9 @@ public enum ExceptionCode {
     SHOW_RESERVATION_NOT_FOUND(403, "후기를 작성할 수 있는 권한이 없습니다."),
     SHOW_RESERVATION_CREATE_FAIL(400,"재고가 부족합니다."),
 
-
+    // Tag
+    TAG_NOT_FOUND(404, "찾을 수 없는 태그입니다."),
+    TAG_EXIST(403, "존재하는 태그입니다."),
 
     // File Upload
     UPLOAD_FAILED(404, "File Upload Failed !"),
