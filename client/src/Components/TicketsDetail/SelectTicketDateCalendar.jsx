@@ -251,7 +251,7 @@ const SpinnerExtended = styled(Spinner)`
   top: 40%;
 `;
 
-export default function Calendar({ setDate }) {
+export default function Calendar({ setReservationDate }) {
   const now = dayjs();
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
@@ -327,7 +327,7 @@ export default function Calendar({ setDate }) {
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
-    setDate(`
+    setReservationDate(`
     ${selectedYear}-${
       selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
     }-${selected <= 9 ? "0" + selected : selected}`);
