@@ -158,8 +158,8 @@ export default function Home() {
 
   const fetchUserAddressAtHomeOnSuccess = (res) => {
     let userAddress = res.data.data.profile[0].address;
-    userAddress = userAddress === "없음" ? "강남구" : userAddress;
-    console.log(userAddress);
+    userAddress =
+      userAddress === userAddress ?? "없음" ? "강남구" : userAddress;
     setUserAddress(userAddress);
   };
 
@@ -228,7 +228,7 @@ export default function Home() {
                   </div>
                 )
               ) : (
-                <Carousel status="별점순" address={"강남구"}></Carousel>
+                <Carousel status="최신순" address={"강남구"}></Carousel>
               )}
             </div>
           </CarouselDisplay>

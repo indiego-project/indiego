@@ -110,7 +110,6 @@ export default function Carousel({ isRankMode, status, address }) {
 
   const fetchShowData = () => {
     const params = { status, address };
-    console.log(params);
     return axios.get(`${serverURI}/shows`, { params });
   };
 
@@ -132,12 +131,14 @@ export default function Carousel({ isRankMode, status, address }) {
   });
 
   useInterval(() => {
-    if (data.length > 0) {
-      setCurrentIdx(currentIdx + 1);
-      setTransition(true);
+    if (data.length !== 1) {
+      if (data.length > 0) {
+        setCurrentIdx(currentIdx + 1);
+        setTransition(true);
 
-      if (currentIdx > data.length + 1) {
-        setCurrentIdx(1);
+        if (currentIdx > data.length + 1) {
+          setCurrentIdx(1);
+        }
       }
     }
   }, 3500);
@@ -150,16 +151,18 @@ export default function Carousel({ isRankMode, status, address }) {
   };
 
   useEffect(() => {
-    if (currentIdx === 0) {
-      setTimeout(() => {
-        setCurrentIdx(data.length - 2);
-        setTransition(false);
-      }, 500);
-    } else if (currentIdx === data.length - 1) {
-      setTimeout(() => {
-        setCurrentIdx(1);
-        setTransition(false);
-      }, 500);
+    if (data.length > 1) {
+      if (currentIdx === 0) {
+        setTimeout(() => {
+          setCurrentIdx(data.length - 2);
+          setTransition(false);
+        }, 500);
+      } else if (currentIdx === data.length - 1) {
+        setTimeout(() => {
+          setCurrentIdx(1);
+          setTransition(false);
+        }, 500);
+      }
     }
   }, [currentIdx]);
 
@@ -177,11 +180,10 @@ export default function Carousel({ isRankMode, status, address }) {
       {isLoading ? (
         <Spinner />
       ) : (
-        CarouselItemList &&
         data && (
           <CarouselItemList
             data={data}
-            currentIdx={currentIdx}
+            currentIdx={data.length === 1 ? 0 : currentIdx}
             transition={transition}
           />
         )
