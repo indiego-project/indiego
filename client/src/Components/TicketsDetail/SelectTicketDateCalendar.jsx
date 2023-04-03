@@ -202,6 +202,10 @@ const DateGrid = styled.div`
     color: ${sub.sub300};
   }
 
+  .date.selected.weekend.hasShow {
+    color: white;
+  }
+
   .date.weekend {
     color: ${sub.sub300};
     pointer-events: none;
@@ -217,6 +221,11 @@ const DateGrid = styled.div`
     :focus-within {
       color: white;
     }
+  }
+
+  .date.previous.hasShow.weekend {
+    color: ${sub.sub300};
+    pointer-events: none;
   }
 
   .date.hasShow {
@@ -257,7 +266,6 @@ export default function Calendar({ setReservationDate }) {
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
   const [selectedDay, setSelectedDay] = useState(now.date());
-  const [selectedDate, setSelectedDate] = useState("");
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
 
   // 이전 날짜를 계산해서 추가해주는 함수
@@ -291,7 +299,7 @@ export default function Calendar({ setReservationDate }) {
       .set("year", selectedYear)
       .set("month", selectedMonth - 1)
       .set("date", selectedDay);
-    setSelectedDate(now.format("YYYY년 MM월 DD일"));
+    setReservationDate(now.format("YYYY-MM-DD"));
     let newDaysArr = new Array(selected.daysInMonth()).fill(1);
     newDaysArr.reduce((acc, current, index, arr) => {
       arr[index] = acc + 1;
@@ -318,19 +326,24 @@ export default function Calendar({ setReservationDate }) {
       if (whatDay === 0 || whatDay === 6) {
         day.weekend = true;
       }
+      if (selected.format("YYYY-MM-DD") > day.dateInfo) {
+        day.previous = true;
+      }
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
-    console.log(daysArr);
+    console.log(selected.format("YYYY-MM-DD") === "2023-04-03");
+    console.log("2023-04-03");
   }, [selectedMonth, selectedYear, ticketData]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
-    setReservationDate(`
-    ${selectedYear}-${
-      selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
-    }-${selected <= 9 ? "0" + selected : selected}`);
+    setReservationDate(
+      `${selectedYear}-${
+        selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+      }-${selected <= 9 ? "0" + selected : selected}`
+    );
   };
 
   const monthSelectorOnClickHandler = (num) => {

@@ -555,7 +555,7 @@ export default function TicketsDetail() {
     return instance({
       method: "post",
       url: `/shows/reservations/${params.id}`,
-      data: { reservationDate, ticketCount },
+      data: { date: reservationDate, ticketCount },
     });
   };
 
