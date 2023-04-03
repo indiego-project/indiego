@@ -108,6 +108,8 @@ export default function Carousel({ isRankMode, status, address }) {
   const [transition, setTransition] = useState(true);
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
+  console.log(data);
+
   const fetchShowData = () => {
     const params = { status, address };
     return axios.get(`${serverURI}/shows`, { params });
@@ -177,16 +179,12 @@ export default function Carousel({ isRankMode, status, address }) {
           <img src={Arrow} alt="prev" />
         </PrevButton>
       )}
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        data && (
-          <CarouselItemList
-            data={data}
-            currentIdx={data.length === 1 ? 0 : currentIdx}
-            transition={transition}
-          />
-        )
+      {data && (
+        <CarouselItemList
+          data={data}
+          currentIdx={data.length === 1 ? 0 : currentIdx}
+          transition={transition}
+        />
       )}
       {isRankMode && data.length > 0 && (
         <Rank>
