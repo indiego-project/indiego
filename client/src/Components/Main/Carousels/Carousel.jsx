@@ -108,6 +108,8 @@ export default function Carousel({ isRankMode, status, address }) {
   const [transition, setTransition] = useState(true);
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
+  console.log(data);
+
   const fetchShowData = () => {
     const params = { status, address };
     return axios.get(`${serverURI}/shows`, { params });
