@@ -2,16 +2,16 @@ package codestates.frogroup.indiego.domain.payment.entity;
 
 import lombok.Getter;
 
-public enum PaymentMethod {
+public enum PaymentType {
     CARD("카드"),
     ACCOUNT_TRANSFER("계좌이체"),
     VIRTUAL_ACCOUNT("가상계좌"),
-    PHONE("휴대폰");
+    CELL_PHONE("휴대폰");
 
     @Getter
-    private final String method;
+    private final String type;
 
-    PaymentMethod(String method) {
-        this.method = method;
+    PaymentType(String type) {
+        this.type = type;
     }
 }
