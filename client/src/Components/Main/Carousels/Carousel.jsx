@@ -179,12 +179,16 @@ export default function Carousel({ isRankMode, status, address }) {
           <img src={Arrow} alt="prev" />
         </PrevButton>
       )}
-      {data && (
-        <CarouselItemList
-          data={data}
-          currentIdx={data.length === 1 ? 0 : currentIdx}
-          transition={transition}
-        />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        data && (
+          <CarouselItemList
+            data={data}
+            currentIdx={data.length === 1 ? 0 : currentIdx}
+            transition={transition}
+          />
+        )
       )}
       {isRankMode && data.length > 0 && (
         <Rank>
