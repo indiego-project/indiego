@@ -29,9 +29,9 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             setErrorResponse(response, ExceptionCode.TOKEN_INVALID);
         }catch (BusinessLogicException e){
             if(e.getExceptionCode() == ExceptionCode.MEMBER_NO_PERMISSION){
-                setErrorResponse(response, ExceptionCode.MEMBER_NOT_FOUND);
-            }else if(e.getExceptionCode() == ExceptionCode.MEMBER_NOT_FOUND){
                 setErrorResponse(response, ExceptionCode.MEMBER_NO_PERMISSION);
+            }else if(e.getExceptionCode() == ExceptionCode.MEMBER_NOT_FOUND){
+                setErrorResponse(response, ExceptionCode.MEMBER_NOT_FOUND);
             }else{
                 setErrorResponse(response, ExceptionCode.NO_ACCESS_TOKEN);
             }

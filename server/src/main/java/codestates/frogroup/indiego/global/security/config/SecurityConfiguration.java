@@ -3,6 +3,7 @@ package codestates.frogroup.indiego.global.security.config;
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.redis.RedisDao;
+import codestates.frogroup.indiego.global.security.auth.enums.Roles;
 import codestates.frogroup.indiego.global.security.auth.filter.JwtAuthenticationFilter;
 import codestates.frogroup.indiego.global.security.auth.filter.JwtVerificationFilter;
 import codestates.frogroup.indiego.global.security.auth.handler.*;
@@ -55,23 +56,23 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.antMatchers(HttpMethod.POST, "/members/login").permitAll()
 						.antMatchers(HttpMethod.POST, "/members/signup").permitAll()
-						.antMatchers(HttpMethod.PATCH, "members/performer/*").hasAnyRole("ADMIN")
-						.antMatchers(HttpMethod.POST, "/members/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/members/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/shows").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/shows/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.GET, "/shows/seller").hasAnyRole("NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/shows/*").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/shows/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/shows/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/shows/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/articles/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/articles/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/articles/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/articles/**").hasAnyRole("USER","NON_CERTIFIED_PERFORMER","PERFORMER","ADMIN")
+						.antMatchers(HttpMethod.PATCH, "members/performer/*").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/shows").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.GET, "/shows/seller").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/shows/*").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/shows").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
 						.anyRequest().permitAll()
 				)
 				.addFilterBefore(
