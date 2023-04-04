@@ -232,7 +232,7 @@ public class MemberService {
     //퍼포머 인증
     public MemberDto.GetResponse certifyPerformer(Long memberId){
         Member member = findVerifiedMember(memberId);
-        if(!member.getRoles().get(0).equals("NON_CERTIFIED_PERFORMER") ){
+        if(!member.getRoles().contains("NON_CERTIFIED_PERFORMER") ){
             log.info("###권한 확인{}", member.getRoles().toString());
             throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
         }
@@ -246,16 +246,14 @@ public class MemberService {
 
     public void checkRole( LoginDto loginDto){
         //findVerifiedMember(loginDto.getEmail());
-        String role = findVerifiedMember(loginDto.getEmail()).getRoles().get(0);
-        if(role =="NON_CERTIFIED_PERFORMER" ||  role =="PERFORMER"){
+        Member member = findVerifiedMember(loginDto.getEmail());
+        if(member.getRoles().contains("NON_CERTIFIED_PERFORMER") || member.getRoles().contains("PERFORMER")){
             if(!loginDto.getRole().equals("PERFORMER") ){
                 throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
             }
         }
-        if(role == "USER"){
-            if(loginDto.getRole() != "USER" ){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-            }
+        if(member.getRoles().contains("USER") && loginDto.getRole() != "USER" ){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
 
     }
