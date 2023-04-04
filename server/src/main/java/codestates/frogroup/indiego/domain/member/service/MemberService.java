@@ -252,7 +252,7 @@ public class MemberService {
                 throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
             }
         }
-        if(member.getRoles().contains("USER") && loginDto.getRole() != "USER" ){
+        if(loginDto.getRole() != "USER" && member.getRoles().get(0) == "USER"){
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
 
