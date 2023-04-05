@@ -1,5 +1,6 @@
 package codestates.frogroup.indiego.domain.show.entity;
 
+import codestates.frogroup.indiego.domain.tag.dto.TagDto;
 import codestates.frogroup.indiego.domain.tag.entity.Tag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ShowTag {
 
     @Id
@@ -25,4 +26,16 @@ public class ShowTag {
     @ManyToOne
     @JoinColumn(name = "show_id")
     private Show show;
+
+    public void updateTag(Tag tag) {
+        this.tag = tag;
+    }
+
+    public void updateShow(Show show) {
+        this.show = show;
+    }
+
+    public TagDto.Response toResponseDto(){
+        return new TagDto.Response(this.getTag().getId(), this.getTag().getName() , this.getTag().getType());
+    }
 }

@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +45,9 @@ public class Show extends BaseTime {
 
     @Column(nullable = false)
     private int total; // 정원
+
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
+    private List<ShowTag> showTags = new ArrayList<>();
 
     public enum ShowStatus {
         SALE("판매중"),

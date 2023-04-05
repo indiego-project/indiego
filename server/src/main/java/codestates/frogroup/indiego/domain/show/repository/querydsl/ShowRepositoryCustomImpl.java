@@ -1,7 +1,10 @@
 package codestates.frogroup.indiego.domain.show.repository.querydsl;
 
+import codestates.frogroup.indiego.domain.member.entity.QMember;
 import codestates.frogroup.indiego.domain.show.dto.*;
+import codestates.frogroup.indiego.domain.show.entity.QShowTag;
 import codestates.frogroup.indiego.domain.show.entity.Show;
+import codestates.frogroup.indiego.domain.tag.entity.QTag;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,9 +24,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
+import static codestates.frogroup.indiego.domain.member.entity.QMember.*;
 import static codestates.frogroup.indiego.domain.show.entity.QShow.show;
+import static codestates.frogroup.indiego.domain.show.entity.QShowTag.*;
+import static codestates.frogroup.indiego.domain.tag.entity.QTag.*;
 import static java.time.LocalDate.*;
 
 @Slf4j
@@ -44,7 +51,7 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     // search : 입력한 검색어
     // 쿼리의 신 박성호.
     @Override
-    public Page<ShowListResponseDto> findAllByShowSearch(String search, String category, String address, String filter,
+    public Page<ShowListDto> findAllByShowSearch(String search, String category, String address, String filter,
                                                          String start, String end, Pageable pageable) {
 
         // Querydsl 리포지토리 지원을 받는 경우에는
@@ -59,30 +66,55 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         // - Projections.Beans
         // - Projections.Constructor
 
-        // (2) QDTO 타입을 이용하는 방법 - 편리한 데 단점이 존재, DTO 클래스 생성자에 @QueryProjection 사용
-        List<ShowListResponseDto> content = queryFactory
-                .select(new QShowListResponseDto(
-                        show.id,
-                        show.member.profile.nickname,
-                        show.showBoard.address,
-                        show.showBoard.board.title,
-                        show.showBoard.board.image,
-                        show.scoreAverage,
-                        show.showBoard.board.category,
-                        show.showBoard.expiredAt,
-                        show.showBoard.showAt,
-                        show.showBoard.price))
+        // 1). 태그 추가 방법 객체로 받기
+        List<ShowListDto> content = queryFactory
+                .select(
+                       show
+                )
                 .from(show)
+                .leftJoin(show.member, member).fetchJoin() // member도 조인하여 쿼리줄이기, N+1 문제로 fetchJoin()
+                .leftJoin(show.showTags, showTag).fetchJoin() // showTags 조인하여 중간테이블 가져오기, N+1 문제로 fetchJoin()
+                .leftJoin(showTag.tag, tag).fetchJoin() // Tag 조인하여 정보 가져오기, N+1 문제로 fetchJoin()
                 .where(
                         searchDateFilter(start, end),
                         categoryEq(category),
                         addressEqOfFindAll(address),
                         filterEq(filter, search)
-                        )
+                )
                 .orderBy(show.createdAt.desc()) //최신순
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .fetch() // 영속화 후에 중복 제거
+                .stream()
+                .distinct()
+                .map(ShowListDto::new).collect(Collectors.toList()); // show -> new ShowListDto(show)
+
+
+        // 2). 기존에 사용하던 코드
+//        List<ShowListResponseDto> content = queryFactory
+//                .select(new QShowListResponseDto(
+//                        show.id,
+//                        show.member.profile.nickname,
+//                        show.showBoard.address,
+//                        show.showBoard.board.title,
+//                        show.showBoard.board.image,
+//                        show.scoreAverage,
+//                        show.showBoard.board.category,
+//                        show.showBoard.expiredAt,
+//                        show.showBoard.showAt,
+//                        show.showBoard.price
+//                        ))
+//                .from(show)
+//                .where(
+//                        searchDateFilter(start, end),
+//                        categoryEq(category),
+//                        addressEqOfFindAll(address),
+//                        filterEq(filter, search)
+//                        )
+//                .orderBy(show.createdAt.desc()) //최신순
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
 
         JPAQuery<Show> countQuery = queryFactory
                 .select(show)

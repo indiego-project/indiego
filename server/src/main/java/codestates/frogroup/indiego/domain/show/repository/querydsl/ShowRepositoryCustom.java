@@ -1,6 +1,7 @@
 package codestates.frogroup.indiego.domain.show.repository.querydsl;
 
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
+import codestates.frogroup.indiego.domain.show.dto.ShowListDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowListResponseDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowMapsResponse;
 import org.springframework.data.domain.Page;
@@ -16,8 +17,8 @@ public interface ShowRepositoryCustom {
     // address : null일 경우 강남구, 그 외에는 OO구
     // filter : null일 경우 조건 X, 공연명(title), 공연하는사람(nickname)
     // search : 입력한 검색어
-    Page<ShowListResponseDto> findAllByShowSearch(String search, String category, String address, String filter,
-                                                  String start, String end, Pageable pageable);
+    Page<ShowListDto> findAllByShowSearch(String search, String category, String address, String filter,
+                                          String start, String end, Pageable pageable);
 
     List<ShowListResponseDto> findShowScoreOrCreatedAtDesc(String address, String sort);
 

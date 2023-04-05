@@ -1,11 +1,14 @@
 package codestates.frogroup.indiego.domain.tag.entity;
 
+import codestates.frogroup.indiego.domain.show.entity.ShowTag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,5 +25,8 @@ public class Tag {
 
     @Column(length = 100, nullable = false)
     private String type;
+
+    @OneToMany(mappedBy = "tag")
+    private List<ShowTag> showTags = new ArrayList<>();
 
 }

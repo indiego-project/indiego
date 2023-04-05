@@ -3,12 +3,15 @@ package codestates.frogroup.indiego.domain.show.controller;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
+import codestates.frogroup.indiego.domain.show.dto.ShowListDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowListResponseDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowMapsResponse;
 import codestates.frogroup.indiego.domain.show.entity.Show;
+import codestates.frogroup.indiego.domain.show.entity.ShowTag;
 import codestates.frogroup.indiego.domain.show.mapper.ShowMapper;
 import codestates.frogroup.indiego.domain.show.service.ShowReservationService;
 import codestates.frogroup.indiego.domain.show.service.ShowService;
+import codestates.frogroup.indiego.domain.show.service.ShowTagService;
 import codestates.frogroup.indiego.global.dto.MultiResponseDto;
 import codestates.frogroup.indiego.global.dto.PagelessMultiResponseDto;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
@@ -42,6 +45,7 @@ public class ShowController {
     private final ShowMapper mapper;
     private final AwsS3Service awsS3Service;
     private final ShowReservationService showReservationService;
+    private final ShowTagService showTagService;
 
 
     @PostMapping
@@ -49,13 +53,11 @@ public class ShowController {
                                    @LoginMemberId Long memberId){
 
         Show show = mapper.showPostDtoToShow(showPostDto);
-        Show createdShow = showService.createShow(show, memberId);
+        List<ShowTag> showTags = showTagService.createShowTag(show, showPostDto);
+        Show createdShow = showService.createShow(show, showTags, memberId);
         ShowDto.postResponse response = mapper.showToShowPostResponse(createdShow);
 
-        return new ResponseEntity<>(
-                new SingleResponseDto(response)
-                , HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(new SingleResponseDto(response), HttpStatus.CREATED);
     }
 
     @PostMapping("/uploads")
@@ -99,7 +101,7 @@ public class ShowController {
                                   @RequestParam(required = false) String end,
                                   @PageableDefault(page = 1, size = 12) Pageable pageable){
 
-        Page<ShowListResponseDto> responses = showService.findShows(search, category, address, filter, start, end, pageable);
+        Page<ShowListDto> responses = showService.findShows(search, category, address, filter, start, end, pageable);
 
         return new ResponseEntity<>(new MultiResponseDto<>(responses.getContent(), responses), HttpStatus.OK);
     }

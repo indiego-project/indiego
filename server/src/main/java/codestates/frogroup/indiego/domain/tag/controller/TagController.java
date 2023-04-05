@@ -24,21 +24,26 @@ public class TagController {
     private final TagService tagService;
     private final TagMapper tagMapper;
 
+    @GetMapping
+    public ResponseEntity getTags(@RequestParam("type") String type) {
+
+        List<Tag> findTags = tagService.findTags(type); // TODO : 추후 카테고리별로 인기 TOP 순위로 조회하도록 변경필요
+        List<TagDto.Response> tagListResponseDto = tagMapper.tagListToTagListResponseDto(findTags);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(tagListResponseDto), HttpStatus.OK);
+    }
+
+
+    /*
+    * 추후 서비스에서 태그 추가기능이 생긴다면 사용
+    * */
+    /*
     @PostMapping
     public ResponseEntity postTag(@Valid @RequestBody TagDto.Post tagDto) {
-
         Tag tag = tagMapper.tagDtoToTag(tagDto);
         Tag createdTag = tagService.createTag(tag);
         TagDto.Response response = tagMapper.tagToTagResponseDto(createdTag);
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.CREATED);
     }
-
-    @GetMapping
-    public ResponseEntity getTags(@RequestParam("type") String type) {
-
-        List<Tag> findTags = tagService.findTags(type);
-
-        return new ResponseEntity<>(new SingleResponseDto<>(findTags), HttpStatus.OK);
-    }
-
+    */
 }

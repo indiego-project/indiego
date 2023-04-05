@@ -4,10 +4,12 @@ import codestates.frogroup.indiego.domain.common.utils.CustomBeanUtils;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
+import codestates.frogroup.indiego.domain.show.dto.ShowListDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowListResponseDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowMapsResponse;
 import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.entity.Show.ShowStatus;
+import codestates.frogroup.indiego.domain.show.entity.ShowTag;
 import codestates.frogroup.indiego.domain.show.mapper.ShowMapper;
 import codestates.frogroup.indiego.domain.show.repository.ScoreRepository;
 import codestates.frogroup.indiego.domain.show.repository.ShowRepository;
@@ -44,11 +46,12 @@ public class ShowService {
     private final ShowMapper mapper;
 
     @Transactional
-    public Show createShow(Show show, long memberId) {
+    public Show createShow(Show show, List<ShowTag> showTags, long memberId) {
 
         Member member = memberService.findVerifiedMember(memberId);
 
         show.setMember(member);
+        show.setShowTags(showTags);
         Show savedShow = showRepository.save(show);
 
         String key = redisKey.getScoreAverageKey(show.getId());
@@ -154,14 +157,14 @@ public class ShowService {
     }
 
 
-    public Page<ShowListResponseDto> findShows(String search, String category, String address, String filter,
-                                               String start, String end, Pageable pageable){
+    public Page<ShowListDto> findShows(String search, String category, String address, String filter,
+                                       String start, String end, Pageable pageable){
 
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
 
-        Page<ShowListResponseDto> allByShowSearch = showRepository.findAllByShowSearch(search, category, address, filter, start, end, pageable);
+        Page<ShowListDto> allByShowSearch = showRepository.findAllByShowSearch(search, category, address, filter, start, end, pageable);
         for(int i =0; i<allByShowSearch.getContent().size(); i++){
-            ShowListResponseDto responseDto = allByShowSearch.getContent().get(i);
+            ShowListDto responseDto = allByShowSearch.getContent().get(i);
             responseDto.setScoreAverage(responseDto.getId());
         }
 

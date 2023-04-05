@@ -25,14 +25,16 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public List<Tag> findTags(String type) {
-        List<Tag> findTags = tagRepository.findByType(type);
-
-        for (Tag findTag : findTags) {
-            log.info("findTag = {} ", findTag.getName());
+    public Tag findTag(String tagName) {
+        Optional<Tag> findTag = tagRepository.findByName(tagName);
+        if(!findTag.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
         }
+        return findTag.get();
+    }
 
-        return findTags;
+    public List<Tag> findTags(String type) {
+        return tagRepository.findByType(type);
     }
 
     private void checkTag(String name) {
