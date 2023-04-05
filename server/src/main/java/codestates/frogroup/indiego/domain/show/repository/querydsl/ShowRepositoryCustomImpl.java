@@ -298,4 +298,5 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
     // LocalDate : start, end : start(goe) end(loe) 사이에 있는 공연
 
+
 }
