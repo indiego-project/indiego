@@ -5,10 +5,8 @@ import React, { useState } from "react";
 
 import { primary, dtFontSize, secondary, sub } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
-import Search from "../../assets/search.svg";
 
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 
 import { useTicketSearchStore } from "../../store/useTicketSearchStore";
 
@@ -151,13 +149,12 @@ const InputContainer = styled.div`
 
 export default function SearchBar({ className, children }) {
   const [isSearchOptionsClicked, setIsSearchOptionsClicked] = useState(false);
-  const navigate = useNavigate();
 
   const { search } = useTicketSearchStore((state) => state.searchParams);
   const { filter } = useTicketSearchStore((state) => state.searchParams);
-  const { setSearch } = useTicketSearchStore((state) => state);
-  const { setFilter } = useTicketSearchStore((state) => state);
-  const { getSearchUrl } = useTicketSearchStore((state) => state);
+  const { setSearch, setFilter, getSearchUrl } = useTicketSearchStore(
+    (state) => state
+  );
 
   const searchOptionsContainerEventHandler = (e, props) => {
     if (props === "blur") {
@@ -179,13 +176,13 @@ export default function SearchBar({ className, children }) {
 
   const searchInputOnKeyUpHandler = (e) => {
     if (search && e.key === "Enter") {
-      navigate(getSearchUrl());
+      window.location.replace(getSearchUrl());
     }
   };
 
   const searchIconClickHandler = () => {
     if (search) {
-      navigate(getSearchUrl());
+      window.location.replace(getSearchUrl());
     }
   };
 

@@ -4,9 +4,7 @@
 import React, { useState, useEffect } from "react";
 
 import ItemList from "../../Components/Ticktes/ItemList.jsx";
-import SearchBar, {
-  SearchBarContainer,
-} from "../../Components/Main/SearchBar.jsx";
+import SearchBar from "../../Components/Main/SearchBar.jsx";
 import PageNation from "../../Components/Board/BoardList/PageNation.jsx";
 
 import breakpoint from "../../styles/breakpoint";
@@ -21,6 +19,7 @@ import Spinner from "../../Components/Spinner.jsx";
 import DetailSearch from "../../Components/Ticktes/DetailSearch.jsx";
 
 import { useAnimation } from "../../utils/useAnimation.js";
+import { useTicketSearchStore } from "../../store/useTicketSearchStore.js";
 
 const Container = styled.div`
   align-items: center;
@@ -106,7 +105,7 @@ const SearchBarOuterContainer = styled.div`
   margin-bottom: 50px;
 
   .filter_icon {
-    border: 1px solid ${sub.sub300};
+    border: 2px solid ${sub.sub300};
     padding: 5px;
     border-radius: 20px;
     display: flex;
@@ -116,6 +115,15 @@ const SearchBarOuterContainer = styled.div`
     height: 30px;
     margin-top: 5px;
     margin-left: 5px;
+
+    :hover {
+      cursor: pointer;
+      border-color: ${primary.primary200};
+
+      path {
+        fill: ${primary.primary200};
+      }
+    }
 
     svg {
       width: 15px;
@@ -159,6 +167,23 @@ const PaginationExtended = styled(PageNation)`
   }
 `;
 
+/**
+ *
+ * 검색로직
+ * Tickets Page에서 현재 url params에서 params를 가져와 실질적인 Data Fetching을 실행함
+ * 현재 url에 적용 되어있는 params를 뽑아 useTicketSearchStore의 searchParams에 할당해주어야 params state를 기억 가능
+ *
+ * 검색에 필요한 search parameters 는 하위 컴포넌트 들에서 할당 되고,
+ * SearchBar 컴포넌트에서 검색 버튼을 누르거나, DetailSearch 컴포넌트에서 필터 적용 버튼을 누를 시 현재 적용된 검색 parameters들을 담은 url로 이동함(새로운 페이지 이동)
+ *
+ *  Parameters)
+ *  SearchBar => search, filter
+ *  DateSelect => start, end
+ *  LocationSelect => location
+ *  CategorySelect => category
+ *
+ */
+
 export default function Tickets() {
   const [searchParams] = useSearchParams();
   const queryParams = [...searchParams.entries()];
@@ -169,6 +194,19 @@ export default function Tickets() {
   const [detailSearchOpen, setDetailSearchOpen] = useState(false);
   const [shouldRender, trigger, handleTransition] =
     useAnimation(detailSearchOpen);
+
+  const { setAllParams } = useTicketSearchStore((state) => state);
+
+  useEffect(() => {
+    const params = {};
+    queryParams.forEach((queryArr) => {
+      if (queryArr[0] !== "page") {
+        params[queryArr[0]] = queryArr[1];
+      }
+    });
+    // console.log("params..", params);
+    setAllParams(params);
+  }, []);
 
   // url 에서 params를 빼와 공연데이터를 fetch
   const fetchShowData = () => {
@@ -189,11 +227,10 @@ export default function Tickets() {
     setPageInfo(data.pageInfo);
   };
 
-  const { isLoading, refetch } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["fetchShowData"],
     queryFn: fetchShowData,
     onSuccess: fetchShowDataOnSuccess,
-    retry: false,
     refetchOnWindowFocus: false,
   });
 
@@ -203,21 +240,6 @@ export default function Tickets() {
     const body = document.querySelector("body");
     body.classList.add("modal_open");
   };
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   let newSearchURI = location.pathname + "?";
-  //   queryParams.forEach((paramArr) => {
-  //     const queryKey = paramArr[0];
-  //     const queryVal = paramArr[1];
-
-  //     if (queryKey !== "page") {
-  //       newSearchURI += queryKey + "=" + queryVal + "&";
-  //     }
-  //   });
-  //   setSearchURI(newSearchURI);
-  //   refetch();
-  // }, [searchParams]);
 
   return (
     <Container>
@@ -250,11 +272,7 @@ export default function Tickets() {
           </SearchBarTickets>
         </SearchBarOuterContainer>
         {isLoading ? (
-          <SpinnerExtended
-            searchURI={searchURI}
-            setSearchURI={setSearchURI}
-            refetch={refetch}
-          />
+          <SpinnerExtended />
         ) : (
           <ItemListContainer>
             <ItemList data={data} />

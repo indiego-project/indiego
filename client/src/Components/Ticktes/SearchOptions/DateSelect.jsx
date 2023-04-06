@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import styled from "styled-components";
 
@@ -7,6 +7,8 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 
 import { DateRange } from "react-date-range";
 import { ko } from "date-fns/locale";
+
+import { useTicketSearchStore } from "../../../store/useTicketSearchStore";
 
 const DatePickerContainer = styled.div`
   width: 100%;
@@ -19,24 +21,23 @@ const DatePickerContainer = styled.div`
 `;
 
 export default function DateSelect() {
-  const defaultRange = [
-    {
-      startDate: new Date(),
-      endDate: null,
-      key: "selection",
-    },
-  ];
+  const { setDate, getDateRange } = useTicketSearchStore((state) => state);
 
-  const [selectionRange, setSelectionRange] = useState(defaultRange);
+  const rangePickerHandler = (rangeInput) => {
+    const [range] = rangeInput;
+    setDate(range);
+  };
 
   return (
     <DatePickerContainer>
       <DateRange
         editableDateInputs={true}
-        onChange={(item) => setSelectionRange([item.selection])}
+        onChange={(item) => rangePickerHandler([item.selection])}
         moveRangeOnFirstSelection={false}
-        ranges={selectionRange}
+        ranges={getDateRange()}
         locale={ko}
+        startDatePlaceholder="시작 날짜"
+        endDatePlaceholder="종료 날짜"
       />
     </DatePickerContainer>
   );

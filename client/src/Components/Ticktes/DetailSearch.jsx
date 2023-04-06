@@ -1,9 +1,13 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { dtFontSize, primary, sub } from "../../styles/mixins";
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import DateSelect from "./SearchOptions/DateSelect";
 import LocationSelect from "./SearchOptions/LocationSelect";
 import CategorySelect from "./SearchOptions/CategorySelect";
+
+import { useTicketSearchStore } from "../../store/useTicketSearchStore";
 
 const Overlay = styled.div`
   display: flex;
@@ -164,10 +168,30 @@ export default function DetailSearch({
   trigger,
   handleTransition,
 }) {
+  const { resetSearchParams, getSearchUrl, setAllParams } =
+    useTicketSearchStore((state) => state);
+
+  const paramsCopy = useRef(
+    JSON.parse(
+      JSON.stringify(useTicketSearchStore((state) => state.searchParams))
+    )
+  );
+
   const closeButtonHandler = () => {
     const body = document.querySelector("body");
     body.classList.remove("modal_open");
+    setAllParams(paramsCopy.current);
     closeModal(false);
+  };
+  const removeFilterHandler = () => {
+    const body = document.querySelector("body");
+    body.classList.remove("modal_open");
+    resetSearchParams();
+    closeModal(false);
+  };
+
+  const filterApplyHandler = () => {
+    window.location.replace(getSearchUrl());
   };
 
   return (
@@ -185,7 +209,7 @@ export default function DetailSearch({
               <p className="date header">공연 날짜 선택</p>
               <div className="date contents">
                 <p className="date description">
-                  공연 시작 날짜는 종료 날짜를 앞설 수 없습니다.
+                  공연 시작 날짜와 종료 날짜를 선택해주세요.
                 </p>
                 <DateSelect />
               </div>
@@ -213,8 +237,8 @@ export default function DetailSearch({
             </div>
           </div>
           <div className="panel footer">
-            <p>필터 해제</p>
-            <button onClick={closeButtonHandler}>전체 적용</button>
+            <p onClick={removeFilterHandler}>필터 해제</p>
+            <button onClick={filterApplyHandler}>전체 적용</button>
           </div>
         </SearchPanelContainer>
       </OuterContainer>

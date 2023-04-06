@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 
 import styled from "styled-components";
 import { dtFontSize } from "../../../styles/mixins";
 import SeoulMap from "../../Main/Popups/SeoulMap";
+
+import { useTicketSearchStore } from "../../../store/useTicketSearchStore";
 
 const LocationPickerContainer = styled.div`
   width: 100%;
@@ -39,10 +41,18 @@ const SeoulMapStyled = styled(SeoulMap)`
 `;
 
 export default function LocationSelect() {
+  const { location } = useTicketSearchStore((state) => state.searchParams);
+  const { setLocation } = useTicketSearchStore((state) => state);
+
+  const locationClickHanlder = (e) => {
+    const address = JSON.parse(e.target.attributes.value.value).address;
+    setLocation(address);
+  };
+
   return (
     <LocationPickerContainer>
-      <p className="location">현재 지역: </p>
-      <SeoulMapStyled />
+      <p className="location">현재 지역: {location || "없음"}</p>
+      <SeoulMapStyled clickHandler={locationClickHanlder} />
     </LocationPickerContainer>
   );
 }
