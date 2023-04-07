@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 const CardItemContainer = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 280px;
   background-color: ${sub.sub200};
   border-radius: 20px;
   position: relative;
@@ -19,14 +18,29 @@ const CardItemContainer = styled.div`
   a {
     text-decoration: none !important;
     color: inherit;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      display: flex;
+      flex-direction: row;
+      padding: 30px 10px;
+      position: relative;
+    }
   }
 
   &:hover {
     background-color: ${primary.primary300};
     color: white;
     cursor: pointer;
-    transform: translateY(-20px);
     box-shadow: 0 5px 5px ${sub.sub400};
+  }
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    background-color: transparent;
+    border-radius: 0px;
+    border-bottom: 1px solid ${sub.sub200};
+    :hover {
+      border: none;
+    }
   }
 `;
 
@@ -36,9 +50,15 @@ const ImageContainer = styled.div`
   height: 50%;
   margin-bottom: 20px;
 
-  img {
+  @media screen and (max-width: ${breakpoint.mobile}) {
     width: 50%;
-    height: 100%;
+  }
+
+  img {
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      width: 100px;
+      height: 120px;
+    }
     box-shadow: 0 5px 5px ${sub.sub400};
   }
 `;
@@ -84,15 +104,15 @@ export default function CardItem({ data }) {
     <CardItemContainer>
       <Link to={`/tickets/${data.id}`}>
         <ImageContainer>
-          <img src={data.image} alt="poster" />
+          <img width="50%" height="100%" src={data.image} alt="poster" />
         </ImageContainer>
         <DetailContainer>
           <h4>{data.category}</h4>
           <h2>{data.title}</h2>
           <h3>{data.nickname}</h3>
           <h4 className="price">{`${data.price} ₩`}</h4>
-          <h4>{data.detailAddress}</h4>
           <h4>{`${data.showAt} - ${data.expiredAt}`}</h4>
+          <h4>{data.detailAddress}</h4>
         </DetailContainer>
       </Link>
     </CardItemContainer>

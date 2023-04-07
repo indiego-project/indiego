@@ -148,6 +148,10 @@ const ItemListContainer = styled.div`
   display: flex;
   margin-top: 50px;
   justify-content: center;
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    margin-top: 0px;
+  }
 `;
 
 const SpinnerExtended = styled(Spinner)`

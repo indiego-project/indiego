@@ -14,9 +14,7 @@ const ItemGrid = styled.div`
   position: relative;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 50px;
-    margin: 0 20px;
+    display: block;
   }
 
   @media screen and (max-width: 500px) {
