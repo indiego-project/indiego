@@ -49,8 +49,11 @@ public enum ExceptionCode {
 
     // AES
     ENCRYPTION_FAIED(404, "암호화에 실패하였습니다."),
-    DECRYPTION_FAIED(404, "복호화에 실패하였습니다.");
+    DECRYPTION_FAIED(404, "복호화에 실패하였습니다."),
 
+    //Certification
+    PERFORMER_ADD_FAILED(404, "퍼포머 인증에 실패했습니다."),
+    CERTIFICATION_REMOVE_FAILED(404, "퍼포퍼 인증 요청 삭제에 실패했습니다");
     @Getter
     private int status;
 
