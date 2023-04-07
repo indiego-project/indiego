@@ -60,6 +60,14 @@ const ContentContainer = styled.div`
     width: 100%;
     height: 100%;
   }
+
+  .null_info {
+    display: flex;
+    width: 100%;
+    height: 25vh;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const HeaderTitleContainer = styled.div`
@@ -282,12 +290,14 @@ export default function Tickets() {
             </div>
           </SearchBarTickets>
         </SearchBarOuterContainer>
-        {isLoading ? (
-          <SpinnerExtended />
-        ) : (
+        {data.length > 0 ? (
           <ItemListContainer>
             <ItemList data={data} />
           </ItemListContainer>
+        ) : (
+          <div className="null_info">
+            <p>공연이 존재하지 않습니다</p>
+          </div>
         )}
       </ContentContainer>
       {pageInfo.totalPages > 0 && (
