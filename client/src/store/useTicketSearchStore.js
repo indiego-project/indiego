@@ -88,7 +88,7 @@ export const useTicketSearchStore = create((set, get) => ({
           params.filter = "공연명";
         }
         if (!params.category) {
-          params.filter = "전체";
+          params.category = "전체";
         }
 
         Object.assign(state.searchParams, params);

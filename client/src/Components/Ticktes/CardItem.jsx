@@ -5,15 +5,16 @@ import { primary, dtFontSize, sub, misc } from "../../styles/mixins";
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import Spinner from "../Spinner";
 
 const CardItemContainer = styled.div`
   width: 100%;
-  height: 100%;
   background-color: ${sub.sub200};
   border-radius: 20px;
   position: relative;
   padding: 15px 10px;
   transition: all 0.1s ease-in-out;
+  min-height: 200px;
 
   a {
     text-decoration: none !important;
@@ -55,10 +56,6 @@ const ImageContainer = styled.div`
   }
 
   img {
-    @media screen and (max-width: ${breakpoint.mobile}) {
-      width: 100px;
-      height: 120px;
-    }
     box-shadow: 0 5px 5px ${sub.sub400};
   }
 `;
@@ -67,6 +64,7 @@ const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 120px;
 
   h2 {
     font-size: calc(10px + 0.3vw);
@@ -104,14 +102,18 @@ export default function CardItem({ data }) {
     <CardItemContainer>
       <Link to={`/tickets/${data.id}`}>
         <ImageContainer>
-          <img width="50%" height="100%" src={data.image} alt="poster" />
+          <img width="100px" height="120px" src={data.image} alt="poster" />
         </ImageContainer>
         <DetailContainer>
           <h4>{data.category}</h4>
           <h2>{data.title}</h2>
           <h3>{data.nickname}</h3>
-          <h4 className="price">{`${data.price} ₩`}</h4>
-          <h4>{`${data.showAt} - ${data.expiredAt}`}</h4>
+          <h4 className="price">{`${data.price ? data.price + "₩" : ""}`}</h4>
+          <h4>
+            {data.showAt && data.expiredAt
+              ? `${data.showAt} - ${data.expiredAt}`
+              : ""}
+          </h4>
           <h4>{data.detailAddress}</h4>
         </DetailContainer>
       </Link>

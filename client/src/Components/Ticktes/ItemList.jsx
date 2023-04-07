@@ -4,12 +4,14 @@ import styled from "styled-components";
 import CardItem from "./CardItem.jsx";
 
 import breakpoint from "../../styles/breakpoint.js";
+import Spinner from "../Spinner.jsx";
 
 const ItemGrid = styled.div`
   width: 90%;
-  height: 100%;
+  height: max-content;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-row: 1;
   grid-gap: 40px;
   position: relative;
 

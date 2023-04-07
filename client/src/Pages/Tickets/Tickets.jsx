@@ -20,6 +20,7 @@ import DetailSearch from "../../Components/Ticktes/DetailSearch.jsx";
 
 import { useAnimation } from "../../utils/useAnimation.js";
 import { useTicketSearchStore } from "../../store/useTicketSearchStore.js";
+import placeHolderArr from "./ticketDataPlaceholder.js";
 
 const Container = styled.div`
   align-items: center;
@@ -200,7 +201,7 @@ export default function Tickets() {
   const location = useLocation();
   const [searchURI, setSearchURI] = useState(location.pathname + "?");
   const [pageInfo, setPageInfo] = useState([]);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(placeHolderArr);
   const [detailSearchOpen, setDetailSearchOpen] = useState(false);
   const [shouldRender, trigger, handleTransition] =
     useAnimation(detailSearchOpen);
@@ -214,7 +215,6 @@ export default function Tickets() {
         params[queryArr[0]] = queryArr[1];
       }
     });
-    // console.log("params..", params);
     setAllParams(params);
   }, []);
 
@@ -242,6 +242,7 @@ export default function Tickets() {
     queryFn: fetchShowData,
     onSuccess: fetchShowDataOnSuccess,
     refetchOnWindowFocus: false,
+    placeholderData: placeHolderArr,
   });
 
   const detailSearchOpenHandler = () => {
