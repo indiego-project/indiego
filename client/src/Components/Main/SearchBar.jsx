@@ -101,10 +101,11 @@ const OptionsList = styled.div`
 const InputContainer = styled.div`
   display: flex;
   width: 34%;
-  height: 80%;
+  height: 82%;
   border-radius: 0 10px 10px 0;
   border: 2px solid ${primary.primary700};
   border-width: 2px 2px 2px 0;
+  min-width: 200px;
 
   svg {
     margin: 10px 10px 0 0;

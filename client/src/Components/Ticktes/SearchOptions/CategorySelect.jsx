@@ -1,6 +1,7 @@
 import { sub, primary } from "../../../styles/mixins";
 import React from "react";
 import styled from "styled-components";
+import breakpoint from "../../../styles/breakpoint";
 
 import { useTicketSearchStore } from "../../../store/useTicketSearchStore";
 
@@ -18,6 +19,11 @@ const CategoryPickerContainer = styled.div`
     justify-content: center;
     align-items: center;
     margin: 0 30px;
+    min-width: 30px;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      margin: 0 20px;
+    }
   }
 
   .default_input {

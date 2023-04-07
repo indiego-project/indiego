@@ -116,6 +116,12 @@ const SearchBarOuterContainer = styled.div`
     margin-top: 5px;
     margin-left: 5px;
 
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      width: 25px;
+      height: 25px;
+      margin-top: 8px;
+    }
+
     :hover {
       cursor: pointer;
       border-color: ${primary.primary200};

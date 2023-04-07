@@ -2,6 +2,7 @@ import React from "react";
 
 import styled from "styled-components";
 import { dtFontSize } from "../../../styles/mixins";
+import breakpoint from "../../../styles/breakpoint";
 import SeoulMap from "../../Main/Popups/SeoulMap";
 
 import { useTicketSearchStore } from "../../../store/useTicketSearchStore";
@@ -16,6 +17,7 @@ const LocationPickerContainer = styled.div`
   align-items: center;
   flex-direction: column;
   position: relative;
+  min-width: 300px;
 
   .location {
     position: absolute;
@@ -37,6 +39,10 @@ const SeoulMapStyled = styled(SeoulMap)`
 
   text:hover {
     transform: none;
+  }
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    width: 100%;
   }
 `;
 

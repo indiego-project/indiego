@@ -8,10 +8,13 @@ import LocationSelect from "./SearchOptions/LocationSelect";
 import CategorySelect from "./SearchOptions/CategorySelect";
 
 import { useTicketSearchStore } from "../../store/useTicketSearchStore";
+import breakpoint from "../../styles/breakpoint";
 
 const Overlay = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   z-index: 50;
   top: 0px;
   left: 0px;
@@ -31,6 +34,13 @@ const OuterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-width: 650px;
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    position: absolute;
+    top: 10px;
+    height: 85%;
+  }
 `;
 
 const SearchPanelContainer = styled.div`
@@ -66,6 +76,12 @@ const SearchPanelContainer = styled.div`
       background-color: transparent;
       margin-top: 20px;
       font-weight: 600;
+      font-size: ${dtFontSize.medium};
+
+      @media screen and (max-width: ${breakpoint.mobile}) {
+        top: -12px;
+        color: ${sub.sub400};
+      }
 
       :hover {
         cursor: pointer;
