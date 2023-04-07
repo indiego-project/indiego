@@ -22,9 +22,9 @@ const PopupContainer = styled.div`
   background-color: ${sub.sub100};
   border-radius: 20px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
   h1 {
     font-size: ${dtFontSize.xlarge};
@@ -36,6 +36,12 @@ const PopupContainer = styled.div`
       font-size: ${mbFontSize.large};
       margin-bottom: 10px;
     }
+  }
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    height: 550px;
+    position: absolute;
+    top: 40px;
   }
 `;
 
@@ -49,7 +55,8 @@ const CalendarContainer = styled.div`
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     width: 100%;
-    min-height: 300px;
+    height: 50%;
+    /* min-height: 300px; */
   }
 `;
 
@@ -72,7 +79,6 @@ const CloseButton = styled.button`
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     padding: 5px;
-    width: 10%;
     margin: 15px 10px;
   }
 `;
@@ -128,6 +134,8 @@ export default function DatePopup({ popupHandler }) {
   const [dateInfo, setDateInfo] = useState();
 
   const closePopupHandler = () => {
+    const body = document.querySelector("body");
+    body.classList.remove("modal_open");
     popupHandler(false);
   };
 

@@ -21,14 +21,15 @@ import Spinner from "../../Spinner";
 
 const Container = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   height: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    height: 300px;
+    width: 80%;
+    height: 100%;
   }
 `;
 
@@ -131,7 +132,7 @@ const CalendarGrid = styled.div`
 const DateGrid = styled.div`
   width: 100%;
   min-width: 300px;
-  height: 75%;
+  height: 100%;
   padding-top: 10px;
   display: grid;
   grid-template-columns: repeat(7, 14.285%);
@@ -141,7 +142,9 @@ const DateGrid = styled.div`
   border-width: 0 1.5px 1.5px 1.5px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    max-width: 350px;
+    min-width: 0;
+    height: 80%;
+    grid-template-rows: repeat(6);
   }
 
   .date_container {
@@ -152,15 +155,21 @@ const DateGrid = styled.div`
     align-items: center;
     position: relative;
 
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      width: 100%;
+      height: 100%;
+    }
+
     .dot {
       position: absolute;
       top: 30px;
       font-size: 20px;
       font-weight: 800;
       color: ${misc.orange};
+      pointer-events: none;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
-        top: 10px;
+        top: 2px;
       }
     }
   }
@@ -174,7 +183,9 @@ const DateGrid = styled.div`
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.xsmall};
-      padding-top: 7px;
+      padding-top: 3px;
+      width: 20px;
+      height: 20px;
 
       :hover ~ .dot {
         color: white;
