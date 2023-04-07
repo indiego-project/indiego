@@ -22,8 +22,8 @@ import Spinner from "../Spinner";
 
 const Container = styled.div`
   width: 100%;
-  max-width: 500px;
-  height: 80%;
+  max-width: 300px;
+  height: max-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,8 +39,6 @@ const DateController = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${sub.sub300};
-  border-width: 0 0 1px 0;
 
   p {
     color: white;
@@ -80,12 +78,14 @@ const CalendarFlex = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  border: 2px solid ${primary.primary200};
+  border-radius: 20px;
 `;
 
 const CalendarGrid = styled.div`
   display: grid;
   width: 100%;
-  min-width: 300px;
+  min-width: 250px;
   height: 25%;
   grid-template-columns: repeat(7, 14.265%);
   grid-template-rows: 1fr 0.2fr;
@@ -101,10 +101,7 @@ const CalendarGrid = styled.div`
     grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 1;
-
     background-color: ${primary.primary200};
-    border: 2px solid white;
-    border-width: 0 0 1px 0;
     border-radius: 18px 18px 0 0;
   }
 
@@ -112,20 +109,12 @@ const CalendarGrid = styled.div`
     text-align: center;
     font-weight: 600;
     padding: 10px 0;
-    color: white;
-    background-color: ${primary.primary300};
-    border: 1px solid white;
-    border-width: 0 1px 0 0;
+    color: ${primary.primary300};
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       padding: 5px;
       font-size: ${mbFontSize.xsmall};
     }
-  }
-
-  .days.last {
-    border: 1px solid ${primary.primary300};
-    border-width: 0 1px 0 0;
   }
 `;
 
@@ -133,13 +122,9 @@ const DateGrid = styled.div`
   width: 100%;
   min-width: 300px;
   height: 75%;
-  padding-top: 10px;
   display: grid;
   grid-template-columns: repeat(7, 14.285%);
   grid-template-rows: repeat(6, 1fr);
-  border: 2px solid ${primary.primary100};
-  border-radius: 0 0 20px 20px;
-  border-width: 0 1.5px 1.5px 1.5px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     max-width: 350px;
@@ -265,8 +250,14 @@ export default function Calendar({ setReservationDate }) {
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
-  const [selectedDay, setSelectedDay] = useState(now.date());
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+  const [selectedDay, setSelectedDay] = useState("");
+
+  useEffect(() => {
+    now.format("YYYY-MM-DD") < ticketData.showAt
+      ? setSelectedDay(Number(ticketData.showAt.slice(8, 10)))
+      : setSelectedDay(new Date().getDate());
+  }, [ticketData]);
 
   // 이전 날짜를 계산해서 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
@@ -332,9 +323,7 @@ export default function Calendar({ setReservationDate }) {
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
-    console.log(selected.format("YYYY-MM-DD") === "2023-04-03");
-    console.log("2023-04-03");
-  }, [selectedMonth, selectedYear, ticketData]);
+  }, [selectedMonth, selectedYear, selectedDay, ticketData]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
