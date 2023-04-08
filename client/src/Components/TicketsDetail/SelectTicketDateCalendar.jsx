@@ -137,18 +137,6 @@ const DateGrid = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
-
-    .dot {
-      position: absolute;
-      top: 30px;
-      font-size: 20px;
-      font-weight: 800;
-      color: ${misc.orange};
-
-      @media screen and (max-width: ${breakpoint.mobile}) {
-        top: 10px;
-      }
-    }
   }
 
   .date {
@@ -163,14 +151,6 @@ const DateGrid = styled.div`
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.xsmall};
       padding-top: 7px;
-
-      :hover ~ .dot {
-        color: white;
-      }
-
-      :focus-within ~ .dot {
-        color: white;
-      }
     }
   }
 
@@ -178,45 +158,32 @@ const DateGrid = styled.div`
     color: ${sub.sub300};
     pointer-events: none;
 
-    :hover {
-      color: white;
+    &.hasShow {
+      color: ${sub.sub300};
+      pointer-events: none;
+
+      &.weekend {
+        color: ${sub.sub300};
+        pointer-events: none;
+      }
     }
-  }
-
-  .date.selected.weekend {
-    color: ${sub.sub300};
-  }
-
-  .date.selected.weekend.hasShow {
-    color: white;
-  }
-
-  .date.weekend {
-    color: ${sub.sub300};
-    pointer-events: none;
-  }
-
-  .date.hasShow.weekend {
-    color: ${misc.red};
-
-    :hover {
-      color: white;
-    }
-
-    :focus-within {
-      color: white;
-    }
-  }
-
-  .date.previous.hasShow.weekend {
-    color: ${sub.sub300};
-    pointer-events: none;
   }
 
   .date.hasShow {
     color: ${sub.sub500};
     cursor: pointer;
     pointer-events: stroke;
+
+    &.weekend {
+      color: ${misc.red};
+      &.selected {
+        color: white;
+      }
+    }
+
+    &.selected {
+      color: white;
+    }
 
     :hover {
       background-color: ${primary.primary300};
@@ -253,10 +220,10 @@ export default function Calendar({ setReservationDate }) {
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
   const [selectedDay, setSelectedDay] = useState("");
 
-  // 이전 날짜를 계산해서 추가해주는 함수
+  // 이전 달의 날짜의 갯수를 계산하여 공백을 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
-    const yearAndDate = `${dateObj.year()}-${dateObj.month() + 1}-`;
-    const DOWofFirstDay = dayjs(yearAndDate + "01").$W;
+    const yearAndMonth = `${dateObj.year()}-${dateObj.month() + 1}-`;
+    const DOWofFirstDay = dayjs(yearAndMonth + "01").$W;
     if (DOWofFirstDay === 0) {
       return daysArr;
     } else {
@@ -313,6 +280,7 @@ export default function Calendar({ setReservationDate }) {
     setDaysArr(newDaysArr);
   }, [selectedMonth, selectedYear, ticketData]);
 
+  //보고 있는 달에 공연이 있는지, 오늘과 공연 시작 날짜 중 어느 것이 우선인지, 보고 있는 달이 이번 달인지의 여부에 따라 selectedDay를 조작하는 함수
   useEffect(() => {
     let filteredArr = daysArr.filter((day) => day.hasShow === false);
     if (filteredArr.length >= 29) {
@@ -322,15 +290,34 @@ export default function Calendar({ setReservationDate }) {
       now.format("YYYY-MM-DD") < ticketData.showAt
     ) {
       setSelectedDay(Number(ticketData.showAt.slice(8, 10)));
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${
+          Number(ticketData.showAt.slice(8, 10)) <= 9
+            ? "0" + Number(ticketData.showAt.slice(8, 10))
+            : Number(ticketData.showAt.slice(8, 10))
+        }`
+      );
     } else if (
       filteredArr.length < 29 &&
       now.format("YYYY-MM-DD") > ticketData.showAt &&
       selectedMonth - 1 === now.month()
     ) {
       setSelectedDay(now.date());
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${now.date() <= 9 ? "0" + now.date() : now.date()}`
+      );
     }
     if (filteredArr.length < 29 && selectedMonth - 1 !== now.month()) {
       setSelectedDay(1);
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-01`
+      );
     }
   }, [daysArr]);
 
