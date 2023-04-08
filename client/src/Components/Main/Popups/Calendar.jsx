@@ -365,7 +365,7 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
       });
       refetchHasShowArr();
     }
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
