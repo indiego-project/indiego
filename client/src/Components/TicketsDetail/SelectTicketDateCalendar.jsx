@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 import {
   dtFontSize,
@@ -253,12 +253,6 @@ export default function Calendar({ setReservationDate }) {
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
   const [selectedDay, setSelectedDay] = useState("");
 
-  useEffect(() => {
-    now.format("YYYY-MM-DD") < ticketData.showAt
-      ? setSelectedDay(Number(ticketData.showAt.slice(8, 10)))
-      : setSelectedDay(new Date().getDate());
-  }, [ticketData]);
-
   // 이전 날짜를 계산해서 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
     const yearAndDate = `${dateObj.year()}-${dateObj.month() + 1}-`;
@@ -266,19 +260,7 @@ export default function Calendar({ setReservationDate }) {
     if (DOWofFirstDay === 0) {
       return daysArr;
     } else {
-      const lastMonthDays = dayjs(
-        `${dateObj.year()}${dateObj.month() - 1}${dateObj.date()}`
-      ).daysInMonth();
-
       let lastMonthDaysArr = new Array(DOWofFirstDay).fill(0);
-      lastMonthDaysArr.reduce((acc, cur, index, arr) => {
-        arr[index] = acc;
-        return acc - 1;
-      }, lastMonthDays);
-      lastMonthDaysArr.reverse();
-      lastMonthDaysArr = lastMonthDaysArr.map((day) => {
-        return { day, previous: true };
-      });
       daysArr = lastMonthDaysArr.concat(daysArr);
       return daysArr;
     }
@@ -288,10 +270,14 @@ export default function Calendar({ setReservationDate }) {
   useEffect(() => {
     const selected = dayjs()
       .set("year", selectedYear)
-      .set("month", selectedMonth - 1)
-      .set("date", selectedDay);
+      .set("month", selectedMonth - 1);
     setReservationDate(now.format("YYYY-MM-DD"));
-    let newDaysArr = new Array(selected.daysInMonth()).fill(1);
+    let newDaysArr = new Array(
+      dayjs()
+        .set("year", selectedYear)
+        .set("month", selectedMonth - 1)
+        .daysInMonth()
+    ).fill(1);
     newDaysArr.reduce((acc, current, index, arr) => {
       arr[index] = acc + 1;
       return acc + current;
@@ -313,17 +299,40 @@ export default function Calendar({ setReservationDate }) {
       } else {
         day.hasShow = false;
       }
-      const whatDay = selected.date(day.day).$W;
-      if (whatDay === 0 || whatDay === 6) {
+      if (
+        new Date(day.dateInfo).getDay() === 0 ||
+        new Date(day.dateInfo).getDay() === 6
+      ) {
         day.weekend = true;
       }
-      if (selected.format("YYYY-MM-DD") > day.dateInfo) {
+      if (now.format("YYYY-MM-DD") > day.dateInfo) {
         day.previous = true;
       }
     });
     newDaysArr = addPreviousMonthDays(selected, newDaysArr);
     setDaysArr(newDaysArr);
-  }, [selectedMonth, selectedYear, selectedDay, ticketData]);
+  }, [selectedMonth, selectedYear, ticketData]);
+
+  useEffect(() => {
+    let filteredArr = daysArr.filter((day) => day.hasShow === false);
+    if (filteredArr.length >= 29) {
+      setSelectedDay("");
+    } else if (
+      filteredArr.length < 29 &&
+      now.format("YYYY-MM-DD") < ticketData.showAt
+    ) {
+      setSelectedDay(Number(ticketData.showAt.slice(8, 10)));
+    } else if (
+      filteredArr.length < 29 &&
+      now.format("YYYY-MM-DD") > ticketData.showAt &&
+      selectedMonth - 1 === now.month()
+    ) {
+      setSelectedDay(now.date());
+    }
+    if (filteredArr.length < 29 && selectedMonth - 1 !== now.month()) {
+      setSelectedDay(1);
+    }
+  }, [daysArr]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
