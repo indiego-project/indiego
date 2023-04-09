@@ -82,7 +82,7 @@ public class JwtAuthenticationFilterTest {
         LoginDto loginDto = new LoginDto("email@example.com", "password", "USER");
         Member member = new Member(1L, "email@example.com", "password", new Profile(), "ROLE_USER", new Coordinate());
         List<String> roles = new ArrayList<>();
-        roles.add("ROLE_USER");
+        roles.add("USER");
         member.setRoles(roles);
         // when
         when(memberRepository.findByEmail(loginDto.getEmail())).thenReturn(Optional.ofNullable(member));
@@ -98,7 +98,7 @@ public class JwtAuthenticationFilterTest {
         LoginDto loginDto = new LoginDto("email@example.com", "password", "PERFORMER");
         Member member = new Member(1L, "email@example.com", "password", new Profile(), Roles.USER.getRole(), new Coordinate());
         List<String> roles = new ArrayList<>();
-        roles.add("ROLE_USER");
+        roles.add("USER");
         member.setRoles(roles);
 //        member.setRoles(Roles.USER.getR);
 //        List<String> roles = new ArrayList<>();
