@@ -16,6 +16,7 @@ import codestates.frogroup.indiego.global.redis.RedisDao;
 import codestates.frogroup.indiego.global.security.auth.dto.LoginDto;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -78,17 +79,17 @@ public class JwtAuthenticationFilterTest {
     public void givenCorrectRole_whenCheckRole_thenSuccess() {
         // given
         LoginDto loginDto = new LoginDto("email@example.com", "password", "USER");
-        Member member = new Member(1l, "email@example.com", "password", new Profile(), "ROLE_USER", new Coordinate());
+        Member member = new Member(1L, "email@example.com", "password", new Profile(), "ROLE_USER", new Coordinate());
         List<String> roles = new ArrayList<>();
         roles.add("ROLE_USER");
         member.setRoles(roles);
+        // when
+        when(memberRepository.findByEmail(loginDto.getEmail())).thenReturn(Optional.ofNullable(member));
 
-        when(memberService.findVerifiedMember(loginDto.getEmail())).thenReturn(member);
-
-        // when, then
-        assertThatCode(() -> memberService.checkRole(loginDto))
-                .doesNotThrowAnyException();
+        // then
+        assertDoesNotThrow(() -> memberService.checkRole(loginDto));
     }
+
 
 
     @Test
