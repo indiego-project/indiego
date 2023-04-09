@@ -47,7 +47,6 @@ public class CertificationServiceImpl implements CertificationService{
     public CertificationDto.Response findCertification(Long certificationId) {
         Certification certification = findVerifiedCertification(certificationId);
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
-        response.setMessage("인증이 수락됐습니다.");
         return response;
     }
 
