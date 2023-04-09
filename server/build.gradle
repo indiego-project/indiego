@@ -36,8 +36,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+	// file upload
 	implementation 'commons-io:commons-io:2.11.0'
+
+	// gson
 	implementation 'com.google.code.gson:gson'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
