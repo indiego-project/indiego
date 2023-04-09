@@ -247,12 +247,19 @@ public class MemberService {
     public void checkRole( LoginDto loginDto){
         //findVerifiedMember(loginDto.getEmail());
         Member member = findVerifiedMember(loginDto.getEmail());
-        if(member.getRoles().contains("NON_CERTIFIED_PERFORMER") || member.getRoles().contains("PERFORMER")){
-            if(!loginDto.getRole().equals("PERFORMER") ){
+        List<String> roles = member.getRoles();
+
+        if (roles.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        if(loginDto.getRole().equals("PERFORMER") ){
+            if(!member.getRoles().contains("NON_CERTIFIED_PERFORMER") && !member.getRoles().contains("PERFORMER")) {
                 throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
             }
         }
-        if(loginDto.getRole() != "USER" && member.getRoles().get(0) == "USER"){
+
+        if(loginDto.getRole().equals("USER") && !member.getRoles().get(0).equals("USER")){
             throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
         }
 
