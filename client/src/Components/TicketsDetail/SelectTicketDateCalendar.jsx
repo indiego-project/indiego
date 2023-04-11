@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 import {
   dtFontSize,
@@ -10,19 +10,20 @@ import {
   misc,
   mbFontSize,
   secondary,
-} from "../../../styles/mixins";
-import breakpoint from "../../../styles/breakpoint";
+} from "../../styles/mixins";
+import breakpoint from "../../styles/breakpoint";
+import useTicketDataStore from "../../store/useTicketDataStore";
 
 import styled from "styled-components";
 import dayjs from "dayjs";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "../../Spinner";
+import Spinner from "../Spinner";
 
 const Container = styled.div`
   width: 100%;
-  max-width: 500px;
-  height: 80%;
+  max-width: 300px;
+  height: max-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,8 +39,6 @@ const DateController = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${sub.sub300};
-  border-width: 0 0 1px 0;
 
   p {
     color: white;
@@ -79,12 +78,14 @@ const CalendarFlex = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  border: 2px solid ${primary.primary200};
+  border-radius: 20px;
 `;
 
 const CalendarGrid = styled.div`
   display: grid;
   width: 100%;
-  min-width: 300px;
+  min-width: 250px;
   height: 25%;
   grid-template-columns: repeat(7, 14.265%);
   grid-template-rows: 1fr 0.2fr;
@@ -100,10 +101,7 @@ const CalendarGrid = styled.div`
     grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 1;
-
     background-color: ${primary.primary200};
-    border: 2px solid white;
-    border-width: 0 0 1px 0;
     border-radius: 18px 18px 0 0;
   }
 
@@ -111,20 +109,12 @@ const CalendarGrid = styled.div`
     text-align: center;
     font-weight: 600;
     padding: 10px 0;
-    color: white;
-    background-color: ${primary.primary300};
-    border: 1px solid white;
-    border-width: 0 1px 0 0;
+    color: ${primary.primary300};
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       padding: 5px;
       font-size: ${mbFontSize.xsmall};
     }
-  }
-
-  .days.last {
-    border: 1px solid ${primary.primary300};
-    border-width: 0 1px 0 0;
   }
 `;
 
@@ -132,13 +122,9 @@ const DateGrid = styled.div`
   width: 100%;
   min-width: 300px;
   height: 75%;
-  padding-top: 10px;
   display: grid;
   grid-template-columns: repeat(7, 14.285%);
   grid-template-rows: repeat(6, 1fr);
-  border: 2px solid ${primary.primary100};
-  border-radius: 0 0 20px 20px;
-  border-width: 0 1.5px 1.5px 1.5px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     max-width: 350px;
@@ -151,18 +137,6 @@ const DateGrid = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
-
-    .dot {
-      position: absolute;
-      top: 30px;
-      font-size: 20px;
-      font-weight: 800;
-      color: ${misc.orange};
-
-      @media screen and (max-width: ${breakpoint.mobile}) {
-        top: 10px;
-      }
-    }
   }
 
   .date {
@@ -171,18 +145,44 @@ const DateGrid = styled.div`
     height: 30px;
     padding: 5px;
     font-size: ${dtFontSize.small};
+    color: ${sub.sub300};
+    pointer-events: none;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.xsmall};
       padding-top: 7px;
+    }
+  }
 
-      :hover ~ .dot {
+  .date.previous {
+    color: ${sub.sub300};
+    pointer-events: none;
+
+    &.hasShow {
+      color: ${sub.sub300};
+      pointer-events: none;
+
+      &.weekend {
+        color: ${sub.sub300};
+        pointer-events: none;
+      }
+    }
+  }
+
+  .date.hasShow {
+    color: ${sub.sub500};
+    cursor: pointer;
+    pointer-events: stroke;
+
+    &.weekend {
+      color: ${misc.red};
+      &.selected {
         color: white;
       }
+    }
 
-      :focus-within ~ .dot {
-        color: white;
-      }
+    &.selected {
+      color: white;
     }
 
     :hover {
@@ -199,31 +199,6 @@ const DateGrid = styled.div`
     }
   }
 
-  .date.previous {
-    color: ${sub.sub300};
-    pointer-events: none;
-
-    :hover {
-      color: white;
-    }
-  }
-
-  .date.selected.weekend {
-    color: white;
-  }
-
-  .date.weekend {
-    color: ${misc.red};
-
-    :hover {
-      color: white;
-    }
-
-    :focus-within {
-      color: white;
-    }
-  }
-
   p.selected {
     background-color: ${primary.primary300};
     color: white;
@@ -237,54 +212,22 @@ const SpinnerExtended = styled(Spinner)`
   top: 40%;
 `;
 
-export default function Calendar({ setSelectedDate, setDateInfo }) {
+export default function Calendar({ setReservationDate }) {
   const now = dayjs();
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
-  const [selectedDay, setSelectedDay] = useState(now.date());
-  const [hasShow, setHasShow] = useState();
+  const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+  const [selectedDay, setSelectedDay] = useState("");
 
-  const serverURI = process.env.REACT_APP_SERVER_URI;
-
-  const fetchHasShowArr = () => {
-    return axios.get(`${serverURI}/shows/marker`, {
-      params: { year: selectedYear, month: selectedMonth, day: selectedDay },
-    });
-  };
-
-  const fetchHasShowArrOnSuccess = (response) => {
-    let data = response.data.data;
-    setHasShow(data);
-  };
-
-  const { refetch: refetchHasShowArr } = useQuery({
-    queryKey: ["fetchHasShowArr", selectedYear, selectedMonth],
-    queryFn: fetchHasShowArr,
-    onSuccess: fetchHasShowArrOnSuccess,
-    enabled: !!selectedMonth,
-  });
-
-  // 이전 날짜를 계산해서 추가해주는 함수
+  // 이전 달의 날짜의 갯수를 계산하여 공백을 추가해주는 함수
   const addPreviousMonthDays = (dateObj, daysArr) => {
-    const yearAndDate = `${dateObj.year()}-${dateObj.month() + 1}-`;
-    const DOWofFirstDay = dayjs(yearAndDate + "01").$W;
+    const yearAndMonth = `${dateObj.year()}-${dateObj.month() + 1}-`;
+    const DOWofFirstDay = dayjs(yearAndMonth + "01").$W;
     if (DOWofFirstDay === 0) {
       return daysArr;
     } else {
-      const lastMonthDays = dayjs(
-        `${dateObj.year()}${dateObj.month() - 1}${dateObj.date()}`
-      ).daysInMonth();
-
       let lastMonthDaysArr = new Array(DOWofFirstDay).fill(0);
-      lastMonthDaysArr.reduce((acc, cur, index, arr) => {
-        arr[index] = acc;
-        return acc - 1;
-      }, lastMonthDays);
-      lastMonthDaysArr.reverse();
-      lastMonthDaysArr = lastMonthDaysArr.map((day) => {
-        return { day, previous: true };
-      });
       daysArr = lastMonthDaysArr.concat(daysArr);
       return daysArr;
     }
@@ -294,77 +237,98 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
   useEffect(() => {
     const selected = dayjs()
       .set("year", selectedYear)
-      .set("month", selectedMonth - 1)
-      .set("date", selectedDay);
-    if (!hasShow) {
-      setSelectedDate(now.format("YYYY년 MM월 DD일"));
-      setDateInfo({
-        year: selected.year(),
-        month: selected.month() + 1,
-        day: selected.date(),
-      });
-    } else {
-      let newDaysArr = new Array(selected.daysInMonth()).fill(1);
-      newDaysArr.reduce((acc, current, index, arr) => {
-        arr[index] = acc + 1;
-        return acc + current;
-      });
-      newDaysArr = newDaysArr.map((day) => {
-        if (hasShow.indexOf(day) !== -1) {
-          return { day, hasShow: true };
-        } else {
-          return { day, hasShow: false };
-        }
-      });
-      newDaysArr.forEach((day) => {
-        const whatDay = selected.date(day.day).$W;
-        if (whatDay === 0 || whatDay === 6) {
-          day.weekend = true;
-        }
-      });
-      newDaysArr = addPreviousMonthDays(selected, newDaysArr);
-      setDaysArr(newDaysArr);
-    }
-  }, [hasShow]);
+      .set("month", selectedMonth - 1);
+    setReservationDate(now.format("YYYY-MM-DD"));
+    let newDaysArr = new Array(
+      dayjs()
+        .set("year", selectedYear)
+        .set("month", selectedMonth - 1)
+        .daysInMonth()
+    ).fill(1);
+    newDaysArr.reduce((acc, current, index, arr) => {
+      arr[index] = acc + 1;
+      return acc + current;
+    });
+    newDaysArr = newDaysArr.map((day) => {
+      return {
+        day,
+        dateInfo: `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${day <= 9 ? "0" + day : day}`,
+      };
+    });
+    newDaysArr.forEach((day) => {
+      if (
+        new Date(day.dateInfo) >= new Date(ticketData.showAt) &&
+        new Date(day.dateInfo) <= new Date(ticketData.expiredAt)
+      ) {
+        day.hasShow = true;
+      } else {
+        day.hasShow = false;
+      }
+      if (
+        new Date(day.dateInfo).getDay() === 0 ||
+        new Date(day.dateInfo).getDay() === 6
+      ) {
+        day.weekend = true;
+      }
+      if (now.format("YYYY-MM-DD") > day.dateInfo) {
+        day.previous = true;
+      }
+    });
+    newDaysArr = addPreviousMonthDays(selected, newDaysArr);
+    setDaysArr(newDaysArr);
+  }, [selectedMonth, selectedYear, ticketData]);
 
-  // 월과 년도가 변경되면 hasShow를 다시 불러오며, 관련 상태를 업데이트 해주는 함수
+  //보고 있는 달에 공연이 있는지, 오늘과 공연 시작 날짜 중 어느 것이 우선인지, 보고 있는 달이 이번 달인지의 여부에 따라 selectedDay를 조작하는 함수
   useEffect(() => {
-    const currentMonthDays = dayjs()
-      .set("year", selectedYear)
-      .set("month", selectedMonth - 1)
-      .daysInMonth();
-
-    if (selectedDay > currentMonthDays) {
-      setSelectedDay(currentMonthDays);
-      setSelectedDate(
-        `${selectedYear}년 ${selectedMonth}월 ${currentMonthDays}일`
+    let filteredArr = daysArr.filter((day) => day.hasShow === false);
+    if (filteredArr.length >= 29) {
+      setSelectedDay("");
+    } else if (
+      filteredArr.length < 29 &&
+      now.format("YYYY-MM-DD") < ticketData.showAt
+    ) {
+      setSelectedDay(Number(ticketData.showAt.slice(8, 10)));
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${
+          Number(ticketData.showAt.slice(8, 10)) <= 9
+            ? "0" + Number(ticketData.showAt.slice(8, 10))
+            : Number(ticketData.showAt.slice(8, 10))
+        }`
       );
-      setDateInfo({
-        year: selectedYear,
-        month: selectedMonth,
-        day: currentMonthDays,
-      });
-      refetchHasShowArr();
-    } else {
-      setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selectedDay}일`);
-      setDateInfo({
-        year: selectedYear,
-        month: selectedMonth,
-        day: selectedDay,
-      });
-      refetchHasShowArr();
+    } else if (
+      filteredArr.length < 29 &&
+      now.format("YYYY-MM-DD") > ticketData.showAt &&
+      selectedMonth - 1 === now.month()
+    ) {
+      setSelectedDay(now.date());
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-${now.date() <= 9 ? "0" + now.date() : now.date()}`
+      );
     }
-  }, [selectedMonth, selectedYear]);
+    if (filteredArr.length < 29 && selectedMonth - 1 !== now.month()) {
+      setSelectedDay(1);
+      setReservationDate(
+        `${selectedYear}-${
+          selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+        }-01`
+      );
+    }
+  }, [daysArr]);
 
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
-    setSelectedDate(`${selectedYear}년 ${selectedMonth}월 ${selected}일`);
-    setDateInfo({
-      year: selectedYear,
-      month: selectedMonth,
-      day: selected,
-    });
+    setReservationDate(
+      `${selectedYear}-${
+        selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
+      }-${selected <= 9 ? "0" + selected : selected}`
+    );
   };
 
   const monthSelectorOnClickHandler = (num) => {
@@ -410,32 +374,27 @@ export default function Calendar({ setSelectedDate, setDateInfo }) {
           <p className="item days">금</p>
           <p className="item days last">토</p>
         </CalendarGrid>
-        {!hasShow ? (
-          <SpinnerExtended />
-        ) : (
-          <DateGrid>
-            {daysArr.map((day, index) => {
-              console.log(selectedDay, day.day);
-              return (
-                <div className="date_container" key={index}>
-                  <p
-                    tabIndex={0}
-                    className={`${
-                      selectedDay === day.day && !day.previous ? "selected" : ""
-                    } date 
-                  ${day.previous ? "previous" : ""} 
-                  ${day.weekend ? "weekend" : ""}
-                  `}
-                    onClick={dateOnClickHandler}
-                  >
-                    {day.day}
-                  </p>
-                  {day.hasShow && <p className="dot">.</p>}
-                </div>
-              );
-            })}
-          </DateGrid>
-        )}
+        <DateGrid>
+          {daysArr.map((day, index) => {
+            return (
+              <div className="date_container" key={index}>
+                <p
+                  tabIndex={0}
+                  className={`${
+                    selectedDay === day.day && !day.previous ? "selected" : ""
+                  } date 
+                ${day.previous ? "previous" : ""} 
+                ${day.weekend ? "weekend" : ""}
+                ${day.hasShow ? "hasShow" : ""}
+                `}
+                  onClick={dateOnClickHandler}
+                >
+                  {day.day}
+                </p>
+              </div>
+            );
+          })}
+        </DateGrid>
       </CalendarFlex>
     </Container>
   );

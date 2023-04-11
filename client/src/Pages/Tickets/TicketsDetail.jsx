@@ -3,6 +3,7 @@ import TicketsDetailTap from "../../Components/TicketsDetail/TicketsDetailTapMen
 import KakaoMapButton from "../../Components/TicketsDetail/KakaoMapButton.jsx";
 import TicketDeleteModal from "../../Components/TicketsDetail/TicketDeleteModal.jsx";
 import ReactDatePicker from "../../Components/Board/TicketsCreate/ReactDatePicker.jsx";
+import SelectTicketDateCalendar from "../../Components/TicketsDetail/SelectTicketDateCalendar.jsx";
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -348,7 +349,7 @@ const TopRightContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   margin-left: 10px;
-  min-height: 500px;
+  min-height: 900px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin-left: 0;
@@ -455,7 +456,7 @@ export default function TicketsDetail() {
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
   const [isReservationPossible, setIsReservationPossible] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
-  const [date, setDate] = useState("");
+  const [reservationDate, setReservationDate] = useState("");
   const [dateError, setDateError] = useState(false);
   const [isSameUser, setIsSameUser] = useState(false);
   const { clicked, setClicked } = useClickedStarStore((state) => state);
@@ -489,8 +490,8 @@ export default function TicketsDetail() {
 
   useEffect(() => {
     if (
-      new Date(date) < new Date(ticketData.showAt) ||
-      new Date(date) > new Date(ticketData.expiredAt)
+      new Date(reservationDate) < new Date(ticketData.showAt) ||
+      new Date(reservationDate) > new Date(ticketData.expiredAt)
     ) {
       setDateError(true);
     } else {
@@ -554,7 +555,7 @@ export default function TicketsDetail() {
     return instance({
       method: "post",
       url: `/shows/reservations/${params.id}`,
-      data: { date, ticketCount },
+      data: { date: reservationDate, ticketCount },
     });
   };
 
@@ -587,6 +588,7 @@ export default function TicketsDetail() {
     }
     postReservation();
   };
+
   return (
     <>
       <TicketDeleteModal ticketId={params.id} />
@@ -667,12 +669,9 @@ export default function TicketsDetail() {
               </div>
               <div className="middle-container">
                 <span className="sub-title">예매 날짜 선택</span>
-                <ReactDatePicker setDate={setDate}></ReactDatePicker>
-                {dateError ? (
-                  <span className="error-message">공연 기간이 아닙니다</span>
-                ) : (
-                  ""
-                )}
+                <SelectTicketDateCalendar
+                  setReservationDate={setReservationDate}
+                />
               </div>
               <div className="inner-container">
                 <span className="sub-title">수량 선택</span>
