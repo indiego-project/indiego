@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface AdminService {
     ResponseEntity certifyPerformer(Long certificationId);
+    ResponseEntity softDeleteArticle(Long articleId);
 }

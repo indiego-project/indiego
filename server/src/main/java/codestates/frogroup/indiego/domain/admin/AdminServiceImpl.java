@@ -1,5 +1,8 @@
 package codestates.frogroup.indiego.domain.admin;
 
+import codestates.frogroup.indiego.domain.article.entity.Article;
+import codestates.frogroup.indiego.domain.article.repository.ArticleRepository;
+import codestates.frogroup.indiego.domain.article.service.ArticleService;
 import codestates.frogroup.indiego.domain.member.dto.MemberDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.mapper.MemberMapper;
@@ -24,7 +27,7 @@ public class AdminServiceImpl implements AdminService {
     MemberService memberService;
     CertificationServiceImpl certificationService;
     CertificationMapper certificationMapper;
-
+    ArticleRepository articleRepository;
 
     //퍼포머 인증
     public ResponseEntity certifyPerformer(Long certificationId){
@@ -36,6 +39,16 @@ public class AdminServiceImpl implements AdminService {
         member.setRoles(roles);
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ALLOWED);
         return  new ResponseEntity<>(new SingleResponseDto("퍼포머 인증됐습니다."), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity softDeleteArticle(Long articleId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND)
+        );
+        article.setDeleted(Boolean.TRUE);
+        return new ResponseEntity(HttpStatus.OK);
+
     }
 
 }

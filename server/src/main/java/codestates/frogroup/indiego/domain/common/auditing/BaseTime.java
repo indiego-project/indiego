@@ -24,4 +24,13 @@ public abstract class BaseTime {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
+
+
+    @Column
+    private Boolean deleted = Boolean.FALSE;
+
+    public BaseTime setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+        return this;
+    }
 }
