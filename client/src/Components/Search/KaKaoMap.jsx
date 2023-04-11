@@ -6,7 +6,8 @@ import React, { useState, useEffect, useRef } from "react";
 
 import marker from "../../assets/marker.svg";
 import createMarker from "../../utils/createMarker";
-import { dtFontSize, primary, secondary, sub } from "../../styles/mixins";
+import { dtFontSize, primary, secondary } from "../../styles/mixins";
+import useDebounce from "../../utils/useDebounce";
 
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
@@ -135,14 +136,15 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
   ];
 
   const [data, setData] = useState([]);
-  const [fetchTrigger, setFetchTrigger] = useState(true);
   const [XBoundary, setXBoundary] = useState(userXBoundary);
   const [YBoundary, setYBoundary] = useState(userYBoundary);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   const mapElement = useRef();
   const clustererElement = useRef();
   const markersArray = useRef([]);
   const hoverWindowArray = useRef([]);
+  const popupWindowArray = useRef([]);
 
   const markerImageSrc = marker;
   const markerImageSize = new kakao.maps.Size(64, 64);
@@ -156,7 +158,7 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
 
   // 데이터 fetching 로직
   const fetchMarkersInfo = () => {
-    setFetchTrigger(false);
+    // setFetchTrigger(false);
     const params = {
       x1: XBoundary[0],
       x2: XBoundary[1],
@@ -174,11 +176,11 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
     setData(data);
   };
 
-  useQuery({
+  const { refetch } = useQuery({
     queryKey: ["fetchMarkersInfo", XBoundary, YBoundary],
     queryFn: fetchMarkersInfo,
     onSuccess: fetchMarkersInfoOnSuccess,
-    enabled: fetchTrigger,
+    // enabled: fetchTrigger,
     retry: false,
   });
 
@@ -204,21 +206,23 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
       const clusterer = new kakao.maps.MarkerClusterer({
         map: map,
         averageCenter: true,
-        minLevel: 3,
+        minLevel: 5,
       });
       clustererElement.current = clusterer;
 
       // 초기에 데이터가 존재하면 마커 추가
       if (data && data.length > 0) {
         data.map((locObj) => {
-          const [marker, hoverWindow] = createMarker(
+          const [marker, hoverWindow, popupWindow] = createMarker(
             locObj,
             map,
             markerImage,
-            kakao
+            kakao,
+            popupWindowArray
           );
           markersArray.current.push(marker);
           hoverWindowArray.current.push(hoverWindow);
+          popupWindowArray.current.push(popupWindow);
         });
       }
 
@@ -229,36 +233,44 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
       map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
       // 맵 이벤트 핸들러 추가
-      kakao.maps.event.addListener(map, "zoom_changed", () => {
-        hoverWindowArray.current.forEach((hoverWIndow) => {
-          hoverWIndow.setMap(null);
-        });
-        const bounds = map.getBounds();
-        const sePoint = bounds.getSouthWest();
-        const nePoint = bounds.getNorthEast();
+      kakao.maps.event.addListener(
+        map,
+        "zoom_changed",
+        useDebounce(() => {
+          hoverWindowArray.current.forEach((hoverWIndow) => {
+            hoverWIndow.setMap(null);
+          });
+          const bounds = map.getBounds();
+          const sePoint = bounds.getSouthWest();
+          const nePoint = bounds.getNorthEast();
 
-        const XBoundaryValue = [sePoint.getLat(), nePoint.getLat()];
-        const YBoundaryValue = [sePoint.getLng(), nePoint.getLng()];
+          const XBoundaryValue = [sePoint.getLat(), nePoint.getLat()];
+          const YBoundaryValue = [sePoint.getLng(), nePoint.getLng()];
 
-        setXBoundary(XBoundaryValue);
-        setYBoundary(YBoundaryValue);
+          setXBoundary(XBoundaryValue);
+          setYBoundary(YBoundaryValue);
 
-        setFetchTrigger(true);
-      });
+          refetch();
+        })
+      );
 
-      kakao.maps.event.addListener(map, "dragend", () => {
-        const bounds = map.getBounds();
-        const sePoint = bounds.getSouthWest();
-        const nePoint = bounds.getNorthEast();
+      kakao.maps.event.addListener(
+        map,
+        "dragend",
+        useDebounce(() => {
+          const bounds = map.getBounds();
+          const sePoint = bounds.getSouthWest();
+          const nePoint = bounds.getNorthEast();
 
-        const XBoundaryValue = [sePoint.getLat(), nePoint.getLat()];
-        const YBoundaryValue = [sePoint.getLng(), nePoint.getLng()];
+          const XBoundaryValue = [sePoint.getLat(), nePoint.getLat()];
+          const YBoundaryValue = [sePoint.getLng(), nePoint.getLng()];
 
-        setXBoundary(XBoundaryValue);
-        setYBoundary(YBoundaryValue);
+          setXBoundary(XBoundaryValue);
+          setYBoundary(YBoundaryValue);
 
-        setFetchTrigger(true);
-      });
+          refetch();
+        })
+      );
     }
   }, []);
 
@@ -279,13 +291,23 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
       data &&
       data.map((locObj) => {
         // 마커 생성
-        const [marker, hoverWindow] = createMarker(
+        const [marker, hoverWindow, popupWindow] = createMarker(
           locObj,
           map,
           markerImage,
-          kakao
+          kakao,
+          popupWindowArray
         );
         hoverWindowArray.current.push(hoverWindow);
+        popupWindowArray.current.push(popupWindow);
+        if (
+          selectedMarker &&
+          locObj.latitude === selectedMarker.latitude &&
+          locObj.longitude === selectedMarker.longitude
+        ) {
+          marker.o.click[0].Pf();
+          setSelectedMarker(null);
+        }
         return marker;
       });
 
@@ -297,15 +319,22 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
 
   const searchedItemClickHandler = (data, mapElement, markerImage, kakao) => {
     const map = mapElement.current;
-    const [marker, hoverWindow] = createMarker(
-      data,
-      mapElement.current,
-      markerImage,
-      kakao
-    );
-    markersArray.current.push(marker);
-    hoverWindowArray.current.push(hoverWindow);
+
+    const XBoundaryValue = [
+      data.latitude - 0.0040515,
+      data.latitude + 0.0040515,
+    ];
+    const YBoundaryValue = [
+      data.longitude - 0.0073285,
+      data.longitude + 0.0073285,
+    ];
+    setXBoundary(XBoundaryValue);
+    setYBoundary(YBoundaryValue);
+    setSelectedMarker(data);
+
+    refetch();
     map.setCenter(new kakao.maps.LatLng(data.latitude, data.longitude));
+    map.setLevel(3);
   };
 
   useEffect(() => {
@@ -320,7 +349,7 @@ export default function KaKaoMap({ userInfo, searchedData, setSearchedData }) {
 
     setXBoundary(userXBoundary);
     setYBoundary(userYBoundary);
-    setFetchTrigger(true);
+    refetch();
     mapElement.current.setCenter(
       new kakao.maps.LatLng(userInfo.location[0], userInfo.location[1])
     );
