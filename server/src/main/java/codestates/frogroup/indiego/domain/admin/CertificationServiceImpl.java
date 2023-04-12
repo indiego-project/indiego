@@ -22,10 +22,10 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class CertificationServiceImpl implements CertificationService{
-    MemberService memberService;
-    CertificationRepository certificationRepository;
-    CertificationMapper certificationMapper;
-    CustomBeanUtils<Certification> beanUtils;
+    private final MemberService memberService;
+    private final CertificationRepository certificationRepository;
+    private final CertificationMapper certificationMapper;
+    private final CustomBeanUtils<Certification> beanUtils;
 
     @Override
     public CertificationDto.Response createCertication(Certification certification) {
