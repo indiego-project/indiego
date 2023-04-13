@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping("/certification")
 @RequiredArgsConstructor
  class CertificationController {
-CertificationMapper certificationMapper;
-CertificationServiceImpl certificationService;
+private final CertificationMapper certificationMapper;
+private final CertificationServiceImpl certificationService;
  @PostMapping
  public ResponseEntity postCertification(@Valid @RequestBody CertificationDto.Post certiPostDto){
    CertificationDto.Response response = certificationService.createCertication(certificationMapper.postToCertification(certiPostDto));
@@ -38,16 +38,16 @@ CertificationServiceImpl certificationService;
   return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
  }
 
- @GetMapping("/{certification-id}")
- public ResponseEntity getCertification(@Positive @PathVariable("certificated-id") Long certiId){
-  CertificationDto.Response response = certificationService.findCertification(certiId);
+ @GetMapping("/{member-id}")
+ public ResponseEntity getCertification(@Positive @PathVariable("member-id") Long memberId){
+  CertificationDto.Response response = certificationService.findCertification(memberId);
   return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
  }
 
  @GetMapping
  public ResponseEntity getCertifications( @PageableDefault(page = 1 ,size = 12) Pageable pageable){
 
-  Page<Certification> responses = certificationService.findAllCertification(pageable.getPageNumber(), pageable.getPageSize());
+  Page<Certification> responses = certificationService.findAllCertification(pageable.getPageNumber()-1, pageable.getPageSize());
   List<Certification> certifications =  responses.getContent();
 
   return new ResponseEntity<>(
@@ -57,7 +57,7 @@ CertificationServiceImpl certificationService;
  }
 
  @DeleteMapping("/{certification-id}")
- public ResponseEntity deleteCertification(@Positive @PathVariable("certificated-id") Long certiId,
+ public ResponseEntity deleteCertification(@Positive @PathVariable("certification-id") Long certiId,
                                            @LoginMemberId Long memberId){
   certificationService.deleteCertification(certiId,memberId );
   return new ResponseEntity(HttpStatus.NO_CONTENT);

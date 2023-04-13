@@ -31,6 +31,7 @@ public class CertificationServiceImpl implements CertificationService{
     public CertificationDto.Response createCertication(Certification certification) {
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
         certification.setMember(member);
+        certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ASKED);
         certificationRepository.save(certification);
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
         response.setMessage("퍼포머인증 요청 완료됐습니다.");
@@ -44,8 +45,8 @@ public class CertificationServiceImpl implements CertificationService{
     }
 
     @Override
-    public CertificationDto.Response findCertification(Long certificationId) {
-        Certification certification = findVerifiedCertification(certificationId);
+    public CertificationDto.Response findCertification(Long memberId) {
+        Certification certification = certificationRepository.findByMemberId(memberId);
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
         return response;
     }

@@ -25,12 +25,16 @@ public class Certification extends BaseTime {
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private CertificationStatus certificationStatus = CertificationStatus.CERTIFICATION_ASKED;
+    private CertificationStatus certificationStatus;
+
+    @Column
+    private String message;
+
 
     public void setMember(Member member){
         this.member = member;
     }
-
+    public void setMessage(String message){this.message = message;}
 
     public enum CertificationStatus{
         CERTIFICATION_ASKED("요청됨"),

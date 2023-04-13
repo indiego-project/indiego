@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public interface AdminService {
-    ResponseEntity certifyPerformer(Long certificationId);
+    ResponseEntity certifyPerformer(Long certificationId, String message);
+    ResponseEntity denyPerformer(Long certificationId, String message);
     ResponseEntity softDeleteArticle(Long articleId);
 
 }
