@@ -173,7 +173,7 @@ public class ShowService {
 
     }
 
-    public List<ShowListResponseDto> findSortShows(String address, String status) {
+    public List<ShowListDto> findSortShows(String address, String status) {
 
         return showRepository.findShowScoreOrCreatedAtDesc(address, status);
     }

@@ -37,7 +37,7 @@ public class TagController {
     /*
     * 추후 서비스에서 태그 추가기능이 생긴다면 사용
     * */
-    /*
+
     @PostMapping
     public ResponseEntity postTag(@Valid @RequestBody TagDto.Post tagDto) {
         Tag tag = tagMapper.tagDtoToTag(tagDto);
@@ -45,5 +45,5 @@ public class TagController {
         TagDto.Response response = tagMapper.tagToTagResponseDto(createdTag);
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.CREATED);
     }
-    */
+
 }

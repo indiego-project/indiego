@@ -131,28 +131,48 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public List<ShowListResponseDto> findShowScoreOrCreatedAtDesc(String address, String status) {
+    public List<ShowListDto> findShowScoreOrCreatedAtDesc(String address, String status) {
 
+        // 1). 태그 추가 방법 객체로 받기
         return queryFactory
-                .select(new QShowListResponseDto(
-                        show.id,
-                        show.member.profile.nickname,
-                        show.showBoard.detailAddress,
-                        show.showBoard.board.title,
-                        show.showBoard.board.image,
-                        show.scoreAverage,
-                        show.showBoard.board.category,
-                        show.showBoard.expiredAt,
-                        show.showBoard.showAt,
-                        show.showBoard.price
-                ))
+                .select(
+                        show
+                )
                 .from(show)
+                .leftJoin(show.member, member).fetchJoin() // member도 조인하여 쿼리줄이기, N+1 문제로 fetchJoin()
+                .leftJoin(show.showTags, showTag).fetchJoin() // showTags 조인하여 중간테이블 가져오기, N+1 문제로 fetchJoin()
+                .leftJoin(showTag.tag, tag).fetchJoin() // Tag 조인하여 정보 가져오기, N+1 문제로 fetchJoin()
                 .where(
                         addressEqOfFindShow(address),
                         show.showBoard.showAt.gt(now()))
                 .orderBy(sortDesc(status))
                 .limit(10)
-                .fetch();
+                .fetch()
+                .stream()
+                .distinct()
+                .map(ShowListDto::new).collect(Collectors.toList()); // show -> new ShowListDto(show);
+
+        // 2). 기존에 사용하던 코드
+//        return queryFactory
+//                .select(new QShowListResponseDto(
+//                        show.id,
+//                        show.member.profile.nickname,
+//                        show.showBoard.detailAddress,
+//                        show.showBoard.board.title,
+//                        show.showBoard.board.image,
+//                        show.scoreAverage,
+//                        show.showBoard.board.category,
+//                        show.showBoard.expiredAt,
+//                        show.showBoard.showAt,
+//                        show.showBoard.price
+//                ))
+//                .from(show)
+//                .where(
+//                        addressEqOfFindShow(address),
+//                        show.showBoard.showAt.gt(now()))
+//                .orderBy(sortDesc(status))
+//                .limit(10)
+//                .fetch();
     }
 
     @Override
@@ -272,6 +292,10 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     private static OrderSpecifier<?> sortDesc(String sort) {
+        // sort가 Null일 경우는 최신순으로 반환
+        if(Objects.isNull(sort)) {
+            return show.createdAt.desc();
+        }
         return sort.equals("최신순") ? show.createdAt.desc() : show.scoreAverage.desc();
     }
 

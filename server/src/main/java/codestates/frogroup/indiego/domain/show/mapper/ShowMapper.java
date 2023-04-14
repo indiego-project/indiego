@@ -41,38 +41,8 @@ public interface ShowMapper {
     @Mapping(source = "showTime", target = "showBoard.showTime")
     Show showPatchDtoToShow(ShowDto.Patch patch);
 
-//    @Mapping(source = "showBoard.board.title", target = "title")
-//    @Mapping(source = "showBoard.board.content", target = "content")
-//    @Mapping(source = "showBoard.board.image", target = "image")
-//    @Mapping(source = "showBoard.board.category", target = "category")
-//    @Mapping(source = "showBoard.price", target = "price")
-//    @Mapping(source = "showBoard.address", target = "address")
-//    @Mapping(source = "showBoard.expiredAt", target = "expiredAt")
-//    @Mapping(source = "showBoard.showAt", target = "showAt")
-//    @Mapping(source = "coordinate.latitude", target = "latitude")
-//    @Mapping(source = "coordinate.longitude", target = "longitude")
-//    @Mapping(source = "status", target = "status")
-//    @Mapping(source = "showBoard.detailDescription", target = "detailDescription")
-//    @Mapping(source = "showBoard.detailAddress", target = "detailAddress")
-//    @Mapping(source = "showBoard.showTime", target = "showTime")
     ShowDto.postResponse showToShowPostResponse(Show show);
 
-    @Mapping(source = "showBoard.board.title", target = "title")
-    @Mapping(source = "showBoard.board.content", target = "content")
-    @Mapping(source = "showBoard.board.image", target = "image")
-    @Mapping(source = "showBoard.board.category", target = "category")
-    @Mapping(source = "showBoard.price", target = "price")
-    @Mapping(source = "showBoard.address", target = "address")
-    @Mapping(source = "showBoard.expiredAt", target = "expiredAt")
-    @Mapping(source = "showBoard.showAt", target = "showAt")
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "coordinate.latitude", target = "latitude")
-    @Mapping(source = "coordinate.longitude", target = "longitude")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "showBoard.detailDescription", target = "detailDescription")
-    @Mapping(source = "showBoard.detailAddress", target = "detailAddress")
-    @Mapping(source = "showBoard.showTime", target = "showTime")
-    @Mapping(source = "member.profile.nickname", target = "nickname")
     ShowDto.Response showToShowResponse(Show show);
 
     @Mapping(source = "id", target = "id")

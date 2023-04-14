@@ -117,6 +117,30 @@ public class ShowDto {
         private Integer emptySeats;
         private boolean isBookmarked;
         private String nickname;
+        private List<TagDto.Response> tags;
+
+        @Builder
+        public Response (Show show) {
+            this.id = show.getId();
+            this.title = show.getShowBoard().getBoard().getTitle();
+            this.content = show.getShowBoard().getBoard().getContent();
+            this.image = show.getShowBoard().getBoard().getImage();
+            this.category = show.getShowBoard().getBoard().getCategory();
+            this.price = show.getShowBoard().getPrice();
+            this.address = show.getShowBoard().getAddress();
+            this.detailAddress = show.getShowBoard().getDetailAddress();
+            this.expiredAt = show.getShowBoard().getExpiredAt();
+            this.showAt = show.getShowBoard().getShowAt();
+            this.showTime = show.getShowBoard().getShowTime();
+            this.detailDescription = show.getShowBoard().getDetailDescription();
+            this.latitude = show.getCoordinate().getLatitude();
+            this.longitude = show.getCoordinate().getLongitude();
+            this.status = show.getStatus().getStatus();
+            this.scoreAverage = show.getScoreAverage();
+            this.total = show.getTotal();
+            this.nickname = show.getMember().getProfile().getNickname();
+            this.tags = show.getShowTags().stream().map(ShowTag::toResponseDto).collect(Collectors.toList());
+        }
     }
 
     @Getter
@@ -224,6 +248,7 @@ public class ShowDto {
         private Integer revenue;
         @Setter
         private boolean isExpired;
+        private List<TagDto.Response> tags;
 
         @QueryProjection
         @Builder

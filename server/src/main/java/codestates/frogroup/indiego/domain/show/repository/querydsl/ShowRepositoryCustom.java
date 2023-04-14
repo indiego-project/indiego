@@ -20,7 +20,7 @@ public interface ShowRepositoryCustom {
     Page<ShowListDto> findAllByShowSearch(String search, String category, String address, String filter,
                                           String start, String end, Pageable pageable);
 
-    List<ShowListResponseDto> findShowScoreOrCreatedAtDesc(String address, String sort);
+    List<ShowListDto> findShowScoreOrCreatedAtDesc(String address, String sort);
 
     List<ShowMapsResponse> findAllByShowMapsSearch(Double x1, Double x2, Double y1, Double y2);
 
