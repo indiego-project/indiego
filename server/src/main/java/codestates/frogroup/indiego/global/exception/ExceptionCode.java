@@ -55,6 +55,7 @@ public enum ExceptionCode {
     PERFORMER_ADD_FAILED(404, "퍼포머 인증에 실패했습니다."),
     CERTIFICATION_REMOVE_FAILED(404, "퍼포퍼 인증 요청 삭제에 실패했습니다"),
     CERTIFICATION_NOT_FOUND(404, "퍼포머 인증이 존재하지 않습니다."),
+    CERTIFICATION_EXIST(403, "인증을 이미 요청했습니다."),
 
     //security
     NULL_POINT_EXCEPTION(400, "데이터값을 확인하세요.");

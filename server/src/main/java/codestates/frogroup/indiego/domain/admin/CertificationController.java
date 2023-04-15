@@ -18,14 +18,15 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/certification")
+@RequestMapping("/certifications")
 @RequiredArgsConstructor
  class CertificationController {
 private final CertificationMapper certificationMapper;
 private final CertificationServiceImpl certificationService;
  @PostMapping
- public ResponseEntity postCertification(@Valid @RequestBody CertificationDto.Post certiPostDto){
-   CertificationDto.Response response = certificationService.createCertication(certificationMapper.postToCertification(certiPostDto));
+ public ResponseEntity postCertification(@Valid @RequestBody CertificationDto.Post certiPostDto,
+                                         @LoginMemberId Long memberId){
+   CertificationDto.Response response = certificationService.createCertication(certificationMapper.postToCertification(certiPostDto), memberId);
    return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.CREATED);
  }
 
@@ -39,8 +40,9 @@ private final CertificationServiceImpl certificationService;
  }
 
  @GetMapping("/{member-id}")
- public ResponseEntity getCertification(@Positive @PathVariable("member-id") Long memberId){
-  CertificationDto.Response response = certificationService.findCertification(memberId);
+ public ResponseEntity getCertification(@Positive @PathVariable("member-id") Long memberId,
+                                        @LoginMemberId Long tokenMemberId){
+  CertificationDto.Response response = certificationService.findCertification(memberId, tokenMemberId);
   return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
  }
 
@@ -59,7 +61,7 @@ private final CertificationServiceImpl certificationService;
  @DeleteMapping("/{certification-id}")
  public ResponseEntity deleteCertification(@Positive @PathVariable("certification-id") Long certiId,
                                            @LoginMemberId Long memberId){
-  certificationService.deleteCertification(certiId,memberId );
-  return new ResponseEntity(HttpStatus.NO_CONTENT);
+  ResponseEntity response = certificationService.deleteCertification(certiId,memberId );
+  return response;
  }
 }

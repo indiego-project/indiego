@@ -20,7 +20,6 @@ import java.util.List;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Where(clause = "deleted = false")
 public class Article extends BaseTime {
 
     @Id

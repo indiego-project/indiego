@@ -27,10 +27,10 @@ public abstract class BaseTime {
 
 
     @Column
-    private Boolean deleted = Boolean.FALSE;
+    private LocalDateTime deletedAt;
 
-    public BaseTime setDeleted(Boolean deleted) {
-        this.deleted = deleted;
+    public BaseTime setDeleted(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
         return this;
     }
 }

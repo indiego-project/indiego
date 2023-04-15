@@ -79,7 +79,7 @@ class CertificationServiceImplTest {
         when(certificationMapper.certificationToResponse(any())).thenReturn(expectedResponse);
 
         // when
-        CertificationDto.Response actualResponse = certificationService.createCertication(certification);
+        CertificationDto.Response actualResponse = certificationService.createCertication(certification, 1L);
 
         // then
         assertEquals(expectedResponse, actualResponse);
@@ -111,7 +111,7 @@ class CertificationServiceImplTest {
         when(certificationMapper.certificationToResponse(certification)).thenReturn(expectedResponse);
 
         // when
-        CertificationDto.Response actualResponse = certificationService.findCertification(certification.getId());
+        CertificationDto.Response actualResponse = certificationService.findCertification(certification.getId(), 1L);
 
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
