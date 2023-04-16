@@ -586,7 +586,15 @@ export default function TicketsDetail() {
     if (dateError || ticketCount === "") {
       return;
     }
-    postReservation();
+
+    const { id: ticketId } = ticketData;
+    // postReservation();
+    // window.open(
+    //   `/tickets/${ticketId}/payment`,
+    //   "_self",
+    //   "popup,width=500px,height=750px,left=500px"
+    // );
+    navigate(`/tickets/${ticketId}/payment`);
   };
 
   return (

@@ -22,6 +22,10 @@ import EmployBoardList from "./Pages/Boards/BoardType/EmployBoardList.jsx";
 import RequestBoardList from "./Pages/Boards/BoardType/RequestBoardList.jsx";
 import AdvertiseBoardList from "./Pages/Boards/BoardType/AdvertiseBoardList.jsx";
 import ReviewBoardList from "./Pages/Boards/BoardType/ReviewBoardList.jsx";
+import { PaymentFail } from "./Pages/PaymentFail.jsx";
+
+// ticket payment popup
+import TicketPayment from "./Pages/Tickets/TicketPayment.jsx";
 import Token from "./Pages/Token.jsx";
 
 import Header from "./Components/Header.jsx";
@@ -31,7 +35,7 @@ import "./App.css";
 import useIsLoginStore from "./store/useIsLoginStore.js";
 
 // 그다음에는 라이브러리
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -97,6 +101,12 @@ function App() {
           <Route path="/tickets/create" element={<TicketsCreate />}></Route>
           <Route path="/tickets/:id" element={<TicketsDetail />}></Route>
           <Route path="/tickets/:id/edit" element={<TicketsEdit />}></Route>
+          <Route
+            path="/tickets/:id/payment"
+            element={<TicketPayment />}
+          ></Route>
+          {/* 결제 피드백 라우팅 */}
+          <Route path="/payments/fail" element={<PaymentFail />}></Route>
 
           {/* 공연찾기게시판 */}
           <Route path="/search" element={<Search />}></Route>
