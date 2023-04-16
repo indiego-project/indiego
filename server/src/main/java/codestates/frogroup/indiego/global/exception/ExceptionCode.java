@@ -42,6 +42,12 @@ public enum ExceptionCode {
     SHOW_RESERVATION_CREATE_FAIL(400,"재고가 부족합니다."),
 
 
+    // Payment
+    PAYMENT_NOT_FOUND(404, "결제를 인식할 수 없습니다."),
+    NOT_MINIMUM_AMOUNT(400, "최소 주문 금액은 1000원 이상입니다."),
+    PAYMENT_TYPE_NOT_AVAILABLE(400, "사용할 수 없는 결제 수단입니다."),
+    AMOUNT_NOT_EQUAL(400, "금액이 일치하지 않습니다."),
+    PAYMENT_ALREADY_APPROVED(409, "이미 인증된 결제입니다."),
 
     // File Upload
     UPLOAD_FAILED(404, "File Upload Failed !"),
