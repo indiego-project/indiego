@@ -56,8 +56,9 @@ const ContentHeaderContainer = styled.div`
   display: flex;
   height: max-content;
   justify-content: space-between;
-  min-height: 140px;
-  padding: 40px;
+  min-height: 120px;
+  margin: 20px 0;
+  padding: 20px;
   width: 90%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -134,10 +135,11 @@ export const PillButton = styled.button`
 
 const ContentTopContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: 90vw;
   height: max-content;
   justify-content: space-between;
   padding: 2%;
+  height: 100vh;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
@@ -146,12 +148,12 @@ const ContentTopContainer = styled.div`
   }
 `;
 
-const TopLeftContainer = styled.div`
+const PosterAndInfoContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  min-width: max-content;
-  width: 68%;
+  width: 90%;
+  height: min-content;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
@@ -175,13 +177,13 @@ const TopLeftContainer = styled.div`
 `;
 
 const PosterImage = styled.img`
-  width: 270px;
-  height: 360px;
+  width: 300px;
+  height: 400px;
   box-shadow: 0 5px 5px #6d6d6d;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    width: 240px;
-    height: 320px;
+    width: 300px;
+    height: 400px;
     margin-bottom: 20px;
   }
 `;
@@ -215,8 +217,9 @@ const TicketInfoContainer = styled.div`
   border-radius: 10px;
   justify-content: space-between;
   flex-direction: column;
+  height: 100%;
   margin-left: 10px;
-  min-height: 500px;
+  min-height: 450px;
   padding: 3%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -340,16 +343,20 @@ const TicketInfoContainer = styled.div`
   }
 `;
 
+const TopLeftContainer = styled.div`
+  width: 90%;
+  height: 100%;
+`;
+
 const TopRightContainer = styled.div`
-  border: 1px solid ${sub.sub300};
   display: flex;
-  width: 25%;
   background-color: white;
+  border: 1px solid ${sub.sub300};
   border-radius: 10px;
-  justify-content: space-between;
   flex-direction: column;
   margin-left: 10px;
-  min-height: 900px;
+  height: 100%;
+  width: 30%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin-left: 0;
@@ -360,19 +367,16 @@ const TopRightContainer = styled.div`
   > .inner-container {
     display: flex;
     flex-direction: column;
-    height: 33.333%;
+    height: 50%;
     position: relative;
     justify-content: center;
     align-items: center;
+    border-top: 1px solid ${sub.sub300};
 
-    > .error-message {
-      color: ${misc.red};
-      font-size: ${dtFontSize.small};
-      margin-bottom: 5px;
-
-      @media screen and (max-width: ${breakpoint.mobile}) {
-        font-size: ${mbFontSize.small};
-      }
+    > .total-price {
+      font-weight: 600;
+      font-size: ${dtFontSize.medium};
+      color: ${primary.primary400};
     }
 
     > .sub-title {
@@ -423,27 +427,18 @@ const TopRightContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-top: 1px solid ${sub.sub300};
-    border-bottom: 1px solid ${sub.sub300};
-    height: 33.333%;
+    height: 50%;
     position: relative;
     justify-content: center;
+  }
 
-    > .sub-title {
-      color: ${sub.sub800};
-      font-size: ${dtFontSize.medium};
-      font-weight: 600;
-      width: 100%;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-
-    > .error-message {
-      color: ${misc.red};
-      font-size: ${dtFontSize.small};
-      position: absolute;
-      top: 62%;
-    }
+  > .calendar-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    justify-content: center;
+    height: max-content;
   }
 `;
 
@@ -593,85 +588,83 @@ export default function TicketsDetail() {
     <>
       <TicketDeleteModal ticketId={params.id} />
       <Container>
-        <ContentHeaderContainer>
-          <HeaderTitleContainer>
-            <h1>공연 상세페이지</h1>
-            <h2>
-              {ticketData.title} / {ticketData.nickname}
-            </h2>
-          </HeaderTitleContainer>
-          {isSameUser ? (
-            <HeaderButtonContainer>
-              <PillButton
-                color={primary.primary300}
-                hoverColor={secondary.secondary500}
-                onClick={handleMoveToEditPage}
-              >
-                수정하기
-              </PillButton>
-              <PillButton
-                color={misc.red}
-                hoverColor={misc.lightred}
-                onClick={setOpenModal}
-              >
-                삭제하기
-              </PillButton>
-            </HeaderButtonContainer>
-          ) : (
-            ""
-          )}
-        </ContentHeaderContainer>
         <ContentContainer>
           <ContentTopContainer>
             <TopLeftContainer>
-              <PosterImage alt="poster" src={ticketData.image} />
-              <TicketInfoContainer>
-                <div>
-                  <h3>{ticketData.title}</h3>
-                  <h4>{ticketData.nickname}</h4>
-                  <span className="title-description">
-                    {ticketData.detailAddress}
-                  </span>
-                </div>
-                <div>
-                  <span className="sub-title">공연 소개</span>
-                  <span className="description">{ticketData.content}</span>
-                </div>
-                <div>
-                  <span className="sub-title">공연 기간 / 공연 시간</span>
-                  <span className="description">
-                    {ticketData.showAt} ~ {ticketData.expiredAt} /{" "}
-                    {ticketData.showTime}시
-                  </span>
-                </div>
-                <div className="location-container">
+              <ContentHeaderContainer>
+                <HeaderTitleContainer>
+                  <h1>{ticketData.title}</h1>
+                  <h2>{ticketData.nickname}</h2>
+                </HeaderTitleContainer>
+                {isSameUser ? (
+                  <HeaderButtonContainer>
+                    <PillButton
+                      color={primary.primary300}
+                      hoverColor={secondary.secondary500}
+                      onClick={handleMoveToEditPage}
+                    >
+                      수정하기
+                    </PillButton>
+                    <PillButton
+                      color={misc.red}
+                      hoverColor={misc.lightred}
+                      onClick={setOpenModal}
+                    >
+                      삭제하기
+                    </PillButton>
+                  </HeaderButtonContainer>
+                ) : (
+                  ""
+                )}
+              </ContentHeaderContainer>
+              <PosterAndInfoContainer>
+                <PosterImage alt="poster" src={ticketData.image} />
+                <TicketInfoContainer>
                   <div>
-                    <span className="location-title">위치</span>
-                    <span className="location-description">
+                    <h3>{ticketData.title}</h3>
+                    <h4>{ticketData.nickname}</h4>
+                    <span className="title-description">
                       {ticketData.detailAddress}
                     </span>
                   </div>
-                  <KakaoMapButton
-                    detailAddress={ticketData.detailAddress}
-                    latitude={ticketData.latitude}
-                    longitude={ticketData.longitude}
-                  />
-                </div>
-              </TicketInfoContainer>
+                  <div>
+                    <span className="sub-title">공연 소개</span>
+                    <span className="description">{ticketData.content}</span>
+                  </div>
+                  <div>
+                    <span className="sub-title">공연 기간 / 공연 시간</span>
+                    <span className="description">
+                      {ticketData.showAt} ~ {ticketData.expiredAt} /{" "}
+                      {ticketData.showTime}시
+                    </span>
+                  </div>
+                  <div className="location-container">
+                    <div>
+                      <span className="location-title">위치</span>
+                      <span className="location-description">
+                        {ticketData.detailAddress}
+                      </span>
+                    </div>
+                    <KakaoMapButton
+                      detailAddress={ticketData.detailAddress}
+                      latitude={ticketData.latitude}
+                      longitude={ticketData.longitude}
+                    />
+                  </div>
+                </TicketInfoContainer>
+              </PosterAndInfoContainer>
             </TopLeftContainer>
             <TopRightContainer>
-              <div className="inner-container">
-                <span className="sub-title">티켓 정보</span>
-                <Price>₩ {ticketData.price}</Price>
-                <EmptySeat>
-                  잔여 좌석: {ticketData.emptySeats} / {ticketData.total}
-                </EmptySeat>
-              </div>
-              <div className="middle-container">
-                <span className="sub-title">예매 날짜 선택</span>
+              <div className="calender-container">
                 <SelectTicketDateCalendar
                   setReservationDate={setReservationDate}
                 />
+              </div>
+              <div className="middle-container">
+                <Price>티켓 가격: ₩ {ticketData.price}</Price>
+                <EmptySeat>
+                  잔여 좌석: {ticketData.emptySeats} / {ticketData.total}
+                </EmptySeat>
               </div>
               <div className="inner-container">
                 <span className="sub-title">수량 선택</span>
@@ -698,24 +691,22 @@ export default function TicketsDetail() {
                         <FontAwesomeIcon icon={faPlus} />
                       </button>
                     </div>
-                    {ticketCount === "" ? (
-                      <span className="error-message">수량을 입력해주세요</span>
-                    ) : (
-                      ""
-                    )}
-                    <PillButton
-                      color={primary.primary300}
-                      hoverColor={secondary.secondary500}
-                      onClick={handleReservation}
-                    >
-                      예매하기
-                    </PillButton>
                   </>
                 ) : (
-                  <ImpossibleButton color={misc.red}>
-                    예매 불가
-                  </ImpossibleButton>
+                  ""
                 )}
+              </div>
+              <div className="inner-container">
+                <div className="total-price">
+                  총 티켓 가격: {ticketCount * ticketData.price}₩
+                </div>
+                <PillButton
+                  color={primary.primary300}
+                  hoverColor={secondary.secondary500}
+                  onClick={handleReservation}
+                >
+                  예매하기
+                </PillButton>
               </div>
             </TopRightContainer>
           </ContentTopContainer>
