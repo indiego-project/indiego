@@ -25,4 +25,10 @@ public class PaymentResponseDto {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime modifiedAt;
+
+    private String successUrl;
+
+    private String failUrl;
+
 }

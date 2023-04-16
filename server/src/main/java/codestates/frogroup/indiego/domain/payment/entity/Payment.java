@@ -37,6 +37,12 @@ public class Payment extends BaseTime {
     @Column(nullable = false)
     private boolean paymentApproved;
 
+    @Column
+    private String failDescription;
+
+    @Column
+    private String paymentKey;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer")
     private Member customer;
