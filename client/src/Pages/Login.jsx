@@ -282,10 +282,10 @@ export default function Login() {
   });
   const [errorMessageContent, setErrorMessageContent] = useState();
   const [checked, setChecked] = useState(false);
-  const [isLoginTypeUser, setIsLoginTypeUser] = useState(true);
+  const [isLoginTypeUser, setIsLoginTypeUser] = useState("USER");
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  const data = { email: email, password: password };
+  const data = { email: email, password: password, role: isLoginTypeUser };
   const navigate = useNavigate();
 
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
@@ -299,7 +299,11 @@ export default function Login() {
   };
 
   const handleLoginType = () => {
-    setIsLoginTypeUser(!isLoginTypeUser);
+    if (isLoginTypeUser === "USER") {
+      setIsLoginTypeUser("PERFORMER");
+    } else {
+      setIsLoginTypeUser("USER");
+    }
   };
 
   const handlePasswordInputType = () => {
@@ -387,11 +391,17 @@ export default function Login() {
           </button>
         </SelectLoginTypeTab>
         <LoginContainer
-          color={isLoginTypeUser ? primary.primary100 : secondary.secondary300}
+          color={
+            isLoginTypeUser === "USER"
+              ? primary.primary100
+              : secondary.secondary300
+          }
         >
           <div className="input-container">
             <InputLabel
-              fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+              fontColor={
+                isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+              }
             >
               이메일
             </InputLabel>
@@ -411,7 +421,9 @@ export default function Login() {
           </div>
           <div className="input-container">
             <InputLabel
-              fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+              fontColor={
+                isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+              }
             >
               비밀번호
             </InputLabel>
@@ -438,9 +450,13 @@ export default function Login() {
             </div>
             <div className="keep-login-container">
               <KeepLoginCheckbox
-                borderColor={isLoginTypeUser ? "white" : secondary.secondary700}
+                borderColor={
+                  isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+                }
                 color={
-                  isLoginTypeUser ? primary.primary300 : secondary.secondary500
+                  isLoginTypeUser === "USER"
+                    ? primary.primary300
+                    : secondary.secondary500
                 }
                 checked={checked}
                 type="checkbox"
@@ -448,7 +464,9 @@ export default function Login() {
               />
               <KeepLoginCheckboxLabel
                 id="keepLogin"
-                fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+                fontColor={
+                  isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+                }
               >
                 로그인 유지
               </KeepLoginCheckboxLabel>
@@ -462,11 +480,15 @@ export default function Login() {
           <LoginButton
             onClick={handleLogin}
             color={
-              isLoginTypeUser ? primary.primary300 : secondary.secondary500
+              isLoginTypeUser === "USER"
+                ? primary.primary300
+                : secondary.secondary500
             }
             fontColor={"white"}
             hoverColor={
-              isLoginTypeUser ? secondary.secondary500 : primary.primary300
+              isLoginTypeUser === "USER"
+                ? secondary.secondary500
+                : primary.primary300
             }
           >
             로그인
