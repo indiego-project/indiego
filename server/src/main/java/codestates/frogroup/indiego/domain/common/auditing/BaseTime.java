@@ -24,4 +24,13 @@ public abstract class BaseTime {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
+
+
+    @Column
+    private LocalDateTime deletedAt;
+
+    public BaseTime setDeleted(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+        return this;
+    }
 }

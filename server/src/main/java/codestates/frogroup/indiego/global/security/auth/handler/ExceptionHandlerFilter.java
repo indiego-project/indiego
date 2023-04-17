@@ -36,6 +36,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                 setErrorResponse(response, ExceptionCode.NO_ACCESS_TOKEN);
             }
 
+        }catch (NullPointerException e){
+            setErrorResponse(response, ExceptionCode.NULL_POINT_EXCEPTION);
         }
     }
 
