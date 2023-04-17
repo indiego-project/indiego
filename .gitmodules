@@ -1,0 +1,3 @@
+[submodule "server/submodule-indiego"]
+	path = server/submodule-indiego
+	url = git@github.com:indiego-project/submodule-indiego.git
