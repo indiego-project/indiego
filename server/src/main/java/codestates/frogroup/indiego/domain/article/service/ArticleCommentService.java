@@ -146,7 +146,7 @@ public class ArticleCommentService {
         return HttpStatus.CREATED;
     }
 
-    private ArticleComment findVerifiedArticleComment(Long articleCommentId) {
+    public ArticleComment findVerifiedArticleComment(Long articleCommentId) {
         return articleCommentRepository.findById(articleCommentId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.ARTICLE_COMMENT_NOT_FOUND));
     }
