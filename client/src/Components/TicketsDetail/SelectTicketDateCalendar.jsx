@@ -41,11 +41,12 @@ const DateController = styled.div`
   align-items: center;
 
   p {
-    color: white;
-    font-weight: 600;
+    color: ${primary.primary200};
+    font-size: ${dtFontSize.large};
+    font-weight: 800;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
-      font-size: ${mbFontSize.small};
+      font-size: ${mbFontSize.large};
     }
   }
 
@@ -59,7 +60,7 @@ const DateController = styled.div`
     }
 
     path {
-      fill: white;
+      fill: ${primary.primary200};
     }
 
     :hover {
@@ -78,7 +79,6 @@ const CalendarFlex = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  border: 2px solid ${primary.primary200};
   border-radius: 20px;
 `;
 
@@ -97,11 +97,12 @@ const CalendarGrid = styled.div`
   }
 
   .item:nth-child(1) {
+    color: ${primary.primary200};
     grid-column-start: 1;
     grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 1;
-    background-color: ${primary.primary200};
+    /* background-color: ${primary.primary200}; */
     border-radius: 18px 18px 0 0;
   }
 
