@@ -1,7 +1,6 @@
 package codestates.frogroup.indiego.config;
 
 import codestates.frogroup.indiego.domain.article.entity.Article;
-import codestates.frogroup.indiego.domain.article.repository.ArticleCommentRepository;
 import codestates.frogroup.indiego.domain.article.repository.ArticleRepository;
 import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.repository.ScoreRepository;
@@ -39,7 +38,6 @@ public class BatchConfig {
     private final ArticleRepository articleRepository;
     private final ShowRepository showRepository;
     private final ScoreRepository scoreRepository;
-    private final ArticleCommentRepository articleCommentRepository;
     private final RedisTemplate<String, Long> redisTemplateLong;
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisKey redisKey;
@@ -74,20 +72,6 @@ public class BatchConfig {
                     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
                         log.info("step2 실행");
                         updateArticleRDB();
-                        return RepeatStatus.FINISHED;
-                    }
-                })
-                .build();
-    }
-
-    @Bean
-    public Step step3(){
-        return stepBuilderFactory.get("step3")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        log.info("step3 실행");
-                        articleCommentRepository.deleteSoftDeletedAll();
                         return RepeatStatus.FINISHED;
                     }
                 })
@@ -129,7 +113,6 @@ public class BatchConfig {
             scoreRepository.deleteValues(key);
         }
     }
-
 
     private Long extractArticleId(Cursor<byte[]> keys) {
         String key = new String(keys.next());
