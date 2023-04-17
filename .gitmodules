@@ -4,3 +4,6 @@
 [submodule "submodule-indiego"]
 	path = submodule-indiego
 	url = https://github.com/indiego-project/submodule-indiego.git
+[submodule "server/submodule-indiego@"]
+	path = server/submodule-indiego@
+	url = https://github.com/indiego-project/submodule-indiego.git
