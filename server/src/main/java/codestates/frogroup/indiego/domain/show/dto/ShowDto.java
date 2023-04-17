@@ -80,9 +80,8 @@ public class ShowDto {
         //showboard end
         private Double latitude;
         private Double longitude;
-
         private Integer total; // 정원
-
+        private List<String> tags;
     }
 
     @Getter

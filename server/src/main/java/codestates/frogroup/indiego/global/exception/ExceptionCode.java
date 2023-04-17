@@ -44,6 +44,8 @@ public enum ExceptionCode {
     // Tag
     TAG_NOT_FOUND(404, "찾을 수 없는 태그입니다."),
     TAG_EXIST(403, "존재하는 태그입니다."),
+    SHOW_TAG_NOT_FOUND(404, "찾을 수 없는 공연의 태그입니다."),
+    SHOW_TAG_EXIT(403, "존재하는 공연의 태그입니다."),
 
     // File Upload
     UPLOAD_FAILED(404, "File Upload Failed !"),

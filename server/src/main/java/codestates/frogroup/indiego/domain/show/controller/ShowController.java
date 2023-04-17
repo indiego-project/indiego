@@ -58,7 +58,7 @@ public class ShowController {
                                    @LoginMemberId Long memberId){
 
         Show show = mapper.showPostDtoToShow(showPostDto);
-        List<ShowTag> showTags = showTagService.createShowTag(show, showPostDto);
+        List<ShowTag> showTags = showTagService.createShowTagByShowAndTagsList(show, showPostDto.getTags());
         Show createdShow = showService.createShow(show, showTags, memberId);
         ShowDto.postResponse response = mapper.showToShowPostResponse(createdShow);
 

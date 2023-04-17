@@ -62,12 +62,11 @@ public class ShowService {
 
     @Transactional
     public Show updateShow(ShowDto.Patch patchShow, long memberId, long showId) {
-        Show findShow = findVerifiedShow(showId);
-        Show patch = mapper.showPatchDtoToShow(patchShow);
-        // ToDo security 적용 시 수정 -> getCurrentMember
-        Member member = memberService.findVerifiedMember(memberId);
+        Show findShow = this.findVerifiedShow(showId);
+        memberService.verifiedMemberId(memberId,findShow.getMember().getId());
+        findShow.changeShow(patchShow);
 
-        return utils.copyNonNullProperties(patch, findShow);
+        return findShow;
     }
 
     @Transactional
@@ -156,6 +155,9 @@ public class ShowService {
         return response;
     }
 
+    public Show findShowById(Long showId) {
+        return this.findVerifiedShow(showId);
+    }
 
     public Page<ShowListDto> findShows(String search, String category, String address, String filter,
                                        String start, String end, Pageable pageable){

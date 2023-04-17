@@ -25,8 +25,16 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public Tag findTag(String tagName) {
+    public Tag findTagByName(String tagName) {
         Optional<Tag> findTag = tagRepository.findByName(tagName);
+        if(!findTag.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
+        }
+        return findTag.get();
+    }
+
+    public Tag findTagById(Long tagId) {
+        Optional<Tag> findTag = tagRepository.findById(tagId);
         if(!findTag.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
         }

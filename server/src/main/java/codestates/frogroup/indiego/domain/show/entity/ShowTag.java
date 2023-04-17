@@ -27,6 +27,8 @@ public class ShowTag {
     @JoinColumn(name = "show_id")
     private Show show;
 
+//    private Boolean status;
+
     public void updateTag(Tag tag) {
         this.tag = tag;
     }
@@ -34,6 +36,14 @@ public class ShowTag {
     public void updateShow(Show show) {
         this.show = show;
     }
+
+//    public void addStatus() {
+//        this.status = true;
+//    }
+//
+//    public void changeTagStatus(Boolean status) {
+//        this.status = status;
+//    }
 
     public TagDto.Response toResponseDto(){
         return new TagDto.Response(this.getTag().getId(), this.getTag().getName() , this.getTag().getType());
