@@ -12,6 +12,4 @@ public interface ArticleRepository extends JpaRepository<Article,Long>, ArticleR
 
     @Query("SELECT a.view FROM Article a WHERE a.id = :id")
     Long findView(@Param("id") Long id);
-    @Query("SELECT a FROM Article a WHERE a.deleted = true")
-    List<Article> findDeletedUsers();
 }
