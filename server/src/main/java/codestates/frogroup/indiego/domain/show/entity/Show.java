@@ -51,7 +51,7 @@ public class Show extends BaseTime {
     @Column(nullable = false)
     private int total; // 정원
 
-    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<ShowTag> showTags = new ArrayList<>();
 
     public enum ShowStatus {
