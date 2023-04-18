@@ -36,11 +36,6 @@ public class AdminController {
         ResponseEntity response =  adminService.denyPerformer(certiId, tokenMemberId, adminPostDto.getMessage());
         return response;
     }
-    @GetMapping("/comments")
-    public ResponseEntity getComments( @PageableDefault(page = 1, size = 12) Pageable pageable){
-        ResponseEntity response= adminService.getComments(pageable);
-        return response;
-    }
 
     @PostMapping("/comments/{commentId}")
     public ResponseEntity restoreSoftDeletedComment(@Positive @PathVariable("commentId") Long commentId){
