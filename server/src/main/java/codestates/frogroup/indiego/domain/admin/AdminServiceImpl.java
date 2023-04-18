@@ -82,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseEntity getComments(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("created_at"));
+        pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("createdAt"));
         Page<ArticleComment> page = articleCommentRepository.findAll(pageable);
         List<ArticleCommentDto.Response> response =articleCommentMapper.articleCommentsToArticleCommentResponses(page.getContent());
         MultiResponseDto<ArticleCommentDto.Response> multiResponseDto = new MultiResponseDto<>(response, page);
