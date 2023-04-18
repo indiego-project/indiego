@@ -205,6 +205,7 @@ const LoginContainer = styled.div`
     color: ${misc.red};
     font-size: ${dtFontSize.medium};
     font-weight: 600;
+    text-align: center;
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.medium};
     }
@@ -304,6 +305,10 @@ export default function Login() {
     } else {
       setIsLoginTypeUser("USER");
     }
+    setEmail("");
+    setPassword("");
+    setErrorMessageContent("");
+    setChecked(false);
   };
 
   const handlePasswordInputType = () => {
@@ -347,7 +352,11 @@ export default function Login() {
 
   const postLoginOnError = (err) => {
     if (err.response.status === 401) {
-      setErrorMessageContent("이메일 혹은 비밀번호를 다시 확인해주세요");
+      setErrorMessageContent("이메일 혹은 비밀번호를 다시 확인해주세요.");
+    } else if (err.response.status === 404) {
+      setErrorMessageContent(
+        "존재하지 않는 회원입니다. 로그인 정보를 다시 확인해주세요."
+      );
     }
   };
 
@@ -473,7 +482,7 @@ export default function Login() {
             </div>
           </div>
           {errorMessageContent ? (
-            <span className="error-message">{errorMessageContent}</span>
+            <p className="error-message">{errorMessageContent}</p>
           ) : (
             ""
           )}
