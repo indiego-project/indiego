@@ -48,7 +48,7 @@ public class AdminController {
         return response;
     }
 
-    @GetMapping("/comments")
+    @GetMapping("/deletedComments")
     public ResponseEntity getSoftDeletedComments( @PageableDefault(page = 1, size = 12) Pageable pageable){
         ResponseEntity response= adminService.getSoftDeletedComments(pageable);
         return response;
