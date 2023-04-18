@@ -19,4 +19,5 @@ public interface AdminService {
     ResponseEntity getSoftDeletedComment(long commentId);
     ResponseEntity getSoftDeletedComments(Pageable pageable);
     ResponseEntity restoreSofeDeletedComment(Long commentId);
+    ResponseEntity getComments(Pageable pageable);
 }
