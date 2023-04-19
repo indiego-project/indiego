@@ -218,7 +218,9 @@ const ListCommentsBody = ({ data, index, handlers, queryKey }) => {
     mutationKey: ["deleteCommentAdmin", data.id],
     mutationFn: remove({ id: data.id }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: "FetchComments",
+      });
     },
     onError: (err) => {
       console.log(err);
@@ -251,7 +253,9 @@ const ListDeletedBody = ({ data, index, handlers, queryKey }) => {
     mutationKey: ["restoreCommentAdmin", data.id],
     mutationFn: restore({ id: data.id }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: "FetchComments",
+      });
     },
     onError: (err) => {
       console.log(err);

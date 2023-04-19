@@ -39,7 +39,7 @@ const PerformerRequest = new AdminData({
 
 const AllCommentsRequest = new AdminData({
   title: "모든 댓글 보기",
-  queryKey: "FetchAllComments",
+  queryKey: ["FetchComments", "ALL"],
   sort: "comments",
   queryFn: (args) => {
     const params = args;
@@ -51,7 +51,7 @@ const AllCommentsRequest = new AdminData({
     remove: (args) => {
       const { id } = args;
       return () => {
-        return instance.delete(`admins/deletedComments/${id}`);
+        return instance.delete(`admins/comments/${id}`);
       };
     },
   },
@@ -59,7 +59,7 @@ const AllCommentsRequest = new AdminData({
 
 const RemovedCommentsRequest = new AdminData({
   title: "삭제된 댓글 보기",
-  queryKey: "FetchRemovedComments",
+  queryKey: ["FetchComments", "DELETED"],
   sort: "deleted",
   queryFn: (args) => {
     const params = args;
@@ -68,7 +68,7 @@ const RemovedCommentsRequest = new AdminData({
     };
   },
   handlers: {
-    resotre: (args) => {
+    restore: (args) => {
       const { id } = args;
       return () => {
         return instance.post(`admins/comments/${id}`);
