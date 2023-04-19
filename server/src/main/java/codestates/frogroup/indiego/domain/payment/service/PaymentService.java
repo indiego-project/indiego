@@ -102,7 +102,7 @@ public class PaymentService {
      * 결제 금액 검증
      */
     private void verifyAmount(Long amount) {
-        if (amount == null || amount < 1000) {
+        if (amount == null || amount < 0) {
             throw new BusinessLogicException(ExceptionCode.NOT_MINIMUM_AMOUNT);
         }
     }
