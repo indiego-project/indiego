@@ -22,7 +22,7 @@ import Spinner from "../Spinner";
 
 const Container = styled.div`
   width: 100%;
-  max-width: 300px;
+  padding: 5%;
   height: max-content;
   display: flex;
   justify-content: center;
@@ -114,7 +114,7 @@ const CalendarGrid = styled.div`
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       padding: 5px;
-      font-size: ${mbFontSize.xsmall};
+      font-size: ${mbFontSize.medium};
     }
   }
 `;
@@ -150,7 +150,7 @@ const DateGrid = styled.div`
     pointer-events: none;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
-      font-size: ${mbFontSize.xsmall};
+      font-size: ${mbFontSize.small};
       padding-top: 7px;
     }
   }

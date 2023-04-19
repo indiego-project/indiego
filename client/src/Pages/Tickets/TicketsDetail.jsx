@@ -45,9 +45,11 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
+  height: max-content;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     width: 100%;
+    align-items: center;
   }
 `;
 
@@ -137,7 +139,7 @@ export const PillButton = styled.button`
 const ContentTopContainer = styled.div`
   display: flex;
   width: 90vw;
-  height: max-content;
+  height: min-content;
   justify-content: space-between;
   padding: 2%;
   height: 100vh;
@@ -145,7 +147,9 @@ const ContentTopContainer = styled.div`
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
     align-items: center;
+    height: min-content;
     padding: 2%;
+    width: 100vw;
   }
 `;
 
@@ -178,13 +182,13 @@ const PosterAndInfoContainer = styled.div`
 `;
 
 const PosterImage = styled.img`
-  width: 300px;
-  height: 400px;
+  width: 20vw;
+  height: calc(20vw / 3 * 4);
   box-shadow: 0 5px 5px #6d6d6d;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    width: 300px;
-    height: 400px;
+    width: 60vw;
+    height: calc(60vw / 3 * 4);
     margin-bottom: 20px;
   }
 `;
@@ -345,8 +349,17 @@ const TicketInfoContainer = styled.div`
 `;
 
 const TopLeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 90%;
   height: 100%;
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 `;
 
 const TopRightContainer = styled.div`
@@ -361,15 +374,14 @@ const TopRightContainer = styled.div`
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin-left: 0;
-    height: 400px;
     width: 90%;
+    height: 700px;
   }
 
   > .inner-container {
     display: flex;
     flex-direction: column;
     height: 50%;
-    position: relative;
     justify-content: center;
     align-items: center;
     border-top: 1px solid ${sub.sub300};
@@ -448,17 +460,15 @@ const TopRightContainer = styled.div`
     flex-direction: column;
     border-top: 1px solid ${sub.sub300};
     height: 50%;
-    position: relative;
     justify-content: center;
   }
 
   > .calendar-container {
     align-items: center;
     display: flex;
-    flex-direction: column;
-    position: relative;
     justify-content: center;
     height: max-content;
+    width: 100%;
   }
 `;
 
