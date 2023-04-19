@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import { useNavigate } from "react-router-dom";
 
+import { ProtectRouter } from "./ProtectRouter";
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -40,15 +42,17 @@ export const AdminEntry = () => {
   };
 
   return (
-    <Container>
-      <div className="button_container">
-        <button data-to="/" onClick={buttonClickHandler}>
-          인디고 페이지 사용하기
-        </button>
-        <button data-to="/admin/main" onClick={buttonClickHandler}>
-          어드민 페이지 사용하기
-        </button>
-      </div>
-    </Container>
+    <ProtectRouter>
+      <Container>
+        <div className="button_container">
+          <button data-to="/" onClick={buttonClickHandler}>
+            인디고 페이지 사용하기
+          </button>
+          <button data-to="/admin/main" onClick={buttonClickHandler}>
+            어드민 페이지 사용하기
+          </button>
+        </div>
+      </Container>
+    </ProtectRouter>
   );
 };

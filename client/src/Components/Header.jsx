@@ -441,7 +441,9 @@ export default function Header() {
         {isLogin && (
           <Link
             className={location.pathname.includes("user") ? "current" : ""}
-            to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}
           >
             마이페이지
           </Link>
@@ -459,7 +461,11 @@ export default function Header() {
       </HeaderLinkContainer>
       {isLogin ? (
         <UserStatus>
-          <Link to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}>
+          <Link
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}
+          >
             <div className="userInfo">
               <p className="welcome">환영합니다!</p>
               <p className="username">
@@ -506,9 +512,11 @@ export default function Header() {
               <NavbarProfileBox>
                 <div className="userInfo">
                   <Link
-                    to={`/mypage/${userInfo?.role.toLowerCase()}/${
-                      userInfo.id
-                    }`}
+                    to={`/mypage/${
+                      userInfo?.role.toLowerCase() !== "user"
+                        ? "performer"
+                        : "user"
+                    }/${userInfo.id}`}
                   >
                     <h2>
                       {`${userInfo?.profile[0].nickname} 님,`}
@@ -555,7 +563,11 @@ export default function Header() {
                   className={
                     location.pathname.includes("user") ? "current" : ""
                   }
-                  to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
+                  to={`/mypage/${
+                    userInfo?.role.toLowerCase() !== "user"
+                      ? "performer"
+                      : "user"
+                  }/${userInfo?.id}`}
                 >
                   마이페이지
                 </Link>

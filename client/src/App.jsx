@@ -23,6 +23,7 @@ import RequestBoardList from "./Pages/Boards/BoardType/RequestBoardList.jsx";
 import AdvertiseBoardList from "./Pages/Boards/BoardType/AdvertiseBoardList.jsx";
 import ReviewBoardList from "./Pages/Boards/BoardType/ReviewBoardList.jsx";
 import Token from "./Pages/Token.jsx";
+import { AdminLogin } from "./Pages/AdminLogin.jsx";
 
 import Header from "./Components/Header.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -140,6 +141,7 @@ function App() {
           <Route path="/board/review/:id" element={<Board />}></Route>
           <Route path="/board/review/:id/edit" element={<BoardEdit />}></Route>
           {/* admin */}
+          <Route path="/login/admin" element={<AdminLogin />}></Route>
           <Route path="/admin" element={<AdminEntry />}></Route>
           <Route path="/admin/main" element={<AdminMain />}></Route>
           <Route path="*" element={<NotFound />}></Route>

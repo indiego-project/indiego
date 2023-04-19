@@ -23,7 +23,7 @@ import { React, useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 import AllShowListPerformer from "../../Components/Profile/AllShowListPerformer.jsx";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 const Container = styled.div`
   align-items: center;
@@ -98,26 +98,41 @@ const ContentInnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: max-content;
-  padding: 5%;
+  height: 500px;
+  padding: 0 5%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
     align-items: center;
     padding: 20px 5%;
+    height: max-content;
   }
 `;
 
 const ProfileInfoContainer = styled.div`
-  align-items: flex-start;
+  align-items: center;
   border-bottom: 1px solid ${sub.sub100};
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding-bottom: 20px;
+  height: 40%;
+  min-height: 150px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
+    padding-bottom: 10px;
+  }
+
+  .performer-profile-container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  .performer-info-container {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
   }
 
   > div {
@@ -127,8 +142,8 @@ const ProfileInfoContainer = styled.div`
     > img {
       border: 2px solid ${sub.sub200};
       border-radius: 100%;
-      height: 140px;
-      width: 140px;
+      height: 120px;
+      width: 120px;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         height: 80px;
@@ -139,7 +154,6 @@ const ProfileInfoContainer = styled.div`
     > div {
       display: flex;
       flex-direction: column;
-      margin: 0 0 4% 7%;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         margin-left: 4%;
@@ -199,7 +213,10 @@ const ProfileInfoContainer = styled.div`
 
   > .button-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 70%;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       margin-top: 15px;
@@ -218,6 +235,7 @@ const ProfileInfoContainer = styled.div`
       padding: 5px 20px;
       width: max-content;
       text-align: center;
+      margin-top: 10px;
 
       &:hover {
         background-color: ${primary.primary200};
@@ -333,6 +351,29 @@ export default function Profile() {
     navigate(`/mypage/${params.id}/edit`);
   };
 
+  /** 퍼포머 인증신청 관련 */
+
+  const approveRequest = () => {
+    const { id: memberId } = profileData;
+    const data = { memberId };
+    return instance({
+      method: "post",
+      data: data,
+      url: "/certifications",
+    });
+  };
+
+  const { mutate: approveRequestButtonHandler } = useMutation({
+    mutationFn: approveRequest,
+    mutationKey: "performerRequest",
+    onSuccess: (res) => {
+      console.log(res);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   return (
     <Container>
       <WithdrawModal />
@@ -344,12 +385,12 @@ export default function Profile() {
       <ContentContainer>
         <ContentInnerContainer>
           <ProfileInfoContainer>
-            <div>
+            <div className="performer-profile-container">
               <img
                 alt="dummy profile"
                 src={profileData && profileData.profile[0].image}
               />
-              <div>
+              <div className="performer-info-container">
                 <span className="performer-nickname">
                   {profileData && profileData.profile[0].nickname}
                 </span>
@@ -368,6 +409,12 @@ export default function Profile() {
                 onClick={handleMoveToEditPage}
               >
                 프로필 수정하기
+              </button>
+              <button
+                className="profile-edit-button"
+                onClick={approveRequestButtonHandler}
+              >
+                퍼포머 인증 신청하기
               </button>
             </div>
           </ProfileInfoContainer>
