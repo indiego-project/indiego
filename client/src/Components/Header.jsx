@@ -446,7 +446,7 @@ export default function Header() {
             마이페이지
           </Link>
         )}
-        {isLogin && userInfo?.role === "PERFORMER" && (
+        {isLogin && userInfo?.role.includes("PERFORMER") && (
           <Link
             className={
               location.pathname.includes("tickets/create") ? "current" : ""

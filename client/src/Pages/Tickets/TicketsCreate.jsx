@@ -398,7 +398,7 @@ export default function TicketsCreate() {
     if (!userId) {
       navigate("/notFound");
     }
-    if (userRole !== "PERFORMER") {
+    if (!userRole.includes("PERFORMER")) {
       navigate("/notFound");
     }
   }, []);
