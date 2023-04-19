@@ -12,7 +12,7 @@ class AdminData {
 
 const PerformerRequest = new AdminData({
   title: "퍼포머 인증 신청",
-  queryKey: "FetchPerformerCertReq",
+  queryKey: "FetchCertReqAdmin",
   sort: "cert",
   queryFn: (args) => {
     const params = args;

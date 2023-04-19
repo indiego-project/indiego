@@ -4,6 +4,7 @@ import performerBadge from "../../assets/performerBadge.jpg";
 import useOpenModalStore from "../../store/useOpenModalStore.js";
 import useProfileDataStore from "../../store/useProfileDataStore";
 import WithdrawModal from "../../Components/Profile/WithdrawModal";
+// import CertLists from "../../Components/Profile/CertLists";
 
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
@@ -311,8 +312,10 @@ const LocationandAboutContainer = styled.div`
 export default function Profile() {
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
   const { profileData, setProfileData } = useProfileDataStore((state) => state);
+  const [certStatus, setCertStatus] = useState(0); // 0: 인증X 요청 X, 1: 인증됨, 2: 요청됨
   const navigate = useNavigate();
   const params = useParams();
+  const { id: memberId } = params;
   const isLogin = !!localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -353,8 +356,24 @@ export default function Profile() {
 
   /** 퍼포머 인증신청 관련 */
 
+  const fetchCertStatus = () => {
+    return instance.get(`/certifications/${memberId}`);
+  };
+
+  const { isLoading: certStatusLoading } = useQuery({
+    queryKey: ["fetchCertReq", memberId],
+    queryFn: fetchCertStatus,
+    onSuccess: (res) => {
+      const status = res.data.data.status.split("_")[1];
+      if (status === "APPROVED") {
+        setCertStatus(1);
+      } else if (status === "ASKED") {
+        setCertStatus(2);
+      }
+    },
+  });
+
   const approveRequest = () => {
-    const { id: memberId } = profileData;
     const data = { memberId };
     return instance({
       method: "post",
@@ -396,7 +415,9 @@ export default function Profile() {
                 </span>
                 <div>
                   <span className="user-type">퍼포머 회원</span>
-                  <img alt="performer badge" src={performerBadge} />
+                  {certStatus === 1 && (
+                    <img alt="performer badge" src={performerBadge} />
+                  )}
                 </div>
                 <span className="performer-email">
                   {profileData && profileData.email}
@@ -410,12 +431,18 @@ export default function Profile() {
               >
                 프로필 수정하기
               </button>
-              <button
-                className="profile-edit-button"
-                onClick={approveRequestButtonHandler}
-              >
-                퍼포머 인증 신청하기
-              </button>
+              {certStatus === 1 ? (
+                ""
+              ) : certStatus === 2 ? (
+                <p>요청이 처리중입니다.</p>
+              ) : (
+                <button
+                  className="profile-edit-button"
+                  onClick={approveRequestButtonHandler}
+                >
+                  퍼포머 인증 신청하기
+                </button>
+              )}
             </div>
           </ProfileInfoContainer>
           <LocationandAboutContainer>
@@ -438,6 +465,7 @@ export default function Profile() {
           </LocationandAboutContainer>
         </ContentInnerContainer>
         <AllShowListPerformer />
+        {/* <CertLists /> */}
         <button className="withdraw-button" onClick={setOpenModal}>
           회원 탈퇴하기
         </button>

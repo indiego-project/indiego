@@ -8,7 +8,8 @@ import { AdminFeatures } from "../../Components/Admin/adminData";
 
 const Container = styled.div`
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
