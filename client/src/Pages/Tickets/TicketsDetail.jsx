@@ -29,6 +29,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
+import dayjs from "dayjs";
 
 const Container = styled.div`
   align-items: center;
@@ -373,6 +374,10 @@ const TopRightContainer = styled.div`
     align-items: center;
     border-top: 1px solid ${sub.sub300};
 
+    &.disactived {
+      pointer-events: none;
+    }
+
     > .total-price {
       font-weight: 600;
       font-size: ${dtFontSize.medium};
@@ -397,27 +402,42 @@ const TopRightContainer = styled.div`
       > .set-count-button {
         all: unset;
         align-items: center;
-        color: ${sub.sub400};
-        margin: 0 10px;
+        border-radius: 3px;
+        justify-content: center;
+        color: white;
+        display: flex;
+        background-color: ${primary.primary200};
+        width: 20px;
+        height: 20px;
 
         &:hover {
-          color: ${primary.primary300};
+          background-color: ${secondary.secondary400};
           cursor: pointer;
         }
       }
 
-      > .reservation-seat-input {
+      > .reservation-seat {
+        align-items: center;
+        background-color: ${sub.sub100};
+        text-align: center;
+        display: flex;
+        justify-content: center;
         width: 50px;
+        font-weight: 600;
+        font-size: ${dtFontSize.medium};
 
-        ::-webkit-outer-spin-button,
-        ::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+        @media screen and (max-width: ${breakpoint.mobile}) {
+          font-size: ${mbFontSize.medium};
+          color: ${sub.sub800};
         }
       }
 
       > span {
         margin-left: 5px;
+        font-size: ${dtFontSize.medium};
+        @media screen and (max-width: ${breakpoint.mobile}) {
+          font-size: ${mbFontSize.medium};
+        }
       }
     }
   }
@@ -452,17 +472,23 @@ export default function TicketsDetail() {
   const [isReservationPossible, setIsReservationPossible] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
   const [reservationDate, setReservationDate] = useState("");
-  const [dateError, setDateError] = useState(false);
   const [isSameUser, setIsSameUser] = useState(false);
   const { clicked, setClicked } = useClickedStarStore((state) => state);
   const params = useParams();
   const navigate = useNavigate();
+  const now = dayjs();
 
   useEffect(() => {
-    setDateError(false);
     setIsSameUser(false);
-    setIsReservationPossible(true);
     setClicked([false, false, false, false, false]);
+    if (
+      ticketData.emptySeats <= 0 ||
+      now.format("YYYY-MM-DD") > ticketData.expiredAt
+    ) {
+      setIsReservationPossible(false);
+    } else {
+      setIsReservationPossible(true);
+    }
   }, [ticketData]);
 
   useEffect(() => {
@@ -474,23 +500,6 @@ export default function TicketsDetail() {
       setIsSameUser(true);
     } else {
       setIsSameUser(false);
-    }
-  });
-
-  useEffect(() => {
-    if (ticketData.emptySeats <= 0) {
-      setIsReservationPossible(false);
-    }
-  }, [ticketData]);
-
-  useEffect(() => {
-    if (
-      new Date(reservationDate) < new Date(ticketData.showAt) ||
-      new Date(reservationDate) > new Date(ticketData.expiredAt)
-    ) {
-      setDateError(true);
-    } else {
-      setDateError(false);
     }
   });
 
@@ -578,7 +587,7 @@ export default function TicketsDetail() {
   });
 
   const handleReservation = () => {
-    if (dateError || ticketCount === "") {
+    if (ticketCount === "") {
       return;
     }
     postReservation();
@@ -658,6 +667,7 @@ export default function TicketsDetail() {
               <div className="calender-container">
                 <SelectTicketDateCalendar
                   setReservationDate={setReservationDate}
+                  isReservationPossible={isReservationPossible}
                 />
               </div>
               <div className="middle-container">
@@ -666,47 +676,53 @@ export default function TicketsDetail() {
                   잔여 좌석: {ticketData.emptySeats} / {ticketData.total}
                 </EmptySeat>
               </div>
-              <div className="inner-container">
+              <div
+                className={`inner-container ${
+                  isReservationPossible ? "" : "disactived"
+                }`}
+              >
                 <span className="sub-title">수량 선택</span>
-                {isReservationPossible ? (
-                  <>
-                    <div>
-                      <button
-                        className="set-count-button"
-                        onClick={handleTicketMinus}
-                      >
-                        <FontAwesomeIcon icon={faMinus} size="1x" />
-                      </button>
-                      <input
-                        className="reservation-seat-input"
-                        onChange={handleTicketChange}
-                        type="number"
-                        value={ticketCount}
-                      />
-                      <span>매</span>
-                      <button
-                        className="set-count-button"
-                        onClick={handleTicketPlus}
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  ""
-                )}
+                <div>
+                  <button
+                    className="set-count-button"
+                    onClick={handleTicketMinus}
+                  >
+                    <FontAwesomeIcon icon={faMinus} size="1x" />
+                  </button>
+                  <div
+                    className="reservation-seat"
+                    onChange={handleTicketChange}
+                  >
+                    {ticketCount}
+                  </div>
+                  <button
+                    className="set-count-button"
+                    onClick={handleTicketPlus}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                  <span>매</span>
+                </div>
               </div>
               <div className="inner-container">
-                <div className="total-price">
-                  총 티켓 가격: {ticketCount * ticketData.price}₩
-                </div>
-                <PillButton
-                  color={primary.primary300}
-                  hoverColor={secondary.secondary500}
-                  onClick={handleReservation}
-                >
-                  예매하기
-                </PillButton>
+                {isReservationPossible ? (
+                  <>
+                    <div className="total-price">
+                      총 티켓 가격: {ticketCount * ticketData.price}₩
+                    </div>
+                    <PillButton
+                      color={primary.primary300}
+                      hoverColor={secondary.secondary500}
+                      onClick={handleReservation}
+                    >
+                      예매하기
+                    </PillButton>
+                  </>
+                ) : (
+                  <ImpossibleButton color={misc.red}>
+                    예매 불가
+                  </ImpossibleButton>
+                )}
               </div>
             </TopRightContainer>
           </ContentTopContainer>
