@@ -77,9 +77,8 @@ public class PaymentService {
 
     @Transactional
     public void paymentFail(String message, String orderId) {
-        Payment findPayment = paymentRepository.findByOrderId(orderId).orElseThrow(() -> {
-            throw new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND);
-        });
+        Payment findPayment = paymentRepository.findByOrderId(orderId).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND));
 
         findPayment.setPaymentApproved(false);
         findPayment.setFailDescription(message);
@@ -93,7 +92,7 @@ public class PaymentService {
                 () -> new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND));
 
         if (verifiedPayment.getAmount().equals(amount)) {
-            throw  new BusinessLogicException(ExceptionCode.AMOUNT_NOT_EQUAL);
+            throw new BusinessLogicException(ExceptionCode.AMOUNT_NOT_EQUAL);
         }
         return verifiedPayment;
     }
