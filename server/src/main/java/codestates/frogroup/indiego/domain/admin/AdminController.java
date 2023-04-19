@@ -21,8 +21,8 @@ import javax.validation.constraints.Positive;
 public class AdminController {
     private final AdminServiceImpl adminService;
 
-    @PostMapping("/certifications/{certification-id}")
-    public ResponseEntity certifyPerformer(@Positive @PathVariable("certification-id") Long certiId,
+    @PostMapping("/certifications/{certi-id}")
+    public ResponseEntity certifyPerformer(@Positive @PathVariable("certi-id") Long certiId,
                                            @LoginMemberId Long tokenMemberId,
                                            @Valid @RequestBody CertificationDto.AdminPost adminPostDto){
         ResponseEntity response =  adminService.certifyPerformer(certiId, tokenMemberId,adminPostDto.getMessage());

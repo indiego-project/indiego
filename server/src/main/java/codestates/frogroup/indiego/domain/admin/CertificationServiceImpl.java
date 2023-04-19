@@ -33,9 +33,7 @@ public class CertificationServiceImpl implements CertificationService{
 
     @Override
     public CertificationDto.Response createCertication(Certification certification, Long memberId) {
-        Member member = memberService.findVerifiedMember(certification.getMember().getId());
-        Member foundMember = memberService.findVerifiedMember(memberId);
-        if(!member.equals(foundMember)) throw new BusinessLogicException(ExceptionCode.MEMBER_IS_NOT_SAME);
+        Member member = memberService.findVerifiedMember(memberId);
         if (certificationRepository.findByMemberId(memberId).isPresent()) throw new BusinessLogicException(ExceptionCode.CERTIFICATION_EXIST);
         certification.setMember(member);
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ASKED);
@@ -54,16 +52,17 @@ public class CertificationServiceImpl implements CertificationService{
     }
 
     @Override
-    public CertificationDto.Response findCertification(Long memberId, Long tokenMeberId) {
-        //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
-        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
-                !memberId.equals(tokenMeberId)){
-                throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
-        }
+    public CertificationDto.Response findCertification(Long certiId, Long tokenMeberId) {
 
-        Certification certification = certificationRepository.findByMemberId(memberId).orElseThrow(
+        Certification certification = certificationRepository.findById(certiId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.CERTIFICATION_NOT_FOUND)
         );
+
+        //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
+        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
+                !certification.getMember().getId().equals(tokenMeberId)){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
+        }
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
         return response;
     }
@@ -75,11 +74,13 @@ public class CertificationServiceImpl implements CertificationService{
 
     @Override
     public CertificationDto.Response patchCertification(Certification certification, Long certificatedId, Long memberId) {
-        Certification findVerifiedCertification = findVerifiedCertification(certificatedId);
-        Certification updatedCerti = beanUtils.copyNonNullProperties(certification, findVerifiedCertification);
-        updatedCerti.setMember(memberService.findVerifiedMember(memberId));
-        CertificationDto.Response response = certificationMapper.certificationToResponse(updatedCerti);
-        response.setMessage("퍼포머 인증이 수정됐습니다.");
+           Certification findVerifiedCertification = findVerifiedCertification(certificatedId);
+           findVerifiedCertification.setCertificationStatus(certification.getCertificationStatus());
+ //           Certification updatedCerti = beanUtils.copyNonNullProperties(certification, findVerifiedCertification);
+//            updatedCerti.setMember(memberService.findVerifiedMember(memberId));
+            CertificationDto.Response response = certificationMapper.certificationToResponse(findVerifiedCertification);
+            response.setMessage("퍼포머 인증이 수정됐습니다.");
+
         return response;
     }
 
