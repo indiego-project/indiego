@@ -6,11 +6,14 @@ import codestates.frogroup.indiego.domain.article.mapper.ArticleCommentMapper;
 import codestates.frogroup.indiego.domain.article.repository.ArticleCommentRepository;
 import codestates.frogroup.indiego.domain.article.service.ArticleCommentService;
 import codestates.frogroup.indiego.domain.member.entity.Member;
+import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.dto.MultiResponseDto;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
+import codestates.frogroup.indiego.global.security.auth.enums.Roles;
+import codestates.frogroup.indiego.global.security.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -36,23 +36,25 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
+    private final CertificationRepository certificationRepository;
+    private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final CertificationServiceImpl certificationService;
     private final CertificationMapper certificationMapper;
     private final ArticleCommentService articleCommentService;
     private final ArticleCommentRepository articleCommentRepository;
     private final ArticleCommentMapper articleCommentMapper;
+    private final CustomAuthorityUtils customAuthorityUtils;
 
     //퍼포머 인증
-    public ResponseEntity certifyPerformer(Long certificationId, Long tokenMemberId, String message){
-        CertificationDto.Response responseDto = certificationService.findCertification(certificationId, tokenMemberId);
-       Certification certification = certificationMapper.responseToCertification(responseDto);
+    public ResponseEntity certifyPerformer(Long certiId, Long tokenMemberId, String message) {
+        CertificationDto.Response certificationDto = certificationService.findCertification(certiId, tokenMemberId);
+        Certification certification = certificationMapper.responseToCertification(certificationDto);
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
-        List<String> roles = member.getRoles();
-        roles.set(0, "PERFOMER");
-        member.setRoles(roles);
+        member.setRoles(customAuthorityUtils.createRoles(Roles.PERFORMER.getRole()));
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ALLOWED);
         certification.setMessage(message);
+        certificationService.patchCertification(certification, certiId, member.getId());
         return new ResponseEntity<>(new SingleResponseDto("퍼포머 인증됐습니다."), HttpStatus.OK);
     }
 
@@ -62,6 +64,8 @@ public class AdminServiceImpl implements AdminService {
         Certification certification = certificationMapper.responseToCertification(responseDto);
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_DENIED);
         certification.setMessage(message);
+        Member member = memberService.findVerifiedMember(certification.getMember().getId());
+        certificationService.patchCertification(certification, certificationId, member.getId());
         return  new ResponseEntity<>(new SingleResponseDto("퍼포머 인증 거부됐습니다."), HttpStatus.OK);
     }
 
@@ -82,9 +86,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseEntity getComments(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("createdAt"));
+        pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "createdAt"));
         Page<ArticleComment> page = articleCommentRepository.findAll(pageable);
-        List<ArticleCommentDto.Response> response =articleCommentMapper.articleCommentsToArticleCommentResponses(page.getContent());
+        List<ArticleCommentDto.Response> response = articleCommentMapper.articleCommentsToArticleCommentResponses(page.getContent());
         MultiResponseDto<ArticleCommentDto.Response> multiResponseDto = new MultiResponseDto<>(response, page);
         return ResponseEntity.ok().body(multiResponseDto);
     }

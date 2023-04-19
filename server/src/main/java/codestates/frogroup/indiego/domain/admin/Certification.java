@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 public class Certification extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,18 +25,18 @@ public class Certification extends BaseTime {
     private Member member;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length = 30, nullable = false)
     private CertificationStatus certificationStatus;
 
     @Column
     private String message;
-
 
     public void setMember(Member member){
         this.member = member;
     }
     public void setMessage(String message){this.message = message;}
 
+    @Getter
     public enum CertificationStatus{
         CERTIFICATION_ASKED("요청됨"),
         CERTIFICATION_ALLOWED("허락됨"),
