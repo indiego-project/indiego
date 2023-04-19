@@ -13,10 +13,12 @@ const Container = styled.section`
   align-items: center;
   margin-top: 20px;
   width: 70%;
-  height: max-content;
+  max-height: 400px;
   min-height: 100px;
+  overflow-y: scroll;
   border: 1px solid lightgrey;
   padding: 10px 0;
+  margin-top: 40px;
 
   .contents_container {
     display: flex;

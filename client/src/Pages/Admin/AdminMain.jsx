@@ -15,6 +15,7 @@ const Container = styled.div`
   align-items: center;
   background-color: gray;
   color: white;
+  padding-bottom: 50px;
 
   header {
     font-size: ${dtFontSize.xlarge};

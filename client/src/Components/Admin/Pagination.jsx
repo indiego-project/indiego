@@ -12,10 +12,19 @@ const Container = styled.div`
   .button_container {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 20%;
+
+    button {
+      :hover {
+        cursor: pointer;
+        background-color: gray;
+      }
+    }
   }
 
   .page {
+    margin: 0 5px;
     :hover {
       cursor: pointer;
     }
