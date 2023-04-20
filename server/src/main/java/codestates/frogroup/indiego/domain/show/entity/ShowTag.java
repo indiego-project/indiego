@@ -1,5 +1,6 @@
 package codestates.frogroup.indiego.domain.show.entity;
 
+import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.tag.dto.TagDto;
 import codestates.frogroup.indiego.domain.tag.entity.Tag;
 import lombok.AccessLevel;
@@ -27,8 +28,6 @@ public class ShowTag {
     @JoinColumn(name = "show_id")
     private Show show;
 
-//    private Boolean status;
-
     public void updateTag(Tag tag) {
         this.tag = tag;
     }
@@ -37,15 +36,13 @@ public class ShowTag {
         this.show = show;
     }
 
-//    public void addStatus() {
-//        this.status = true;
-//    }
-//
-//    public void changeTagStatus(Boolean status) {
-//        this.status = status;
-//    }
-
-    public TagDto.Response toResponseDto(){
-        return new TagDto.Response(this.getTag().getId(), this.getTag().getName() , this.getTag().getType());
+    public TagDto.Response toResponseDto() {
+        return new TagDto.Response(
+                this.getTag().getId(),
+                this.getTag().getName(),
+                this.getTag().getType(),
+                this.getTag().getBackgroundColor(),
+                this.getTag().getTextColor()
+        );
     }
 }

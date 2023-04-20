@@ -31,9 +31,6 @@ public class ShowTagRepositoryCustomImpl extends QuerydslRepositorySupport imple
     @Override
     public ShowTag findShowTagByShowIdAndTagId(Long showId, Long tagId) {
 
-        log.info("showId = {}",showId);
-        log.info("tagId = {}",tagId);
-
         return queryFactory
                 .selectFrom(showTag)
                 .where(

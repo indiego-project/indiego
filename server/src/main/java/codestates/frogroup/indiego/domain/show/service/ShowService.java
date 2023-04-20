@@ -41,6 +41,7 @@ public class ShowService {
     private final MemberService memberService;
     private final CustomBeanUtils<Show> utils;
     private final ShowReservationService reservationService;
+    private final ShowTagService showTagService;
     private final ScoreRepository scoreRepository;
     private final RedisKey redisKey;
     private final ShowMapper mapper;
@@ -65,7 +66,7 @@ public class ShowService {
         Show findShow = this.findVerifiedShow(showId);
         memberService.verifiedMemberId(memberId,findShow.getMember().getId());
         findShow.changeShow(patchShow);
-
+        showTagService.updateShowTagByDto(findShow, patchShow.getTags());
         return findShow;
     }
 

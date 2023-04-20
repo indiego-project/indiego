@@ -26,6 +26,12 @@ public class Tag {
     @Column(length = 100, nullable = false)
     private String type;
 
+    @Column(length = 100, nullable = false)
+    private String backgroundColor;
+
+    @Column(length = 100, nullable = false)
+    private String textColor;
+
     @OneToMany(mappedBy = "tag")
     private List<ShowTag> showTags = new ArrayList<>();
 

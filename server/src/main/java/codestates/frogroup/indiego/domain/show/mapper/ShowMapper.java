@@ -41,7 +41,7 @@ public interface ShowMapper {
     @Mapping(source = "showTime", target = "showBoard.showTime")
     Show showPatchDtoToShow(ShowDto.Patch patch);
 
-    ShowDto.postResponse showToShowPostResponse(Show show);
+    ShowDto.PostResponse showToShowPostResponse(Show show);
 
     ShowDto.Response showToShowResponse(Show show);
 

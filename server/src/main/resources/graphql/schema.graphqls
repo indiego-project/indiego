@@ -1,6 +1,8 @@
 type Tag {
     tagId: ID!
     name : String
+    backgroundColor : String
+    textColor : String
     type : String
 }
 

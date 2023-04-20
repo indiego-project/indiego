@@ -53,7 +53,7 @@ public class ShowDto {
         @NotNull
         private Integer total; // 정원
         @NotNull
-        private List<String> tags;
+        private List<Long> tags;
     }
 
 
@@ -81,7 +81,7 @@ public class ShowDto {
         private Double latitude;
         private Double longitude;
         private Integer total; // 정원
-        private List<String> tags;
+        private List<Long> tags;
     }
 
     @Getter
@@ -145,7 +145,7 @@ public class ShowDto {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class postResponse{
+    public static class PostResponse{
         private Long id;
         //ShowBoard
         //Board
@@ -172,7 +172,7 @@ public class ShowDto {
         private List<TagDto.Response> tags;
 
         @Builder
-        public postResponse (Show show) {
+        public PostResponse (Show show) {
             this.id = show.getId();
             this.title = show.getShowBoard().getBoard().getTitle();
             this.content = show.getShowBoard().getBoard().getContent();
@@ -217,7 +217,7 @@ public class ShowDto {
         private String detailAddress;
 
         @Builder
-        ShowsResponse(Long id, ShowBoard showBoard, Member member){
+        public ShowsResponse(Long id, ShowBoard showBoard, Member member){
             this.id = id;
             this.nickname = member.getProfile().getNickname();
             this.title = showBoard.getBoard().getTitle();

@@ -60,7 +60,7 @@ public class ShowController {
         Show show = mapper.showPostDtoToShow(showPostDto);
         List<ShowTag> showTags = showTagService.createShowTagByShowAndTagsList(show, showPostDto.getTags());
         Show createdShow = showService.createShow(show, showTags, memberId);
-        ShowDto.postResponse response = mapper.showToShowPostResponse(createdShow);
+        ShowDto.PostResponse response = mapper.showToShowPostResponse(createdShow);
 
         return new ResponseEntity<>(new SingleResponseDto(response), HttpStatus.CREATED);
     }

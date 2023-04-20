@@ -1,6 +1,5 @@
 package codestates.frogroup.indiego.domain.tag.repository.querydsl;
 
-import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.tag.entity.Tag;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 import static codestates.frogroup.indiego.domain.tag.entity.QTag.*;
 
@@ -25,14 +23,14 @@ public class TagRepositoryCustomImpl extends QuerydslRepositorySupport implement
 
 
     /*
-    * 수정필요, 인기가 많은 태그순으로 쿼리문 작성 필요. (show_tag 테이블 참조하여)
+    * 타입 = 카테고리 : 공연,연극 카테고리에 맞는 목록을 반환해주기
     * */
     @Override
     public List<Tag> findByType(String type) {
         return queryFactory
                 .select(tag)
                 .from(tag)
-                .limit(5)
+                .where(tag.type.eq(type))
                 .orderBy(tag.id.desc())
                 .fetch();
     }

@@ -20,6 +20,13 @@ public class TagDto {
 
         @NotNull
         private String type;
+
+        @NotNull
+        private String backgroundColor;
+
+        @NotNull
+        private String textColor;
+
     }
 
     @Getter
@@ -31,6 +38,8 @@ public class TagDto {
         private Long tagId;
         private String name;
         private String type;
+        private String backgroundColor;
+        private String textColor;
 
     }
 }

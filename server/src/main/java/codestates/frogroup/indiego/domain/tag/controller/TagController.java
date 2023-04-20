@@ -27,7 +27,7 @@ public class TagController {
     @GetMapping
     public ResponseEntity getTags(@RequestParam("type") String type) {
 
-        List<Tag> findTags = tagService.findTags(type); // TODO : 추후 카테고리별로 인기 TOP 순위로 조회하도록 변경필요
+        List<Tag> findTags = tagService.findTags(type);
         List<TagDto.Response> tagListResponseDto = tagMapper.tagListToTagListResponseDto(findTags);
 
         return new ResponseEntity<>(new SingleResponseDto<>(tagListResponseDto), HttpStatus.OK);
@@ -35,9 +35,9 @@ public class TagController {
 
 
     /*
-    * 추후 서비스에서 태그 추가기능이 생긴다면 사용
+    * 추후 Admin 계정에서 태그관리를 하도록
+    * 사용한다면 type에 대한 정의가 필요, 현재는 카테고리 이름을 되어있음.
     * */
-
     @PostMapping
     public ResponseEntity postTag(@Valid @RequestBody TagDto.Post tagDto) {
         Tag tag = tagMapper.tagDtoToTag(tagDto);
