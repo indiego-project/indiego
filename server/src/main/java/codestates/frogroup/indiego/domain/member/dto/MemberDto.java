@@ -50,15 +50,18 @@ public class MemberDto {
         private Double latitude;
         private Double longitude;
 
+        private Long certiId;
+
         @Builder
         public GetResponse(Long id, String email, List<String> role, Profile profile,
-                           Double latitude, Double longitude){
+                           Double latitude, Double longitude, Long certiId){
             this.id = id;
             this.email = email;
             this.role = role.get(0);
             this.profile = List.of(profile);
             this.latitude = latitude;
             this.longitude = longitude;
+            this.certiId = certiId;
         }
     }
 
