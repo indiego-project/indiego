@@ -34,7 +34,7 @@ public class PaymentController {
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
-    @GetMapping("/success")
+    @PostMapping("/success")
     public ResponseEntity paymentSuccess(@RequestParam String paymentKey,
                                          @RequestParam String orderId,
                                          @RequestParam Long amount) {
@@ -43,7 +43,7 @@ public class PaymentController {
                 paymentService.paymentSuccess(paymentKey, orderId, amount)), HttpStatus.OK);
     }
 
-    @GetMapping("fail")
+    @PostMapping("fail")
     public ResponseEntity paymentFail(@RequestParam String code,
                                       @RequestParam String message,
                                       @RequestParam String orderId) {
