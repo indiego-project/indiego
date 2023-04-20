@@ -1,5 +1,6 @@
 package codestates.frogroup.indiego.domain.member.entity;
 
+import codestates.frogroup.indiego.domain.admin.Certification;
 import codestates.frogroup.indiego.domain.common.auditing.BaseTime;
 import codestates.frogroup.indiego.domain.common.embedding.Coordinate;
 import lombok.*;
@@ -37,6 +38,15 @@ public class Member extends BaseTime {
     @Setter
     @Enumerated(value = EnumType.STRING)
     private OAuthStatus oAuthStatus;
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "certification_id")
+    private Certification certification;
+
+    public void setCertification(Certification certification){
+        this.certification = certification;
+    }
 
     public enum OAuthStatus {
         NORMAL("일반"),
