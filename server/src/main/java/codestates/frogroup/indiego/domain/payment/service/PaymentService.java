@@ -112,9 +112,9 @@ public class PaymentService {
     @Transactional
     public HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        String encodedAuthKey = new String(
-                Base64.getEncoder().encode((paymentConfig.getTestSecretKey() + ":").getBytes(StandardCharsets.UTF_8)));
-        headers.setBasicAuth(encodedAuthKey);
+//        String encodedAuthKey = new String(
+//                Base64.getEncoder().encode(("Authorization: " + paymentConfig.getTestSecretKey()).getBytes(StandardCharsets.UTF_8)));
+        headers.setBasicAuth("dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         return headers;
