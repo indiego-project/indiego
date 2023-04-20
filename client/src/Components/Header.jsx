@@ -378,7 +378,7 @@ export default function Header() {
       .finally((response) => {
         localStorage.clear();
         window.alert("로그아웃 되었습니다!");
-        window.location.reload();
+        window.location.replace("/");
       });
   };
 
@@ -448,15 +448,19 @@ export default function Header() {
             마이페이지
           </Link>
         )}
-        {isLogin && userInfo?.role === "PERFORMER" && (
-          <Link
-            className={
-              location.pathname.includes("tickets/create") ? "current" : ""
-            }
-            to={"/tickets/create"}
-          >
-            공연작성하기
-          </Link>
+        {(isLogin && userInfo?.role === "PERFORMER") ||
+          (userInfo?.role === "ADMIN" && (
+            <Link
+              className={
+                location.pathname.includes("tickets/create") ? "current" : ""
+              }
+              to={"/tickets/create"}
+            >
+              공연작성하기
+            </Link>
+          ))}
+        {isLogin && userInfo?.role === "ADMIN" && (
+          <Link to={"/admin/main"}>ADMIN</Link>
         )}
       </HeaderLinkContainer>
       {isLogin ? (
@@ -571,6 +575,22 @@ export default function Header() {
                 >
                   마이페이지
                 </Link>
+              )}
+              {(isLogin && userInfo?.role === "PERFORMER") ||
+                (userInfo?.role === "ADMIN" && (
+                  <Link
+                    className={
+                      location.pathname.includes("tickets/create")
+                        ? "current"
+                        : ""
+                    }
+                    to={"/tickets/create"}
+                  >
+                    공연작성하기
+                  </Link>
+                ))}
+              {isLogin && userInfo?.role === "ADMIN" && (
+                <Link to={"/admin/main"}>ADMIN</Link>
               )}
             </NavbarLinkerContainer>
           </NavbarContainer>
