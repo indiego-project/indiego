@@ -178,7 +178,7 @@ const UserStatus = styled.div`
     color: white;
     background-color: ${primary.primary500};
     min-width: 150px;
-    max-width: 200px;
+    max-width: 300px;
     padding: 10px 0;
     height: max-content;
     align-items: center;
