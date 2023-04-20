@@ -41,6 +41,7 @@ public interface MemberMapper {
     @Mapping(source = "coordinate.latitude", target = "latitude")
     @Mapping(source = "coordinate.longitude", target = "longitude")
     @Mapping(source = "roles", target = "role")
+    @Mapping(source = "certification.id", target = "certiId")
     MemberDto.GetResponse memberToGetResponse(Member member);
 
 }
