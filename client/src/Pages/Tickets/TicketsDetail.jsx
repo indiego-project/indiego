@@ -21,6 +21,7 @@ import {
 import useTicketDataStore from "../../store/useTicketDataStore";
 import useOpenModalStore from "../../store/useOpenModalStore.js";
 import useClickedStarStore from "../../store/useClickedStarStore.js";
+import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore.js";
 import instance from "../../api/core/default.js";
 
 //라이브러리 및 라이브러리 메소드
@@ -478,12 +479,14 @@ const ImpossibleButton = styled(PillButton)`
 
 export default function TicketsDetail() {
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+  const { requestPaymentsData, setRequestPaymentsData } =
+    useRequestPaymentsDataStore((state) => state);
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
+  const { clicked, setClicked } = useClickedStarStore((state) => state);
   const [isReservationPossible, setIsReservationPossible] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
   const [reservationDate, setReservationDate] = useState("");
   const [isSameUser, setIsSameUser] = useState(false);
-  const { clicked, setClicked } = useClickedStarStore((state) => state);
   const params = useParams();
   const navigate = useNavigate();
   const now = dayjs();
@@ -565,19 +568,24 @@ export default function TicketsDetail() {
     setTicketCount(Number(e.target.value));
   };
 
-  const postData = () => {
+  const requestPayments = () => {
     return instance({
       method: "post",
-      url: `/shows/reservations/${params.id}`,
-      data: { date: reservationDate, ticketCount },
+      url: `/payments`,
+      data: {
+        paymentType: "CARD",
+        amount: ticketCount * ticketData.price,
+        orderName: ticketData.title,
+      },
     });
   };
 
-  const postDataOnsuccess = () => {
-    window.alert("공연 예매가 완료되었습니다.");
+  const requestPaymentsOnSuccess = (response) => {
+    setRequestPaymentsData(response.data.data);
+    navigate(`/tickets/${ticketData.id}/checkout`);
   };
 
-  const postDataOnError = (error) => {
+  const requestPaymentsOnError = (error) => {
     if (
       error.response.status === 400 &&
       error.response.data.message === "Token Expired"
@@ -590,17 +598,14 @@ export default function TicketsDetail() {
     }
   };
 
-  const { mutate: postReservation } = useMutation({
-    mutationFn: postData,
-    onSuccess: postDataOnsuccess,
-    onError: postDataOnError,
+  const { mutate: postRequestPayments } = useMutation({
+    mutationFn: requestPayments,
+    onSuccess: requestPaymentsOnSuccess,
+    onError: requestPaymentsOnError,
   });
 
   const handleReservation = () => {
-    if (ticketCount === "") {
-      return;
-    }
-    postReservation();
+    postRequestPayments();
   };
 
   return (

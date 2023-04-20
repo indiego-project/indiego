@@ -23,6 +23,7 @@ import RequestBoardList from "./Pages/Boards/BoardType/RequestBoardList.jsx";
 import AdvertiseBoardList from "./Pages/Boards/BoardType/AdvertiseBoardList.jsx";
 import ReviewBoardList from "./Pages/Boards/BoardType/ReviewBoardList.jsx";
 import Token from "./Pages/Token.jsx";
+import CheckoutPage from "./Pages/Payments/CheckoutPage.jsx";
 
 import Header from "./Components/Header.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -97,6 +98,12 @@ function App() {
           <Route path="/tickets/create" element={<TicketsCreate />}></Route>
           <Route path="/tickets/:id" element={<TicketsDetail />}></Route>
           <Route path="/tickets/:id/edit" element={<TicketsEdit />}></Route>
+
+          {/* 결제 관련 */}
+          <Route
+            path="/tickets/:id/checkout"
+            element={<CheckoutPage />}
+          ></Route>
 
           {/* 공연찾기게시판 */}
           <Route path="/search" element={<Search />}></Route>
