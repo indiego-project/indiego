@@ -11,6 +11,7 @@ import codestates.frogroup.indiego.domain.payment.repository.PaymentRepository;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,9 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Objects;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -59,18 +62,18 @@ public class PaymentService {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = getHeaders();
         JSONObject params = new JSONObject();
+        params.put("paymentKey", paymentKey);
         params.put("orderId", orderId);
         params.put("amount", amount);
 
         PaymentSuccessDto result = null;
+        result = restTemplate.postForObject(PaymentConfig.URL, new HttpEntity<>(params, headers), PaymentSuccessDto.class);
 
-        try {
-            result = restTemplate.postForObject(PaymentConfig.URL + paymentKey,
-                    new HttpEntity<>(params, headers),
-                    PaymentSuccessDto.class);
-        } catch (Exception e) {
-            throw new BusinessLogicException(ExceptionCode.PAYMENT_ALREADY_APPROVED);
-        }
+//        try {
+//            result = restTemplate.postForObject(PaymentConfig.URL, new HttpEntity<>(params, headers), PaymentSuccessDto.class);
+//        } catch (Exception e) {
+//            throw new BusinessLogicException(ExceptionCode.PAYMENT_ALREADY_APPROVED);
+//        }
 
         return result;
     }
@@ -91,7 +94,7 @@ public class PaymentService {
         Payment verifiedPayment = paymentRepository.findByOrderId(orderId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND));
 
-        if (verifiedPayment.getAmount().equals(amount)) {
+        if (!Objects.equals(verifiedPayment.getAmount(), amount)) {
             throw new BusinessLogicException(ExceptionCode.AMOUNT_NOT_EQUAL);
         }
         return verifiedPayment;

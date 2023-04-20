@@ -28,8 +28,6 @@ public class PaymentController {
                                          @RequestBody PaymentRequestDto paymentRequestDto) {
 
         PaymentResponseDto response = paymentService.requestPayments(memberId, paymentRequestDto);
-        response.setSuccessUrl(paymentConfig.getSuccessUrl());
-        response.setFailUrl(paymentConfig.getFailUrl());
 
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
