@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static codestates.frogroup.indiego.domain.admin.QCertification.certification;
+
 @Slf4j
 @Service
 @Transactional
@@ -58,18 +60,35 @@ public class CertificationServiceImpl implements CertificationService{
                 () -> new BusinessLogicException(ExceptionCode.CERTIFICATION_NOT_FOUND)
         );
 
-        //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
-        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
-                !certification.getMember().getId().equals(tokenMeberId)){
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
-        }
+//        //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
+//        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
+//                !certification.getMember().getId().equals(tokenMeberId)){
+//            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
+//        }
+
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
         return response;
     }
 
     @Override
+    public CertificationDto.Response findCertificationByMemberId(Long memberId, Long tokenMeberId) {
+
+        Certification certification = certificationRepository.findByMemberId(memberId).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.CERTIFICATION_NOT_FOUND)
+        );
+
+//        //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
+//        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
+//                !certification.getMember().getId().equals(tokenMeberId)){
+//            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
+//        }
+
+        CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
+        return response;
+    }
+    @Override
     public Page<Certification> findAllCertification(int page, int size) {
-        return certificationRepository.findAll(PageRequest.of(page, size));
+        return certificationRepository.findAll(Certification.CertificationStatus.CERTIFICATION_ASKED,PageRequest.of(page, size));
     }
 
     @Override
