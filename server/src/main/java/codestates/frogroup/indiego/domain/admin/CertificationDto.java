@@ -2,8 +2,6 @@ package codestates.frogroup.indiego.domain.admin;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 
 public class CertificationDto {
     @Getter
@@ -36,7 +34,6 @@ public class CertificationDto {
         String message;
         String email;
         Certification.CertificationStatus status;
-        LocalDateTime createdAt;
 
     }
 

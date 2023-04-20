@@ -16,7 +16,6 @@ public interface CertificationMapper {
     @Mapping(source = "member.id", target = "memberId")
     @Mapping(source = "member.email", target = "email")
     @Mapping(source = "certificationStatus",target = "status")
-    @Mapping(source = "createdAt", target = "createdAt")
     List<CertificationDto.Response> certificationToCertificationResponseDtos(List<Certification> certificationa);
     @Mapping(source = "id", target = "id")
     @Mapping(source = "memberId", target = "member.id")

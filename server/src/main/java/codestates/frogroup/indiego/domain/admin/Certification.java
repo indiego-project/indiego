@@ -20,6 +20,9 @@ public class Certification extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 30, nullable = false)
@@ -28,13 +31,8 @@ public class Certification extends BaseTime {
     @Column
     private String message;
 
-    @OneToOne(mappedBy = "certification", fetch = FetchType.LAZY)
-    private Member member;
-
-
     public void setMember(Member member){
         this.member = member;
-        member.setCertification(this);
     }
     public void setMessage(String message){this.message = message;}
 
