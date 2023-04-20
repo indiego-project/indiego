@@ -21,10 +21,6 @@ public class PaymentRequestDto {
 
     private String orderName;
 
-    private String successUrl;
-
-    private String failUrl;
-
     public Payment toEntity() {
         return Payment.builder()
                 .amount(amount)
