@@ -133,12 +133,20 @@ const InputModal = ({ message, setMessage, handlers, modalStates }) => {
           id="message"
         />
         <div className="button_container">
-          <button onClick={sendReqHandler(purpose)}>send</button>
+          <button
+            onClick={() => {
+              sendReqHandler(purpose);
+              document.querySelector("body").classList.remove("modal_open");
+            }}
+          >
+            send
+          </button>
           <button
             onClick={(e) => {
               e.preventDefault();
               setModalStates({ open: false, purpose: "" });
               setMessage("");
+              document.querySelector("body").classList.remove("modal_open");
             }}
           >
             close
@@ -151,14 +159,13 @@ const InputModal = ({ message, setMessage, handlers, modalStates }) => {
 
 const ListCertBody = ({ data, index, handlers, queryKey }) => {
   const queryClient = useQueryClient();
-
   const { approve, reject } = handlers;
   const [message, setMessage] = useState("");
   const [modalStates, setModalStates] = useState({ open: false, purpose: "" });
 
   const { mutate: approveReq } = useMutation({
     mutationKey: ["approveCertReq", data.id],
-    mutationFn: approve({ message, id: data.memberId }),
+    mutationFn: approve({ message, id: data.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
@@ -166,6 +173,9 @@ const ListCertBody = ({ data, index, handlers, queryKey }) => {
   const { mutate: rejectReq } = useMutation({
     mutationKey: ["rejectCertReq", data.id],
     mutationFn: reject({ data: message, id: data.id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
+    },
   });
 
   const modalHandlers = {
@@ -193,6 +203,7 @@ const ListCertBody = ({ data, index, handlers, queryKey }) => {
       <div className="button_container">
         <button
           onClick={() => {
+            document.querySelector("body").classList.add("modal_open");
             setModalStates({ open: true, purpose: "approve" });
           }}
         >

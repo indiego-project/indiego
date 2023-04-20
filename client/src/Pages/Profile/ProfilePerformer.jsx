@@ -313,6 +313,7 @@ export default function Profile() {
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
   const { profileData, setProfileData } = useProfileDataStore((state) => state);
   const [certStatus, setCertStatus] = useState(0); // 0: 인증X 요청 X, 1: 인증됨, 2: 요청됨
+  const [certId, setCertId] = useState(null);
   const navigate = useNavigate();
   const params = useParams();
   const { id: memberId } = params;
@@ -332,7 +333,19 @@ export default function Profile() {
   };
 
   const fetchDataOnSuccess = (response) => {
-    setProfileData(response.data.data && response.data.data);
+    const { data } = response.data;
+    const { role } = data;
+    const { certiId: certId } = data;
+
+    if (role === "PERFORMER") {
+      setCertStatus(1);
+    }
+
+    if (certId && role.includes("NON")) {
+      setCertId(certId);
+      setCertStatus(2);
+    }
+    setProfileData(data);
   };
 
   const fetchDataOnError = (error) => {
@@ -361,12 +374,13 @@ export default function Profile() {
   };
 
   const { isLoading: certStatusLoading } = useQuery({
+    enabled: !!certId,
     queryKey: ["fetchCertReq", memberId],
     queryFn: fetchCertStatus,
     onSuccess: (res) => {
       const status = res.data.data.status.split("_")[1];
-      if (status === "APPROVED") {
-        setCertStatus(1);
+      if (status === "DENIED") {
+        setCertStatus(0);
       } else if (status === "ASKED") {
         setCertStatus(2);
       }
@@ -386,10 +400,11 @@ export default function Profile() {
     mutationFn: approveRequest,
     mutationKey: "performerRequest",
     onSuccess: (res) => {
-      console.log(res);
+      window.alert("요청되었습니다.");
+      setCertStatus(2);
     },
     onError: (err) => {
-      console.log(err);
+      window.alert("요청에 실패했습니다.");
     },
   });
 

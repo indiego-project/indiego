@@ -15,8 +15,6 @@ const Container = styled.section`
   width: 70%;
   max-height: 400px;
   min-height: 100px;
-  overflow-y: scroll;
-  border: 1px solid lightgrey;
   padding: 10px 0;
   margin-top: 40px;
 
@@ -26,11 +24,28 @@ const Container = styled.section`
     width: 100%;
     height: max-content;
     padding: 0 30px;
-    /* background-color: blue; */
 
     .contents_title {
       font-size: ${dtFontSize.large};
       font-weight: 600;
+    }
+
+    .list_box {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 300px;
+      border: 1px solid lightgrey;
+      overflow-y: scroll;
+      align-content: center;
+    }
+
+    .null_box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 `;
@@ -58,20 +73,24 @@ export default function ListViewer({ listInfo }) {
       <Container>
         <div className="contents_container">
           <p className="contents_title">{title}</p>
-          {listData.length ? (
-            listData.map((data, index) => (
-              <List
-                key={data.id}
-                data={data}
-                index={index}
-                sort={sort}
-                handlers={handlers}
-                queryKey={queryKey}
-              />
-            ))
-          ) : (
-            <p>데이터가 없습니다.</p>
-          )}
+          <div className="list_box">
+            {listData.length ? (
+              listData.map((data, index) => (
+                <List
+                  key={data.id}
+                  data={data}
+                  index={index}
+                  sort={sort}
+                  handlers={handlers}
+                  queryKey={queryKey}
+                />
+              ))
+            ) : (
+              <div className="null_box">
+                <p>데이터가 없습니다.</p>
+              </div>
+            )}
+          </div>
           {!!listPageInfo?.totalPages && (
             <Pagination pageInfo={listPageInfo} setCurPage={setCurPage} />
           )}
