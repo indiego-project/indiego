@@ -10,6 +10,5 @@ public interface CertificationService {
     public Page<Certification> findAllCertification(int page, int size);
 
     CertificationDto.Response patchCertification(Certification certification, Long certificatedId, Long memberId);
-    CertificationDto.Response findCertificationByMemberId(Long memberId, Long tokenMeberId);
 
 }
