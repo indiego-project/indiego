@@ -11,21 +11,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PaymentConfig {
 
-    public static final String URL = "https://api.tosspayments.com/v1/payments/";
+    public static final String URL = "https://api.tosspayments.com/v1/payments/confirm";
 
     @Value("${payments.toss.test_client_key}")
     private String testClientKey;
 
     @Value("${payments.toss.test_secret_key}")
     private String testSecretKey;
-
-//    private String liveClientApiKey;
-//
-//    private String liveSecretApiKey;
-
-    @Value("${payments.toss.success_url}")
-    private String successUrl;
-
-    @Value("${payments.toss.fail_url}")
-    private String failUrl;
 }
