@@ -42,7 +42,7 @@ private final CertificationServiceImpl certificationService;
  @GetMapping("/{member-id}")
  public ResponseEntity getCertification(@Positive @PathVariable("member-id") Long memberId,
                                         @LoginMemberId Long tokenMemberId){
-  CertificationDto.Response response = certificationService.findCertification(memberId, tokenMemberId);
+  CertificationDto.Response response = certificationService.findCertificationByMemberId(memberId, tokenMemberId);
   return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
  }
 
@@ -64,4 +64,5 @@ private final CertificationServiceImpl certificationService;
   ResponseEntity response = certificationService.deleteCertification(certiId,memberId );
   return response;
  }
+
 }
