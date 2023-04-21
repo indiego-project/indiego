@@ -214,7 +214,7 @@ export default function Tickets() {
   const [shouldRender, trigger, handleTransition] =
     useAnimation(detailSearchOpen);
 
-  const { setAllParams } = useTicketSearchStore((state) => state);
+  const { setAllParams, getSearchUrl } = useTicketSearchStore((state) => state);
 
   useEffect(() => {
     const params = {};
@@ -226,32 +226,76 @@ export default function Tickets() {
     setAllParams(params);
   }, []);
 
-  // url 에서 params를 빼와 공연데이터를 fetch
-  const fetchShowData = () => {
-    const params = {};
-
-    queryParams.forEach((queryArr) => {
-      params[queryArr[0]] = queryArr[1];
-    });
-
-    return axios.get(`${process.env.REACT_APP_SERVER_URI}/shows`, {
-      params,
-    });
-  };
-
   const fetchShowDataOnSuccess = (response) => {
-    const data = response.data;
-    setData(data.data);
-    setPageInfo(data.pageInfo);
+    const { data, pageInfo } = response.data.data.getShow;
+    console.log(data, pageInfo);
+    setData(data);
+    setPageInfo(pageInfo);
   };
 
-  const { isLoading } = useQuery({
-    queryKey: ["fetchShowData"],
-    queryFn: fetchShowData,
+  const gqlFetchShowData = () => {
+    const variables = {};
+    queryParams.forEach((queryArr) => {
+      variables[queryArr[0]] = queryArr[1];
+    });
+
+    const query = `
+    query GetShow(
+      $search: String,
+      $category: String,
+      $address: String,
+      $filter: String,
+      $start: String,
+      $end: String,
+      $page: Int,
+      $size: Int,
+  ){
+      getShow(
+        search: $search, 
+        category: $category, 
+        address: $address, 
+        filter: $filter, 
+        start: $start, 
+        end: $end, 
+        page: $page, 
+        size: $size) {
+        data {
+          id
+          nickname
+          detailAddress
+          title
+          image
+          category
+          expiredAt
+          showAt
+          price
+          tags {
+            tagId
+            name
+            backgroundColor
+            textColor
+            type
+          }
+        }
+        pageInfo {
+          page
+          totalPages
+        }
+      }
+    }
+  `;
+    const data = { query, variables };
+    return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
+  };
+
+  useQuery({
+    queryKey: ["fetchShowDataGQL"],
+    queryFn: gqlFetchShowData,
     onSuccess: fetchShowDataOnSuccess,
     refetchOnWindowFocus: false,
     placeholderData: placeHolderArr,
   });
+  // GraphQL
 
   const detailSearchOpenHandler = () => {
     window.scrollTo(0, 0);
@@ -301,7 +345,10 @@ export default function Tickets() {
         )}
       </ContentContainer>
       {pageInfo.totalPages > 0 && (
-        <PaginationExtended location={searchURI} pageData={pageInfo} />
+        <PaginationExtended
+          location={process.env.REACT_APP_SERVER_URI + getSearchUrl()}
+          pageData={pageInfo}
+        />
       )}
     </Container>
   );

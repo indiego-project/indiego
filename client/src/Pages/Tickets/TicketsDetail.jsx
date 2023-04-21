@@ -500,26 +500,68 @@ export default function TicketsDetail() {
     }
   }, [ticketCount]);
 
-  const fetchData = () => {
-    return axios.get(`${process.env.REACT_APP_SERVER_URI}/shows/${params.id}`);
-  };
-
   const fetchDataOnSuccess = (response) => {
-    setTicketData(response.data.data && response.data.data);
+    const { getShowById: data } = response.data.data;
+    console.log(data);
+    setTicketData(data);
   };
 
-  const fetchDataOnError = (error) => {
+  const fetchDataOnError = () => {
     navigate("/notFound");
   };
 
-  const { isLoading } = useQuery({
-    queryKey: ["fetchData"],
-    queryFn: fetchData,
-    keepPreviousData: false,
+  // graphQl
+  const gqlFetchData = () => {
+    const query = `
+      query GetShowById($showId : ID!) {
+        getShowById(showId: $showId) {
+          id
+          sellerId
+          title
+          content
+          image
+          category
+          price
+          address
+          detailAddress
+          expiredAt
+          showAt
+          showTime
+          detailDescription
+          latitude
+          longitude
+          status
+          scoreAverage
+          total
+          emptySeats
+          bookmarked
+          nickname
+          tags {
+            tagId
+            name
+            backgroundColor
+            textColor
+            type
+          }
+        }
+      }
+    `;
+
+    const variables = { showId: params.id };
+    const data = { query, variables };
+
+    return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
+  };
+
+  useQuery({
+    queryFn: gqlFetchData,
+    queryKey: ["GQLFetchShowData"],
     onSuccess: fetchDataOnSuccess,
     onError: fetchDataOnError,
     retry: false,
   });
+
+  // graphQl
 
   const handleMoveToEditPage = () => {
     navigate(`/tickets/${params.id}/edit`);
