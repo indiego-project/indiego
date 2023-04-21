@@ -131,8 +131,9 @@ export default function AllShowList() {
   });
   // graphQl
 
-  const notExpiredData = data && data.filter((data) => data.expired === false);
-  const expiredData = data && data.filter((data) => data.expired === true);
+  const notExpiredData =
+    data && data.filter((data) => data.isExpired === false);
+  const expiredData = data && data.filter((data) => data.isExpired === true);
 
   useEffect(() => {
     if (notExpiredData && notExpiredData.length <= 0) {
