@@ -23,6 +23,7 @@ import RequestBoardList from "./Pages/Boards/BoardType/RequestBoardList.jsx";
 import AdvertiseBoardList from "./Pages/Boards/BoardType/AdvertiseBoardList.jsx";
 import ReviewBoardList from "./Pages/Boards/BoardType/ReviewBoardList.jsx";
 import Token from "./Pages/Token.jsx";
+import { AdminLogin } from "./Pages/AdminLogin.jsx";
 
 import Header from "./Components/Header.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -36,6 +37,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import axios from "axios";
+import { AdminEntry } from "./Pages/Admin/AdminEntry.jsx";
+import { AdminMain } from "./Pages/Admin/AdminMain.jsx";
+import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +48,7 @@ function App() {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
 
-  // console.log(setUserInfo);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (refreshToken) {
@@ -72,7 +76,7 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <Header />
+        {pathname.includes("/admin") ? "" : <Header />}
         <Routes>
           <Route path="/" element={<Home />}></Route>
 
@@ -136,9 +140,13 @@ function App() {
           <Route path="/board/review/create" element={<BoardCreate />}></Route>
           <Route path="/board/review/:id" element={<Board />}></Route>
           <Route path="/board/review/:id/edit" element={<BoardEdit />}></Route>
+          {/* admin */}
+          <Route path="/login/admin" element={<AdminLogin />}></Route>
+          <Route path="/admin" element={<AdminEntry />}></Route>
+          <Route path="/admin/main" element={<AdminMain />}></Route>
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
-        <Footer />
+        {pathname.includes("/admin") ? "" : <Footer />}
       </QueryClientProvider>
     </>
   );
