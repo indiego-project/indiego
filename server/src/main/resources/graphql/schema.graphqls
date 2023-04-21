@@ -1,0 +1,104 @@
+type Tag {
+    tagId: ID!
+    name : String
+    backgroundColor : String
+    textColor : String
+    type : String
+}
+
+type PageInfo {
+    page: Int!
+    size: Int!
+    totalElements: Int!
+    totalPages: Int!
+}
+
+type PagelessMultiResponseDto {
+    data: [ShowListDto]!
+}
+
+type MultiResponseDto {
+    data: [ShowListDto]!
+    pageInfo: PageInfo
+}
+
+type ShowListDto {
+    id: ID!
+    nickname: String!
+    detailAddress: String!
+    title: String!
+    image: String!
+    scoreAverage: Float!
+    category: String!
+    expiredAt: String!
+    showAt: String!
+    price: String!
+    tags:[Tag]
+}
+
+type ShowsResponse {
+    id: ID!
+    sellerId: Int!
+    title: String!
+    content: String!
+    image: String!
+    category: String!
+    price: String!
+    address: String!
+    detailAddress: String!
+    expiredAt: String!
+    showAt: String!
+    showTime: String!
+    detailDescription: String!
+    latitude: Float!
+    longitude: Float!
+    status: String!
+    scoreAverage: Float!
+    total: Int!
+    emptySeats: Int!
+    nickname: String!
+    introduction: String!
+    bookmarked: Boolean!
+    tags:[Tag]
+}
+
+type ShowListToShowListResponseOfSeller {
+    id: ID!
+    title: String!
+    nickname: String!
+    showAt: String!
+    expiredAt: String!
+    address: String!
+    detailAddress: String!
+    image: String!
+    emptySeats: Int!
+    revenue: Int!
+    isExpired: Boolean!
+    tags:[Tag]
+}
+
+# @QueryMapping 메서드 이름과 동일
+# value 속성을 통해서 이름을 정해줄 수 있음
+type Query {
+    getShowById(
+        showId: ID!
+    ):ShowsResponse
+    getShowOfSeller(
+        page: Int = 1 # 값이 없을 경우 Default 값
+        size: Int = 12 # 값이 없을 경우 Default 값
+    ):[ShowListToShowListResponseOfSeller] # ,를 붙이면 값을 강제함
+    getShow(
+        search: String
+        category: String
+        address: String
+        filter: String
+        start: String
+        end: String
+        page: Int = 1 # 값이 없을 경우 Default 값
+        size: Int = 12 # 값이 없을 경우 Default 값
+    ):MultiResponseDto
+    getSortShows(
+        address: String
+        status: String
+    ):PagelessMultiResponseDto
+}
