@@ -2,6 +2,8 @@ package codestates.frogroup.indiego.global.security.auth.filter;
 
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
+import codestates.frogroup.indiego.global.exception.BusinessLogicException;
+import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import codestates.frogroup.indiego.global.redis.RedisDao;
 import codestates.frogroup.indiego.global.security.auth.dto.LoginDto;
 import codestates.frogroup.indiego.global.security.auth.dto.TokenDto;
@@ -10,11 +12,17 @@ import codestates.frogroup.indiego.global.security.auth.userdetails.AuthMember;
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.global.security.auth.utils.Responder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -23,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -55,13 +64,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // ServletInputSteam을 LoginDto 클래스 객체로 역직렬화 (즉, JSON 객체꺼냄)
         LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
-        log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}",
-                loginDto.getEmail(),loginDto.getPassword());
+        log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}, loginDto.getRole={}",
+                loginDto.getEmail(),loginDto.getPassword() ,loginDto.getRole());
+
+        //올바른 권한으로 로그인하는지 확인
+        memberService.checkRole(loginDto);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
+
+
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,

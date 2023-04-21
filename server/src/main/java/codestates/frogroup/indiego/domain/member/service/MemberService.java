@@ -3,14 +3,18 @@ package codestates.frogroup.indiego.domain.member.service;
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.domain.common.embedding.Coordinate;
 import codestates.frogroup.indiego.domain.common.utils.CustomBeanUtils;
+import codestates.frogroup.indiego.domain.member.dto.MemberDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.entity.Profile;
 import codestates.frogroup.indiego.domain.member.enums.ProfileImage;
+import codestates.frogroup.indiego.domain.member.mapper.MemberMapper;
 import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.global.email.event.MemberRegistrationApplicationEvent;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
+import codestates.frogroup.indiego.global.exception.ErrorResponse;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import codestates.frogroup.indiego.global.redis.RedisDao;
+import codestates.frogroup.indiego.global.security.auth.dto.LoginDto;
 import codestates.frogroup.indiego.global.security.auth.dto.TokenDto;
 import codestates.frogroup.indiego.global.security.auth.jwt.TokenProvider;
 import codestates.frogroup.indiego.global.security.auth.oauth.OAuthUserProfile;
@@ -48,6 +52,8 @@ public class MemberService {
     private final RedisDao redisDao;
     private final ApplicationEventPublisher publisher;
     private final AES128Config aes128Config;
+
+    private final MemberMapper memberMapper;
 
     public Member createMember(Member member){
         verifyExistsEmail(member.getEmail());
@@ -221,5 +227,41 @@ public class MemberService {
         Member verifiedMember = findVerifiedMember(id);
 
         memberRepository.delete(verifiedMember);
+    }
+
+    //퍼포머 인증
+    public MemberDto.GetResponse certifyPerformer(Long memberId){
+        Member member = findVerifiedMember(memberId);
+        if(!member.getRoles().contains("NON_CERTIFIED_PERFORMER") ){
+            log.info("###권한 확인{}", member.getRoles().toString());
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
+        }
+        List<String> roles = member.getRoles();
+        roles.set(0, "PERFOMER");
+        member.setRoles(roles);
+        MemberDto.GetResponse reponse =  memberMapper.memberToGetResponse(memberRepository.save(member));
+        return  reponse;
+    }
+
+
+    public void checkRole( LoginDto loginDto){
+        //findVerifiedMember(loginDto.getEmail());
+        Member member = findVerifiedMember(loginDto.getEmail());
+        List<String> roles = member.getRoles();
+
+        if (roles.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        if(loginDto.getRole().equals("PERFORMER") ){
+            if(!member.getRoles().contains("NON_CERTIFIED_PERFORMER") && !member.getRoles().contains("PERFORMER")) {
+                throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+            }
+        }
+
+        if(loginDto.getRole().equals("USER") && !member.getRoles().get(0).equals("USER")){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
     }
 }

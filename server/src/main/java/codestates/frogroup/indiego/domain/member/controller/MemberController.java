@@ -85,6 +85,13 @@ public class MemberController {
         return new ResponseEntity<>(new SingleResponseDto<>(patchResponse), HttpStatus.OK);
     }
 
+//    //권한바꾸는 patchmaping 추가하기, security config 수정하기
+//    @PatchMapping("performer/{member-id}")
+//    public ResponseEntity certifyPerformer(@Positive @PathVariable("member-id") Long memberId){
+//        MemberDto.GetResponse response =  memberService.certifyPerformer(memberId);
+//        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
+//    }
+
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@Positive @PathVariable("member-id") Long memberId,
                                        @LoginMemberId Long loginMemberId){
@@ -115,5 +122,7 @@ public class MemberController {
         MemberDto.PostResponse response = memberMapper.memberToPostResponse(member);
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
+
+
 
 }

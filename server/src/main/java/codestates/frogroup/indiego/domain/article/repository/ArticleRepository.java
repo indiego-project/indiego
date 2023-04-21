@@ -6,6 +6,8 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ArticleRepository extends JpaRepository<Article,Long>, ArticleRepositoryCustom {
 
     @Query("SELECT a.view FROM Article a WHERE a.id = :id")

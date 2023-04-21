@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 public class CustomAuthorityUtils {
     private String adminMailAddress = "admin@google.com";
 
-    private final List<String> GUEST_ROLES_STRING = List.of("GUEST");
-    private final List<String> USER_ROLES_STRING = List.of("USER");
-    private final List<String> PERFORMER_ROLES_STRING = List.of("PERFORMER", "USER");
-    private final List<String> ADMIN_ROLES_STRING = List.of("ADMIN", "USER");
+    private final List<String> GUEST_ROLES_STRING = List.of(Roles.GUEST.getRole());
+    private final List<String> USER_ROLES_STRING = List.of(Roles.USER.getRole());
+    private final List<String> NON_CERTIFIED_PERFORMER_ROLES_STRING = List.of(Roles.NON_CERTIFIED_PERFORMER.getRole(),
+            Roles.USER.getRole());
+    private final List<String> PERFORMER_ROLES_STRING = List.of(Roles.PERFORMER.getRole(), Roles.USER.getRole() );
+    private final List<String> ADMIN_ROLES_STRING = List.of(Roles.ADMIN.getRole(), Roles.USER.getRole());
+
 
 
     // DB에 저장된 Role을 기반으로 권한 정보 생성
@@ -31,6 +34,8 @@ public class CustomAuthorityUtils {
             return ADMIN_ROLES_STRING;
         } else if(role.equals(Roles.PERFORMER.toString())){
             return PERFORMER_ROLES_STRING;
+        }else if(role.equals(Roles.NON_CERTIFIED_PERFORMER.toString())){
+            return NON_CERTIFIED_PERFORMER_ROLES_STRING;
         } else if(role.equals(Roles.USER.toString())){
             return USER_ROLES_STRING;
         } else if(role.equals(Roles.GUEST.toString())){
