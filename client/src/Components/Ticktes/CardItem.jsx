@@ -114,7 +114,7 @@ export default function CardItem({ data }) {
               ? `${data.showAt} - ${data.expiredAt}`
               : ""}
           </h4>
-          <h4>{data.detailAddress}</h4>
+          <h4>{data.address}</h4>
         </DetailContainer>
       </Link>
     </CardItemContainer>
