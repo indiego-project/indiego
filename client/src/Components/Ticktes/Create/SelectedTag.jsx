@@ -36,21 +36,23 @@ const Container = styled.div`
   }
 `;
 
-export default function SelectedTag({ data, setSelectedTags, selectedTags }) {
-  const { data: tagData, color } = data;
-  const { back, font } = color;
-  const { name } = tagData;
+export default function SelectedTag({
+  data: tagData,
+  setSelectedTags,
+  selectedTags,
+}) {
+  const { name, backgroundColor, textColor } = tagData;
 
   const clickHandler = () => {
     const newCurrenttags = selectedTags.filter((data) => {
-      const { tagId } = data.data;
+      const { tagId } = data;
       return tagId !== tagData.tagId;
     });
     setSelectedTags(newCurrenttags);
   };
 
   return (
-    <Container backColor={back} fontColor={font}>
+    <Container backColor={backgroundColor} fontColor={textColor}>
       {name}
       <button onClick={clickHandler} className="remove">
         X

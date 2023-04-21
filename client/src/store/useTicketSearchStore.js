@@ -25,6 +25,7 @@ export const useTicketSearchStore = create((set, get) => ({
     end: "",
     location: "",
     category: "전체",
+    tags: [],
   },
 
   setSearch: (searchInput) => {
@@ -75,6 +76,13 @@ export const useTicketSearchStore = create((set, get) => ({
     set(
       produce((state) => {
         state.searchParams.category = categoryInput;
+      })
+    );
+  },
+  setTags: (tagData) => {
+    set(
+      produce((state) => {
+        state.searchParams.tags.push(tagData);
       })
     );
   },

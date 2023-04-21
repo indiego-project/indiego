@@ -12,7 +12,7 @@ import OKButton from "../../Components/Board/BoardList/OKButton.jsx";
 import Editor from "../../Components/Board/BoardCreate/Editor.jsx";
 import { Postcode } from "../../Components/Board/TicketsCreate/Postcode";
 import ReactDatePicker from "../../Components/Board/TicketsCreate/ReactDatePicker.jsx";
-import TagSelect from "../../Components/Board/BoardCreate/TagSelect.jsx";
+import TagSelect from "../../Components/Ticktes/Create/TagSelect";
 
 //로컬 모듈
 import {
@@ -259,7 +259,7 @@ export default function TicketsCreate() {
     "https://elkcitychamber.com/wp-content/uploads/2022/08/Placeholder-Image-Square.png"
   );
 
-  // Tags
+  // ######Tags
   const [selectedTags, setSelectedTags] = useState([]);
 
   const userId = JSON.parse(localStorage.getItem("userInfoStorage"))?.id;
@@ -281,6 +281,7 @@ export default function TicketsCreate() {
     latitude: latitude,
     longitude: longitude,
     total: sit,
+    tags: selectedTags.map((data) => data.tagId),
   };
 
   // 티켓 글 올리기
@@ -419,10 +420,13 @@ export default function TicketsCreate() {
           <CategoryDiv>
             <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
           </CategoryDiv>
+          {/* Tags */}
           <TagSelect
             selectedTags={selectedTags}
             setSelectedTags={setSelectedTags}
+            category={category}
           />
+          {/* Tags */}
           <div className="postDiv">공연명</div>
           <TicketsCreateInputDiv>
             <input

@@ -7,6 +7,7 @@ import SelectTicketDateCalendar from "../../Components/TicketsDetail/SelectTicke
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tag from "../../Components/Ticktes/Create/Tag.jsx";
 
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
@@ -54,15 +55,20 @@ const ContentContainer = styled.div`
 `;
 
 const ContentHeaderContainer = styled.div`
-  align-items: flex-start;
-  border-bottom: 1px solid ${sub.sub200};
   display: flex;
-  height: max-content;
-  justify-content: space-between;
-  min-height: 120px;
+  flex-direction: column;
+  border-bottom: 1px solid ${sub.sub200};
   margin: 20px 0;
   padding: 20px;
   width: 90%;
+  min-height: 120px;
+`;
+
+const HeaderInfoContainer = styled.div`
+  align-items: flex-start;
+  display: flex;
+  height: max-content;
+  justify-content: space-between;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     min-height: 100px;
@@ -472,6 +478,12 @@ const TopRightContainer = styled.div`
   }
 `;
 
+const TagsContainer = styled.div`
+  display: flex;
+  height: max-content;
+  margin-top: 10px;
+`;
+
 const ImpossibleButton = styled(PillButton)`
   pointer-events: none;
 `;
@@ -521,7 +533,6 @@ export default function TicketsDetail() {
 
   const fetchDataOnSuccess = (response) => {
     const { getShowById: data } = response.data.data;
-    console.log(data);
     setTicketData(data);
   };
 
@@ -652,30 +663,37 @@ export default function TicketsDetail() {
           <ContentTopContainer>
             <TopLeftContainer>
               <ContentHeaderContainer>
-                <HeaderTitleContainer>
-                  <h1>{ticketData.title}</h1>
-                  <h2>{ticketData.nickname}</h2>
-                </HeaderTitleContainer>
-                {isSameUser ? (
-                  <HeaderButtonContainer>
-                    <PillButton
-                      color={primary.primary300}
-                      hoverColor={secondary.secondary500}
-                      onClick={handleMoveToEditPage}
-                    >
-                      수정하기
-                    </PillButton>
-                    <PillButton
-                      color={misc.red}
-                      hoverColor={misc.lightred}
-                      onClick={setOpenModal}
-                    >
-                      삭제하기
-                    </PillButton>
-                  </HeaderButtonContainer>
-                ) : (
-                  ""
-                )}
+                <HeaderInfoContainer>
+                  <HeaderTitleContainer>
+                    <h1>{ticketData.title}</h1>
+                    <h2>{ticketData.nickname}</h2>
+                  </HeaderTitleContainer>
+                  {isSameUser ? (
+                    <HeaderButtonContainer>
+                      <PillButton
+                        color={primary.primary300}
+                        hoverColor={secondary.secondary500}
+                        onClick={handleMoveToEditPage}
+                      >
+                        수정하기
+                      </PillButton>
+                      <PillButton
+                        color={misc.red}
+                        hoverColor={misc.lightred}
+                        onClick={setOpenModal}
+                      >
+                        삭제하기
+                      </PillButton>
+                    </HeaderButtonContainer>
+                  ) : (
+                    ""
+                  )}
+                </HeaderInfoContainer>
+                <TagsContainer>
+                  {ticketData?.tags?.map((data) => (
+                    <Tag key={data.tagId} data={data} />
+                  ))}
+                </TagsContainer>
               </ContentHeaderContainer>
               <PosterAndInfoContainer>
                 <PosterImage alt="poster" src={ticketData.image} />

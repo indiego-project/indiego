@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { dtFontSize, primary } from "../../../styles/mixins";
-import { playDummyTags, showDummyTags } from "./dummyTags";
 import Tag from "./Tag";
 import SelectedTag from "./SelectedTag";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Container = styled.div`
   width: 100%;
@@ -47,11 +48,43 @@ const Container = styled.div`
   }
 `;
 
-export default function TagSelect({ selectedTags, setSelectedTags }) {
-  const [tagsData, setTagsData] = useState(playDummyTags.data);
+export default function TagSelect({
+  selectedTags,
+  setSelectedTags,
+  category,
+  className,
+}) {
+  const [tagsData, setTagsData] = useState([]);
+
+  const fetchTagsData = () => {
+    return axios.get(`${process.env.REACT_APP_SERVER_URI}/tags`, {
+      params: { type: category },
+    });
+  };
+
+  const tagClickHandler = (data) => {
+    const tagData = data;
+    return () => {
+      const deduplicatedTags = selectedTags.filter(
+        // eslint-disable-next-line eqeqeq
+        (selTag) => selTag.tagId != tagData.tagId
+      );
+      console.log(selectedTags, deduplicatedTags, "asdf");
+      setSelectedTags([...deduplicatedTags, data]);
+    };
+  };
+
+  const { isLoading } = useQuery({
+    queryFn: fetchTagsData,
+    queryKey: ["fetchTagsData", category],
+    onSuccess: (res) => {
+      const { data } = res.data;
+      setTagsData(data);
+    },
+  });
 
   return (
-    <Container>
+    <Container className={className}>
       <p className="title">공연 태그 선택</p>
       <p className="description">공연을 나타내는 태그를 선택해주세요.</p>
       <div className="inner_container">
@@ -64,6 +97,7 @@ export default function TagSelect({ selectedTags, setSelectedTags }) {
                   data={tagData}
                   setSelectedTags={setSelectedTags}
                   selectedTags={selectedTags}
+                  clickHandler={tagClickHandler}
                 />
               );
             })}
@@ -71,11 +105,11 @@ export default function TagSelect({ selectedTags, setSelectedTags }) {
         </div>
         <div className="tag_list_viewer">
           <div className="tag_lists_container">
-            {selectedTags.length ? (
+            {selectedTags?.length ? (
               selectedTags?.map((tagData) => {
                 return (
                   <SelectedTag
-                    key={tagData.data.tagId}
+                    key={tagData.tagId}
                     data={tagData}
                     setSelectedTags={setSelectedTags}
                     selectedTags={selectedTags}
