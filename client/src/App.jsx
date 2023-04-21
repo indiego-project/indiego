@@ -24,6 +24,8 @@ import AdvertiseBoardList from "./Pages/Boards/BoardType/AdvertiseBoardList.jsx"
 import ReviewBoardList from "./Pages/Boards/BoardType/ReviewBoardList.jsx";
 import Token from "./Pages/Token.jsx";
 import CheckoutPage from "./Pages/Payments/CheckoutPage.jsx";
+import { SuccessPage } from "./Pages/Payments/SuccessPage.jsx";
+import { FailPage } from "./Pages/Payments/FailPage.jsx";
 
 import Header from "./Components/Header.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -104,6 +106,8 @@ function App() {
             path="/tickets/:id/checkout"
             element={<CheckoutPage />}
           ></Route>
+          <Route path="/success" element={<SuccessPage />}></Route>
+          <Route path="/fail" element={<FailPage />}></Route>
 
           {/* 공연찾기게시판 */}
           <Route path="/search" element={<Search />}></Route>

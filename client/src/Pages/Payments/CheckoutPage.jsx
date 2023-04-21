@@ -30,15 +30,18 @@ export default function CheckoutPage() {
   const paymentWidget = PaymentWidget(clientKey, customerKey); // 결제위젯 초기화
 
   useEffect(() => {
-    paymentWidget.renderPaymentMethods("#widget_container", 15000);
+    paymentWidget.renderPaymentMethods(
+      "#widget_container",
+      requestPaymentsData.amount
+    );
   }, []);
 
   const paymentClickHandler = () => {
     paymentWidget.requestPayment({
       orderId: requestPaymentsData.orderId,
       orderName: requestPaymentsData.orderName,
-      successUrl: requestPaymentsData.successUrl,
-      failUrl: requestPaymentsData.failUrl,
+      successUrl: `${window.location.origin}/success`,
+      failUrl: `${window.location.origin}/fail`,
       customerEmail: requestPaymentsData.customerEmail,
       customerName: requestPaymentsData.customerName,
     });
