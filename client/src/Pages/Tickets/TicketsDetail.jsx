@@ -560,7 +560,6 @@ export default function TicketsDetail() {
     onError: fetchDataOnError,
     retry: false,
   });
-
   // graphQl
 
   const handleMoveToEditPage = () => {

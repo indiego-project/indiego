@@ -228,7 +228,6 @@ export default function Tickets() {
 
   const fetchShowDataOnSuccess = (response) => {
     const { data, pageInfo } = response.data.data.getShow;
-    console.log(data, pageInfo);
     setData(data);
     setPageInfo(pageInfo);
   };
@@ -262,7 +261,7 @@ export default function Tickets() {
         data {
           id
           nickname
-          detailAddress
+          address
           title
           image
           category
@@ -289,7 +288,7 @@ export default function Tickets() {
   };
 
   useQuery({
-    queryKey: ["fetchShowDataGQL"],
+    queryKey: ["fetchShowDataGQL", ...queryParams],
     queryFn: gqlFetchShowData,
     onSuccess: fetchShowDataOnSuccess,
     refetchOnWindowFocus: false,

@@ -150,7 +150,7 @@ export default function Carousel({ isRankMode, status, address }) {
   };
 
   const { isLoading } = useQuery({
-    queryKey: ["fetchShowData", status, "GQL"],
+    queryKey: ["fetchShowDataGQL", status, address],
     queryFn: gqlFetchShowData,
     onSuccess: fetchShowDataOnSuccess,
   });

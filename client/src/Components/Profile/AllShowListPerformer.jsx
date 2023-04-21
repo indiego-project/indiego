@@ -123,7 +123,7 @@ export default function AllShowList() {
 
   const { isLoading } = useQuery({
     queryFn: gqlFetchData,
-    queryKey: ["GQLFetchSellShows"],
+    queryKey: ["FetchSellShowsGQL"],
     keepPreviousData: true,
     onSuccess: fetchDataOnSuccess,
     onError: fetchDataOnError,
