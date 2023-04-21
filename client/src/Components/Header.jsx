@@ -378,7 +378,7 @@ export default function Header() {
       .finally((response) => {
         localStorage.clear();
         window.alert("로그아웃 되었습니다!");
-        window.location.reload();
+        window.location.replace("/");
       });
   };
 
@@ -441,7 +441,9 @@ export default function Header() {
         {isLogin && (
           <Link
             className={location.pathname.includes("user") ? "current" : ""}
-            to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}
           >
             마이페이지
           </Link>
@@ -459,7 +461,11 @@ export default function Header() {
       </HeaderLinkContainer>
       {isLogin ? (
         <UserStatus>
-          <Link to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}>
+          <Link
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}
+          >
             <div className="userInfo">
               <p className="welcome">환영합니다!</p>
               <p className="username">
@@ -506,9 +512,11 @@ export default function Header() {
               <NavbarProfileBox>
                 <div className="userInfo">
                   <Link
-                    to={`/mypage/${userInfo?.role.toLowerCase()}/${
-                      userInfo.id
-                    }`}
+                    to={`/mypage/${
+                      userInfo?.role.toLowerCase() !== "user"
+                        ? "performer"
+                        : "user"
+                    }/${userInfo.id}`}
                   >
                     <h2>
                       {`${userInfo?.profile[0].nickname} 님,`}
@@ -555,10 +563,30 @@ export default function Header() {
                   className={
                     location.pathname.includes("user") ? "current" : ""
                   }
-                  to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
+                  to={`/mypage/${
+                    userInfo?.role.toLowerCase() !== "user"
+                      ? "performer"
+                      : "user"
+                  }/${userInfo?.id}`}
                 >
                   마이페이지
                 </Link>
+              )}
+              {(isLogin && userInfo?.role === "PERFORMER") ||
+                (userInfo?.role === "ADMIN" && (
+                  <Link
+                    className={
+                      location.pathname.includes("tickets/create")
+                        ? "current"
+                        : ""
+                    }
+                    to={"/tickets/create"}
+                  >
+                    공연작성하기
+                  </Link>
+                ))}
+              {isLogin && userInfo?.role === "ADMIN" && (
+                <Link to={"/admin/main"}>ADMIN</Link>
               )}
             </NavbarLinkerContainer>
           </NavbarContainer>
