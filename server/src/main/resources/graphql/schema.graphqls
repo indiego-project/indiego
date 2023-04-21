@@ -25,6 +25,7 @@ type MultiResponseDto {
 type ShowListDto {
     id: ID!
     nickname: String!
+    address: String!
     detailAddress: String!
     title: String!
     image: String!

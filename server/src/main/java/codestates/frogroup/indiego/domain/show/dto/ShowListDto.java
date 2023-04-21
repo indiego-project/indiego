@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class ShowListDto {
     private Long id;
     private String nickname;
+    private String address;
     private String detailAddress;
     private String title;
     private String image;
@@ -31,9 +32,10 @@ public class ShowListDto {
     public ShowListDto(Show show) {
         this.id = show.getId();
         this.nickname = show.getMember().getProfile().getNickname();
+        this.address = show.getShowBoard().getAddress();
         this.detailAddress = show.getShowBoard().getDetailAddress();
         this.title = show.getShowBoard().getBoard().getTitle();
-        this.image = show.getMember().getProfile().getImage();
+        this.image = show.getShowBoard().getBoard().getImage();
         this.scoreAverage = show.getScoreAverage();
         this.category = show.getShowBoard().getBoard().getCategory();
         this.expiredAt = show.getShowBoard().getExpiredAt();
