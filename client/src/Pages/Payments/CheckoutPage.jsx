@@ -18,6 +18,7 @@ import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentContainer = styled.div`
   width: 100%;
@@ -116,8 +117,15 @@ export default function CheckoutPage() {
   const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
   const customerKey = "6WqdIxotUoYFqdnUx2_Uq";
   const paymentWidget = PaymentWidget(clientKey, customerKey); // 결제위젯 초기화
+  const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
+    if (!ticketData.image) {
+      window.alert("결제에 실패했습니다. 다시 시도해주세요.");
+      navigate(`/tickets/${params.id}`);
+      return;
+    }
     paymentWidget.renderPaymentMethods(
       "#widget_container",
       requestPaymentsData.amount
@@ -137,18 +145,30 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <PageTitleContainer>
-        <h1>공연 결제하기</h1>
-        <h2>*테스트 환경에서는 카드 결제만 지원 가능합니다</h2>
-      </PageTitleContainer>
-      <PaymentContainer>
-        <div className="ticket_info_container">
-          <img className="poster_image" src={ticketData.image} alt="poster" />
-          <TicketInfoTable />
-        </div>
-        <div id="widget_container" />
-        <PaymentButton onClick={paymentClickHandler}>결제하기</PaymentButton>
-      </PaymentContainer>
+      {ticketData.image ? (
+        <>
+          <PageTitleContainer>
+            <h1>공연 결제하기</h1>
+            <h2>*테스트 환경에서는 카드 결제만 지원 가능합니다</h2>
+          </PageTitleContainer>
+          <PaymentContainer>
+            <div className="ticket_info_container">
+              <img
+                className="poster_image"
+                src={ticketData.image}
+                alt="poster"
+              />
+              <TicketInfoTable />
+            </div>
+            <div id="widget_container" />
+            <PaymentButton onClick={paymentClickHandler}>
+              결제하기
+            </PaymentButton>
+          </PaymentContainer>
+        </>
+      ) : (
+        <div>false</div>
+      )}
     </>
   );
 }
