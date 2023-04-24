@@ -13,6 +13,7 @@ import {
 } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
 import useTicketDataStore from "../../store/useTicketDataStore";
+import useReservationDateStore from "../../store/useReservationDateStore";
 
 import styled from "styled-components";
 import dayjs from "dayjs";
@@ -213,12 +214,15 @@ const SpinnerExtended = styled(Spinner)`
   top: 40%;
 `;
 
-export default function Calendar({ setReservationDate }) {
+export default function Calendar() {
   const now = dayjs();
   const [daysArr, setDaysArr] = useState([]);
   const [selectedYear, setSelectedYear] = useState(now.year());
   const [selectedMonth, setSelectedMonth] = useState(now.month() + 1);
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+  const { reservationDate, setReservationDate } = useReservationDateStore(
+    (state) => state
+  );
   const [selectedDay, setSelectedDay] = useState("");
 
   // 이전 달의 날짜의 갯수를 계산하여 공백을 추가해주는 함수

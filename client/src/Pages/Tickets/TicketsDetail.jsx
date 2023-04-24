@@ -19,6 +19,7 @@ import {
   mbFontSize,
 } from "../../styles/mixins";
 import useTicketDataStore from "../../store/useTicketDataStore";
+import useReservationDateStore from "../../store/useReservationDateStore.js";
 import useOpenModalStore from "../../store/useOpenModalStore.js";
 import useClickedStarStore from "../../store/useClickedStarStore.js";
 import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore.js";
@@ -485,7 +486,8 @@ export default function TicketsDetail() {
   const { clicked, setClicked } = useClickedStarStore((state) => state);
   const [isReservationPossible, setIsReservationPossible] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
-  const [reservationDate, setReservationDate] = useState("");
+  // eslint-disable-next-line prettier/prettier
+  const { reservationDate, setReservationDate } = useReservationDateStore((state) => state);
   const [isSameUser, setIsSameUser] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
@@ -522,26 +524,67 @@ export default function TicketsDetail() {
     }
   }, [ticketCount]);
 
-  const fetchData = () => {
-    return axios.get(`${process.env.REACT_APP_SERVER_URI}/shows/${params.id}`);
-  };
-
   const fetchDataOnSuccess = (response) => {
-    setTicketData(response.data.data && response.data.data);
+    const { getShowById: data } = response.data.data;
+    console.log(data);
+    setTicketData(data);
   };
 
-  const fetchDataOnError = (error) => {
+  const fetchDataOnError = () => {
     navigate("/notFound");
   };
 
-  const { isLoading } = useQuery({
-    queryKey: ["fetchData"],
-    queryFn: fetchData,
-    keepPreviousData: false,
+  // graphQl
+  const gqlFetchData = () => {
+    const query = `
+      query GetShowById($showId : ID!) {
+        getShowById(showId: $showId) {
+          id
+          sellerId
+          title
+          content
+          image
+          category
+          price
+          address
+          detailAddress
+          expiredAt
+          showAt
+          showTime
+          detailDescription
+          latitude
+          longitude
+          status
+          scoreAverage
+          total
+          emptySeats
+          bookmarked
+          nickname
+          tags {
+            tagId
+            name
+            backgroundColor
+            textColor
+            type
+          }
+        }
+      }
+    `;
+
+    const variables = { showId: params.id };
+    const data = { query, variables };
+
+    return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
+  };
+
+  useQuery({
+    queryFn: gqlFetchData,
+    queryKey: ["GQLFetchShowData"],
     onSuccess: fetchDataOnSuccess,
     onError: fetchDataOnError,
     retry: false,
   });
+  // graphQl
 
   const handleMoveToEditPage = () => {
     navigate(`/tickets/${params.id}/edit`);
@@ -607,6 +650,8 @@ export default function TicketsDetail() {
   const handleReservation = () => {
     postRequestPayments();
   };
+
+  console.log(reservationDate);
 
   return (
     <>
@@ -680,10 +725,7 @@ export default function TicketsDetail() {
             </TopLeftContainer>
             <TopRightContainer>
               <div className="calender-container">
-                <SelectTicketDateCalendar
-                  setReservationDate={setReservationDate}
-                  isReservationPossible={isReservationPossible}
-                />
+                <SelectTicketDateCalendar />
               </div>
               <div className="middle-container">
                 <Price>티켓 가격: ₩ {ticketData.price}</Price>

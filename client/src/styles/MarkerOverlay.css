@@ -103,12 +103,12 @@
 .hover_container {
   position: absolute;
   top: -135px;
-  left: -50px;
+  left: -100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: max-content;
+  width: 250px;
   height: max-content;
   background-color: white;
   border-radius: 20px;
@@ -121,9 +121,14 @@
   margin-bottom: 5px;
 }
 
-.hover_date {
+.hover_location {
   font-weight: 400;
   font-size: 12px;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  overflow-x: hidden;
+  -webkit-box-orient: vertical;
 }
 
 .searched_data_list_container {

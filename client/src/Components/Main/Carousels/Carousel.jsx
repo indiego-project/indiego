@@ -108,12 +108,12 @@ export default function Carousel({ isRankMode, status, address }) {
   const [transition, setTransition] = useState(true);
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
-  console.log(data);
+  // console.log(data);
 
-  const fetchShowData = () => {
-    const params = { status, address };
-    return axios.get(`${serverURI}/shows`, { params });
-  };
+  // const fetchShowData = () => {
+  //   const params = { status, address };
+  //   return axios.get(`${serverURI}/shows`, { params });
+  // };
 
   const fetchShowDataOnSuccess = (response) => {
     const data = response.data.data;
@@ -125,11 +125,34 @@ export default function Carousel({ isRankMode, status, address }) {
     setData(data);
   };
 
+  // const { isLoading } = useQuery({
+  //   queryKey: ["fetchShowData", status],
+  //   queryFn: fetchShowData,
+  //   onSuccess: fetchShowDataOnSuccess,
+  //   retry: false,
+  // });
+
+  // GraphQl
+  const gqlFetchShowData = () => {
+    const query = `
+    query GetSortShows($address: String, $status: String) {
+      getSortShows(address: $address, status: $status) {
+        data {
+          id
+          nickname
+        }
+      }
+    }`;
+    const variables = { address, status };
+    const data = { query, variables };
+
+    return axios.post(`${serverURI}/graphql`, data);
+  };
+
   const { isLoading } = useQuery({
-    queryKey: ["fetchShowData", status],
-    queryFn: fetchShowData,
+    queryKey: ["fetchShowDataGQL", status, address],
+    queryFn: gqlFetchShowData,
     onSuccess: fetchShowDataOnSuccess,
-    retry: false,
   });
 
   useInterval(() => {
