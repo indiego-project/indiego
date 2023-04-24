@@ -5,7 +5,7 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <file>./log/error.log</file>
+        <file>/home/ubuntu/action/log</file>
         <encoder>
             <pattern>[%X{request_id:-startup}] %d{HH:mm:ss.SSS} [%t] %-5level [%logger{0}:%line] - %msg%n</pattern>
         </encoder>
@@ -22,7 +22,7 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <file>./log/warn.log</file>
+        <file>/home/ubuntu/action/log</file>
         <encoder>
             <pattern>[%X{request_id:-startup}] %d{HH:mm:ss.SSS} [%t] %-5level [%logger{0}:%line] - %msg%n</pattern>
         </encoder>
@@ -39,7 +39,7 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <file>./log/info.log</file>
+        <file>/home/ubuntu/action/log</file>
         <encoder>
             <pattern>[%X{request_id:-startup}] %d{HH:mm:ss.SSS} [%t] %-5level [%logger{0}:%line] - %msg%n</pattern>
         </encoder>
