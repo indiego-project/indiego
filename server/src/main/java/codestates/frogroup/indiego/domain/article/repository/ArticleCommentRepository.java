@@ -28,4 +28,5 @@ public interface ArticleCommentRepository extends JpaRepository<ArticleComment,L
     @Modifying
     @Query(value ="DELETE * FROM ArticleComment  WHERE deleted_at IS NOT NULL AND DATEDIFF(NOW(), deleted_at) >= 30" ,nativeQuery = true)
     void deleteSoftDeletedAll();
+
 }
