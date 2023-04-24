@@ -4,26 +4,32 @@ import styled from "styled-components";
 import useTicketDataStore from "../../store/useTicketDataStore";
 import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
 import useReservationDateStore from "../../store/useReservationDateStore";
+import { primary, sub } from "../../styles/mixins";
+import breakpoint from "../../styles/breakpoint";
 
 const TicketInfoTableComponent = styled.table`
   border-collapse: collapse;
-  border: 1px solid black;
   width: 60%;
+  height: 24vh;
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    width: 100%;
+  }
+
   > th {
-    width: 100px;
-    height: 50px;
     text-align: center;
-    border: 1px solid #000;
+    background-color: ${primary.primary100};
+    border-top: 1px solid ${primary.primary600};
+    color: ${primary.primary600};
 
     vertical-align: top; /* 위 */
     vertical-align: bottom; /* 아래 */
     vertical-align: middle; /* 가운데 */
   }
   > tr > td {
-    width: 100px;
-    height: 50px;
+    border-top: 1px solid ${primary.primary600};
+    border-bottom: 1px solid ${primary.primary600};
     text-align: center;
-    border: 1px solid #000;
 
     vertical-align: top; /* 위 */
     vertical-align: bottom; /* 아래 */

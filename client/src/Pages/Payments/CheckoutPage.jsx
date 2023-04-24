@@ -21,19 +21,32 @@ import { useQuery } from "@tanstack/react-query";
 
 const PaymentContainer = styled.div`
   width: 100%;
+  padding: 5vw;
   height: max-content;
   display: flex;
   flex-direction: column;
 
-  .ticket_item_container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-  }
   .ticket_info_container {
     display: flex;
-    flex-direction: column;
-    padding: 10px 50px;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 5vw;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      align-items: center;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    > .poster_image {
+      height: 35vh;
+      width: calc(35vh / 4 * 3);
+      margin-right: 40px;
+
+      @media screen and (max-width: ${breakpoint.mobile}) {
+        margin-bottom: 30px;
+      }
+    }
   }
 `;
 
@@ -41,13 +54,16 @@ const PaymentButton = styled.button`
   all: unset;
   color: white;
   cursor: pointer;
-  width: max-content;
-  height: max-content;
-  padding: 5px 20px;
-  border-radius: 20px;
+  width: 23.4%;
+  height: 54px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: ${dtFontSize.medium};
   background-color: ${primary.primary300};
+  margin: 5vw 38.3% 0 38.3%;
+  padding: 11px 22px;
+  box-sizing: border-box;
+  text-align: center;
 
   &:hover {
     background-color: ${primary.primary500};
@@ -55,6 +71,41 @@ const PaymentButton = styled.button`
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     font-size: ${mbFontSize.medium};
+    width: 100%;
+    margin: 0;
+  }
+`;
+
+const PageTitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0 5%;
+  border-bottom: 1px solid ${sub.sub200};
+  min-height: 100px;
+  padding: 30px 47px;
+
+  > h1 {
+    all: unset;
+    color: ${primary.primary500};
+    font-size: ${dtFontSize.xxlarge};
+    font-weight: 700;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      font-size: ${mbFontSize.xlarge};
+    }
+  }
+
+  > h2 {
+    all: unset;
+    color: ${sub.sub400};
+    font-size: ${dtFontSize.medium};
+    font-weight: 400;
+    margin: 5px 0 0 0;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      font-size: ${mbFontSize.medium};
+    }
   }
 `;
 
@@ -85,27 +136,19 @@ export default function CheckoutPage() {
   };
 
   return (
-    <PaymentContainer>
-      <div className="ticket_item_container">
-        <div className="ticket_image_container">
-          <img
-            src={ticketData.image}
-            width="100px"
-            height="150px"
-            alt="poster"
-          ></img>
-        </div>
+    <>
+      <PageTitleContainer>
+        <h1>공연 결제하기</h1>
+        <h2>*테스트 환경에서는 카드 결제만 지원 가능합니다</h2>
+      </PageTitleContainer>
+      <PaymentContainer>
         <div className="ticket_info_container">
-          <p className="title">{ticketData.title}</p>
-          <p className="artist">{ticketData.nickname}</p>
-          <p className="price">{ticketData.price}원</p>
-          <p className="showat">{ticketData.showAt}</p>
+          <img className="poster_image" src={ticketData.image} alt="poster" />
+          <TicketInfoTable />
         </div>
-        <TicketInfoTable />
-      </div>
-      <div id="widget_container" />
-      <div id="test" />
-      <PaymentButton onClick={paymentClickHandler}>결제하기</PaymentButton>
-    </PaymentContainer>
+        <div id="widget_container" />
+        <PaymentButton onClick={paymentClickHandler}>결제하기</PaymentButton>
+      </PaymentContainer>
+    </>
   );
 }
