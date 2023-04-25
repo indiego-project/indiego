@@ -1,10 +1,7 @@
 package codestates.frogroup.indiego.domain.payment.controller;
 
-import codestates.frogroup.indiego.domain.payment.config.PaymentConfig;
-import codestates.frogroup.indiego.domain.payment.dto.PaymentFailDto;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentRequestDto;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
-import codestates.frogroup.indiego.domain.payment.entity.Payment;
 import codestates.frogroup.indiego.domain.payment.service.PaymentService;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
 import codestates.frogroup.indiego.global.security.auth.loginresolver.LoginMemberId;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PaymentConfig paymentConfig;
     private final PaymentService paymentService;
 
     @PostMapping
@@ -41,19 +37,14 @@ public class PaymentController {
                 paymentService.paymentSuccess(paymentKey, orderId, amount)), HttpStatus.OK);
     }
 
-    @PostMapping("fail")
+    @PostMapping("/fail")
     public ResponseEntity paymentFail(@RequestParam String code,
                                       @RequestParam String message,
                                       @RequestParam String orderId) {
 
         paymentService.paymentFail(message, orderId);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(
-                PaymentFailDto.builder()
-                        .errorCode(code)
-                        .errorMessage(message)
-                        .orderId(orderId)
-                        .build()
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(paymentService.createPaymentFailDto(code, message, orderId)), HttpStatus.OK);
     }
 }
