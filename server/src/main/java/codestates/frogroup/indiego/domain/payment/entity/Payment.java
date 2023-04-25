@@ -3,10 +3,10 @@ package codestates.frogroup.indiego.domain.payment.entity;
 import codestates.frogroup.indiego.domain.common.auditing.BaseTime;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
+import codestates.frogroup.indiego.domain.payment.enums.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -46,10 +46,6 @@ public class Payment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer")
     private Member customer;
-
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private PaymentStatus paymentStatus;
 
     public PaymentResponseDto toResponseDto() {
         return PaymentResponseDto.builder()

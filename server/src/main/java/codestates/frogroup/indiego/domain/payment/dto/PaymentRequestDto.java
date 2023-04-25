@@ -1,7 +1,7 @@
 package codestates.frogroup.indiego.domain.payment.dto;
 
 import codestates.frogroup.indiego.domain.payment.entity.Payment;
-import codestates.frogroup.indiego.domain.payment.entity.PaymentType;
+import codestates.frogroup.indiego.domain.payment.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

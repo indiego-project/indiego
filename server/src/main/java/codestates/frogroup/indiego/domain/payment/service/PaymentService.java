@@ -1,5 +1,6 @@
 package codestates.frogroup.indiego.domain.payment.service;
 
+import codestates.frogroup.indiego.domain.payment.dto.PaymentFailDto;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentSuccessDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -39,7 +38,6 @@ public class PaymentService {
     public PaymentResponseDto requestPayments(Long memberId, PaymentRequestDto paymentRequestDto) {
         Member findMember = memberService.findVerifiedMember(memberId);
         verifyAmount(paymentRequestDto.getAmount());
-//        paymentTypeVerified(paymentRequestDto.getPaymentType());
 
         Payment payment = paymentRequestDto.toEntity();
         payment.setCustomer(findMember);
@@ -60,7 +58,7 @@ public class PaymentService {
     @Transactional
     public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = getHeaders();
+        HttpHeaders headers = getHeadersForPaymentSuccess();
         JSONObject params = new JSONObject();
         params.put("paymentKey", paymentKey);
         params.put("orderId", orderId);
@@ -68,12 +66,6 @@ public class PaymentService {
 
         PaymentSuccessDto result = null;
         result = restTemplate.postForObject(PaymentConfig.URL, new HttpEntity<>(params, headers), PaymentSuccessDto.class);
-
-//        try {
-//            result = restTemplate.postForObject(PaymentConfig.URL, new HttpEntity<>(params, headers), PaymentSuccessDto.class);
-//        } catch (Exception e) {
-//            throw new BusinessLogicException(ExceptionCode.PAYMENT_ALREADY_APPROVED);
-//        }
 
         return result;
     }
@@ -110,14 +102,24 @@ public class PaymentService {
     }
 
     @Transactional
-    public HttpHeaders getHeaders() {
+    public HttpHeaders getHeadersForPaymentSuccess() {
         HttpHeaders headers = new HttpHeaders();
-//        String encodedAuthKey = new String(
-//                Base64.getEncoder().encode(("Authorization: " + paymentConfig.getTestSecretKey()).getBytes(StandardCharsets.UTF_8)));
-        headers.setBasicAuth("dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==");
+        headers.setBasicAuth(paymentConfig.getTestBasicAuth());
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         return headers;
+    }
+
+    /**
+     * TODO: 단순 DTO 생성을 Service에서 관리하는 것이 옳은가?
+     */
+    @Transactional
+    public PaymentFailDto createPaymentFailDto(String code, String message, String orderId) {
+        return PaymentFailDto.builder()
+                .errorCode(code)
+                .errorMessage(message)
+                .orderId(orderId)
+                .build();
     }
 
 //    /**
