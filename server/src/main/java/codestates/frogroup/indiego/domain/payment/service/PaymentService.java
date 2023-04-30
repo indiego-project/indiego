@@ -59,10 +59,10 @@ public class PaymentService {
     }
 
     @Transactional
-    public PagelessMultiResponseDto paymentSuccess(String paymentKey, String orderId, Long amount,
+    public PaymentSuccessDto paymentSuccess(String paymentKey, String orderId, Long amount,
                                             PaymentShowInfo paymentShowInfo, String token) {
         Payment payment = verifyPayment(orderId, amount);
-        PagelessMultiResponseDto result = requestPaymentAccept(paymentKey, orderId, amount, paymentShowInfo, token);
+        PaymentSuccessDto result = requestPaymentAccept(paymentKey, orderId, amount, paymentShowInfo, token);
         payment.setPaymentKey(paymentKey);
         payment.setPaymentStatus(PAID);
 
@@ -70,21 +70,22 @@ public class PaymentService {
     }
 
     @Transactional
-    public PagelessMultiResponseDto requestPaymentAccept(String paymentKey, String orderId, Long amount,
+    public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount,
                                                   PaymentShowInfo paymentShowInfo, String token) {
-        PagelessMultiResponseDto response = new PagelessMultiResponseDto<>();
+//        PagelessMultiResponseDto response = new PagelessMultiResponseDto<>();
 
+        PaymentSuccessDto paymentSuccessDto = null;
         try {
-            PaymentSuccessDto paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
-            ResponseEntity responseEntity = showReservationRequest(paymentShowInfo, token);
+            paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
+            showReservationRequest(paymentShowInfo, token);
 
-            response.getData().add(paymentSuccessDto);
-            response.getData().add(responseEntity.getBody());
+//            response.getData().add(paymentSuccessDto);
+//            response.getData().add(responseEntity.getBody());
         } catch (Exception e) {
             throw new BusinessLogicException(ExceptionCode.PAYMENT_AUTHORIZATION_FAILED);
         }
 
-        return response;
+        return paymentSuccessDto;
     }
 
     private PaymentSuccessDto paymentSuccessAccept(String paymentKey, String orderId, Long amount) {
