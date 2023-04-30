@@ -55,9 +55,9 @@ public class Show extends BaseTime {
     private List<ShowTag> showTags = new ArrayList<>();
 
     public enum ShowStatus {
-        SALE("판매중"),
-        SOLD_OUT("매진"),
-        EXPIRED("기간만료");
+        SALE("SALE"),
+        SOLD_OUT("SOLD_OUT"),
+        EXPIRED("EXPIRED");
 
         @Getter
         private String status;
