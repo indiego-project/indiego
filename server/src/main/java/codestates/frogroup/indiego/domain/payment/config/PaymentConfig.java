@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PaymentConfig {
 
-    public static final String URL = "https://api.tosspayments.com/v1/payments/confirm";
+    public static final String URL = "https://api.tosspayments.com/v1/payments/";
 
     @Value("${payments.toss.test_client_key}")
     private String testClientKey;

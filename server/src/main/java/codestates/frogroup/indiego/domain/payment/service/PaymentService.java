@@ -1,6 +1,7 @@
 package codestates.frogroup.indiego.domain.payment.service;
 
 import codestates.frogroup.indiego.domain.payment.dto.PaymentFailDto;
+import codestates.frogroup.indiego.domain.payment.dto.PaymentShowInfo;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentSuccessDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
@@ -8,7 +9,11 @@ import codestates.frogroup.indiego.domain.payment.config.PaymentConfig;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentRequestDto;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
 import codestates.frogroup.indiego.domain.payment.entity.Payment;
+import codestates.frogroup.indiego.domain.payment.enums.PaymentType;
 import codestates.frogroup.indiego.domain.payment.repository.PaymentRepository;
+import codestates.frogroup.indiego.domain.show.dto.ShowReservationDto;
+import codestates.frogroup.indiego.global.dto.MultiResponseDto;
+import codestates.frogroup.indiego.global.dto.PagelessMultiResponseDto;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +22,18 @@ import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
+
+import static codestates.frogroup.indiego.domain.payment.enums.PaymentStatus.CANCELLED;
+import static codestates.frogroup.indiego.domain.payment.enums.PaymentStatus.FAILED;
+import static codestates.frogroup.indiego.domain.payment.enums.PaymentStatus.PAID;
 
 @Slf4j
 @Service
@@ -38,36 +49,75 @@ public class PaymentService {
     public PaymentResponseDto requestPayments(Long memberId, PaymentRequestDto paymentRequestDto) {
         Member findMember = memberService.findVerifiedMember(memberId);
         verifyAmount(paymentRequestDto.getAmount());
+        verifyPaymentType(paymentRequestDto.getPaymentType());
 
         Payment payment = paymentRequestDto.toEntity();
         payment.setCustomer(findMember);
+        payment.setCancel(false);
 
         return paymentRepository.save(payment).toResponseDto();
     }
 
     @Transactional
-    public PaymentSuccessDto paymentSuccess(String paymentKey, String orderId, Long amount) {
+    public PagelessMultiResponseDto paymentSuccess(String paymentKey, String orderId, Long amount,
+                                            PaymentShowInfo paymentShowInfo, String token) {
         Payment payment = verifyPayment(orderId, amount);
-        PaymentSuccessDto result = requestPaymentAccept(paymentKey, orderId, amount);
+        PagelessMultiResponseDto result = requestPaymentAccept(paymentKey, orderId, amount, paymentShowInfo, token);
         payment.setPaymentKey(paymentKey);
-        payment.setPaymentApproved(true);
+        payment.setPaymentStatus(PAID);
 
         return result;
     }
 
     @Transactional
-    public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount) {
+    public PagelessMultiResponseDto requestPaymentAccept(String paymentKey, String orderId, Long amount,
+                                                  PaymentShowInfo paymentShowInfo, String token) {
+        PagelessMultiResponseDto response = new PagelessMultiResponseDto<>();
+
+        try {
+            PaymentSuccessDto paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
+            ResponseEntity responseEntity = showReservationRequest(paymentShowInfo, token);
+
+            response.getData().add(paymentSuccessDto);
+            response.getData().add(responseEntity.getBody());
+        } catch (Exception e) {
+            throw new BusinessLogicException(ExceptionCode.PAYMENT_AUTHORIZATION_FAILED);
+        }
+
+        return response;
+    }
+
+    private PaymentSuccessDto paymentSuccessAccept(String paymentKey, String orderId, Long amount) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = getHeadersForPaymentSuccess();
+        HttpHeaders headers = getHeadersForPaymentService();
         JSONObject params = new JSONObject();
         params.put("paymentKey", paymentKey);
         params.put("orderId", orderId);
         params.put("amount", amount);
 
-        PaymentSuccessDto result = null;
-        result = restTemplate.postForObject(PaymentConfig.URL, new HttpEntity<>(params, headers), PaymentSuccessDto.class);
+        PaymentSuccessDto response = restTemplate.postForObject(
+                PaymentConfig.URL + "confirm", new HttpEntity<>(params, headers), PaymentSuccessDto.class);
 
-        return result;
+        return response;
+    }
+
+    private ResponseEntity showReservationRequest(PaymentShowInfo paymentShowInfo, String token) {
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject params = new JSONObject();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        params.put("date", paymentShowInfo.getDate());
+        params.put("ticketCount", paymentShowInfo.getDate());
+
+        ResponseEntity response = restTemplate.postForObject(
+                "https://dapi.indiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
+                new HttpEntity<>(params, headers), ResponseEntity.class);
+
+        return response;
     }
 
     @Transactional
@@ -75,8 +125,23 @@ public class PaymentService {
         Payment findPayment = paymentRepository.findByOrderId(orderId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND));
 
-        findPayment.setPaymentApproved(false);
+        findPayment.setPaymentStatus(FAILED);
         findPayment.setFailDescription(message);
+    }
+
+    @Transactional
+    public Map cancelPayment(Long memberId, String paymentKey, String cancelReason) {
+        Member verifiedMember = memberService.findVerifiedMember(memberId);
+        Payment verifiedPayment = verifyPaymentByMemberIdAndPaymentKey(paymentKey, verifiedMember);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = getHeadersForPaymentService();
+        JSONObject params = new JSONObject();
+        params.put("cancelReason", cancelReason);
+        Map result = restTemplate.postForObject(PaymentConfig.URL + paymentKey + "/cancel", new HttpEntity<>(params, headers), Map.class);
+        verifiedPayment.setPaymentStatus(CANCELLED);
+
+        return result;
     }
 
     /**
@@ -89,6 +154,7 @@ public class PaymentService {
         if (!Objects.equals(verifiedPayment.getAmount(), amount)) {
             throw new BusinessLogicException(ExceptionCode.AMOUNT_NOT_EQUAL);
         }
+
         return verifiedPayment;
     }
 
@@ -96,13 +162,30 @@ public class PaymentService {
      * 결제 금액 검증
      */
     private void verifyAmount(Long amount) {
-        if (amount == null || amount < 0) {
+        if (amount == null || amount < 300) {
+            log.debug("BusinessLogicException in verifyAmount() : amount={}", amount);
             throw new BusinessLogicException(ExceptionCode.NOT_MINIMUM_AMOUNT);
         }
     }
 
+    /**
+     * 결제 수단 검증
+     */
+    private void verifyPaymentType(PaymentType paymentType) {
+
+        for (PaymentType type : PaymentType.values()) {
+            if (type.getType().equals(paymentType.getType())) {
+                return;
+            }
+        }
+
+        log.debug("BusinessLogicException in verifyPamentType() : paymentType={}", paymentType.getType());
+        throw new BusinessLogicException(ExceptionCode.PAYMENT_TYPE_NOT_EQUALS);
+
+    }
+
     @Transactional
-    public HttpHeaders getHeadersForPaymentSuccess() {
+    public HttpHeaders getHeadersForPaymentService() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(paymentConfig.getTestBasicAuth());
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -110,26 +193,9 @@ public class PaymentService {
         return headers;
     }
 
-    /**
-     * TODO: 단순 DTO 생성을 Service에서 관리하는 것이 옳은가?
-     */
-    @Transactional
-    public PaymentFailDto createPaymentFailDto(String code, String message, String orderId) {
-        return PaymentFailDto.builder()
-                .errorCode(code)
-                .errorMessage(message)
-                .orderId(orderId)
-                .build();
+    private Payment verifyPaymentByMemberIdAndPaymentKey(String paymentKey, Member member) {
+        return paymentRepository.findByPaymentKeyAndCustomer_Email(member.getEmail(), paymentKey)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.PAYMENT_NOT_FOUND));
     }
 
-//    /**
-//     * payType 검증
-//     */
-//    private void paymentTypeVerified(PaymentType paymentType) {
-//        String type = paymentType.getType();
-//
-//        if (!type.equals("CARD") && !type.equals("카드")) {
-//            throw new BusinessLogicException(ExceptionCode.PAYMENT_TYPE_NOT_AVAILABLE);
-//        }
-//    }
 }

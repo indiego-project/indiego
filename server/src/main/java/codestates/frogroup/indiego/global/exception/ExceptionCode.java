@@ -53,6 +53,8 @@ public enum ExceptionCode {
     PAYMENT_TYPE_NOT_AVAILABLE(400, "사용할 수 없는 결제 수단입니다."),
     AMOUNT_NOT_EQUAL(400, "금액이 일치하지 않습니다."),
     PAYMENT_ALREADY_APPROVED(409, "이미 인증된 결제입니다."),
+    PAYMENT_TYPE_NOT_EQUALS(400, "불가능한 결제 수단입니다."),
+    PAYMENT_AUTHORIZATION_FAILED(406, "결제 승인에 실패하였습니다."),
 
     // File Upload
     UPLOAD_FAILED(404, "File Upload Failed !"),
