@@ -12,23 +12,17 @@ import java.time.LocalDateTime;
 public class PaymentResponseDto {
 
     private String paymentType;
-
     private Long amount;
-
     private String orderId;
-
     private String orderName;
 
     private String customerEmail;
-
     private String customerName;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime modifiedAt;
 
-    private String successUrl;
-
-    private String failUrl;
+    private boolean cancel;
+    private String cancelReason;
 
 }

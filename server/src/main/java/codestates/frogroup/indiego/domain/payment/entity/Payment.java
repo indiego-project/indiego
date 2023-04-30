@@ -3,6 +3,7 @@ package codestates.frogroup.indiego.domain.payment.entity;
 import codestates.frogroup.indiego.domain.common.auditing.BaseTime;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
+import codestates.frogroup.indiego.domain.payment.enums.PaymentStatus;
 import codestates.frogroup.indiego.domain.payment.enums.PaymentType;
 import lombok.*;
 
@@ -35,13 +36,20 @@ public class Payment extends BaseTime {
     private String orderName;
 
     @Column(nullable = false)
-    private boolean paymentApproved;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @Column
     private String failDescription;
 
     @Column
     private String paymentKey;
+
+    @Column
+    private boolean cancel;
+
+    @Column
+    private String cancelReason;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer")
