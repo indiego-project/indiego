@@ -85,7 +85,7 @@ public class PaymentService {
         }
 
         showReservationRequest(paymentShowInfo, token);
-        
+
 
         return paymentSuccessDto;
     }
@@ -117,8 +117,10 @@ public class PaymentService {
         params.put("ticketCount", paymentShowInfo.getDate());
 
         ResponseEntity response = restTemplate.postForObject(
-                "https://dapi.indiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
+                "http://ec2-13-125-214-31.ap-northeast-2.compute.amazonaws.com:8080/shows/reservations/" + paymentShowInfo.getShowId(),
                 new HttpEntity<>(params, headers), ResponseEntity.class);
+
+        log.debug("showReservation API responseBody = {}", response.getBody());
 
         return response;
     }
