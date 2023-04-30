@@ -104,7 +104,7 @@ public class PaymentService {
         return response;
     }
 
-    private ResponseEntity showReservationRequest(PaymentShowInfo paymentShowInfo, String token) {
+    private void showReservationRequest(PaymentShowInfo paymentShowInfo, String token) {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject params = new JSONObject();
         HttpHeaders headers = new HttpHeaders();
@@ -115,14 +115,9 @@ public class PaymentService {
 
         params.put("date", paymentShowInfo.getDate());
         params.put("ticketCount", paymentShowInfo.getTicketCount());
-
-        ResponseEntity response = restTemplate.postForObject(
+        restTemplate.postForObject(
                 "http://ec2-13-125-214-31.ap-northeast-2.compute.amazonaws.com:8080/shows/reservations/" + paymentShowInfo.getShowId(),
-                new HttpEntity<>(params, headers), ResponseEntity.class);
-
-        log.debug("showReservation API responseBody = {}", response.getBody());
-
-        return response;
+                new HttpEntity<>(params, headers), Map.class);
     }
 
     @Transactional
