@@ -36,8 +36,6 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
-    private final CertificationRepository certificationRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final CertificationServiceImpl certificationService;
     private final CertificationMapper certificationMapper;
@@ -48,24 +46,22 @@ public class AdminServiceImpl implements AdminService {
 
     //퍼포머 인증
     public ResponseEntity certifyPerformer(Long certiId, Long tokenMemberId, String message) {
-        CertificationDto.Response certificationDto = certificationService.findCertification(certiId, tokenMemberId);
-        Certification certification = certificationMapper.responseToCertification(certificationDto);
+        Certification certification= certificationService.findCertification(certiId, tokenMemberId);
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
         member.setRoles(customAuthorityUtils.createRoles(Roles.PERFORMER.getRole()));
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ALLOWED);
         certification.setMessage(message);
-        certificationService.patchCertification(certification, certiId, member.getId());
+        this.patchCertification(certification, certiId, member.getId());
         return new ResponseEntity<>(new SingleResponseDto("퍼포머 인증됐습니다."), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity denyPerformer(Long certificationId, Long tokenMemberId, String message) {
-        CertificationDto.Response responseDto = certificationService.findCertification(certificationId, tokenMemberId);
-        Certification certification = certificationMapper.responseToCertification(responseDto);
+        Certification certification = certificationService.findCertification(certificationId, tokenMemberId);
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_DENIED);
         certification.setMessage(message);
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
-        certificationService.patchCertification(certification, certificationId, member.getId());
+        this.patchCertification(certification, certificationId, member.getId());
         return  new ResponseEntity<>(new SingleResponseDto("퍼포머 인증 거부됐습니다."), HttpStatus.OK);
     }
 
@@ -118,18 +114,14 @@ public class AdminServiceImpl implements AdminService {
 
 
 
+    public CertificationDto.Response patchCertification(Certification certification, Long certificatedId, Long memberId) {
+        Certification findVerifiedCertification = certificationService.findVerifiedCertification(certificatedId);
+        findVerifiedCertification.setCertificationStatus(certification.getCertificationStatus());
+        CertificationDto.Response response = certificationMapper.certificationToResponse(findVerifiedCertification);
+        response.setMessage("퍼포머 인증이 수정됐습니다.");
 
-//    @Override
-//    public ResponseEntity softDeleteArticle(Long articleId) {
-//        Article article = articleRepository.findById(articleId).orElseThrow(
-//                () -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND)
-//        );
-//        article.setDeleted(Boolean.TRUE);
-//        articleRepository.save(article);
-//        return new ResponseEntity(HttpStatus.OK);
-//
-//    }
+        return response;
+    }
 
-//    public ArticleDto.Response  findSoftDeletedArticle()
 
 }
