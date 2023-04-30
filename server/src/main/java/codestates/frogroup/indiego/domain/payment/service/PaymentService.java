@@ -114,7 +114,7 @@ public class PaymentService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         params.put("date", paymentShowInfo.getDate());
-        params.put("ticketCount", paymentShowInfo.getDate());
+        params.put("ticketCount", paymentShowInfo.getTicketCount());
 
         ResponseEntity response = restTemplate.postForObject(
                 "http://ec2-13-125-214-31.ap-northeast-2.compute.amazonaws.com:8080/shows/reservations/" + paymentShowInfo.getShowId(),
