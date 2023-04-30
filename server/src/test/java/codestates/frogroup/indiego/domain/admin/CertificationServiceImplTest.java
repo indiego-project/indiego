@@ -111,7 +111,7 @@ class CertificationServiceImplTest {
         when(certificationMapper.certificationToResponse(certification)).thenReturn(expectedResponse);
 
         // when
-        CertificationDto.Response actualResponse = certificationService.findCertification(certification.getId(), 1L);
+        CertificationDto.Response actualResponse = certificationMapper.certificationToResponse(certificationService.findCertification(certification.getId(), 1L));
 
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
