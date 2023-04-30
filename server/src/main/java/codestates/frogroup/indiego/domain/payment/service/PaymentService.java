@@ -77,13 +77,15 @@ public class PaymentService {
         PaymentSuccessDto paymentSuccessDto = null;
         try {
             paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
-            showReservationRequest(paymentShowInfo, token);
 
 //            response.getData().add(paymentSuccessDto);
 //            response.getData().add(responseEntity.getBody());
         } catch (Exception e) {
             throw new BusinessLogicException(ExceptionCode.PAYMENT_AUTHORIZATION_FAILED);
         }
+
+        showReservationRequest(paymentShowInfo, token);
+        
 
         return paymentSuccessDto;
     }
