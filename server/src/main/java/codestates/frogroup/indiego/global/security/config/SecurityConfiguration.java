@@ -105,6 +105,7 @@ public class SecurityConfiguration {
 				"http://devindiego.site.s3-website.ap-northeast-2.amazonaws.com",
 				"http://localhost", // 로컬환경 OAuth2 테스트용
 				"http://localhost:8080",
+				"https://devindiego.site",
 //				"http://13.125.98.211:80",
 				"http://indiego-develop.s3-website.ap-northeast-2.amazonaws.com"));
 		configuration.setAllowCredentials(true);
