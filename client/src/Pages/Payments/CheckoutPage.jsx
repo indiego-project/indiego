@@ -121,8 +121,8 @@ export default function CheckoutPage() {
   const params = useParams();
 
   useEffect(() => {
-    if (!ticketData.image) {
-      window.alert("결제 과정에서 오류가 발생했습니다. 다시 시도해주세요.");
+    if (!ticketData) {
+      window.alert("결제 과정 중 오류가 발생했습니다. 다시 시도해주세요.");
       navigate(`/tickets/${params.id}`);
       return;
     }
@@ -145,7 +145,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-      {ticketData.image ? (
+      {ticketData ? (
         <>
           <PageTitleContainer>
             <h1>공연 결제하기</h1>

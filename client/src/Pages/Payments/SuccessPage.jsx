@@ -58,17 +58,22 @@ const SuccessInfoContainer = styled.div`
     font-weight: 600;
     font-size: ${dtFontSize.xlarge};
     margin-top: 10px;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      font-size: ${mbFontSize.xlarge};
+    }
   }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 40px;
+  margin-top: 15%;
   width: max-content;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
+    margin-top: 100px;
   }
 
   > button {
@@ -86,7 +91,7 @@ const ButtonContainer = styled.div`
     text-align: center;
 
     &:first-child {
-      margin-right: 10px;
+      margin-right: 20px;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         margin: 0 0 20px 0;
@@ -109,6 +114,7 @@ export function SuccessPage() {
   const data = JSON.parse(sessionStorage.getItem("reservationInfo"));
   const navigate = useNavigate();
   const userId = JSON.parse(localStorage.getItem("userInfoStorage")).id;
+  const showId = JSON.parse(sessionStorage.getItem("reservationInfo")).showId;
 
   const postData = () => {
     return instance.post(
@@ -123,20 +129,14 @@ export function SuccessPage() {
     );
   };
 
-  const postDataOnSuccess = (response) => {
-    console.log(response.data);
-  };
-
-  const postDataOnError = (error) => {
-    console.log(error);
-    // window.alert("결제 승인 과정 중 오류가 발생했습니다. 다시 시도해주세요.");
-    // window.location.replace("/");
-  };
+  // const postDataOnError = () => {
+  //   window.alert("결제 승인 과정 중 오류가 발생했습니다. 다시 시도해주세요.");
+  //   navigate(`/tickets/${showId}`);
+  // };
 
   const { mutate: postPaymentData, isLoading } = useMutation({
     mutationFn: postData,
-    onError: postDataOnError,
-    onSuccess: postDataOnSuccess,
+    // onError: postDataOnError,
   });
 
   useEffect(() => {
@@ -154,7 +154,7 @@ export function SuccessPage() {
       ) : (
         <Container>
           <SuccessInfoContainer>
-            <FontAwesomeIcon icon={faCheckCircle} size="5x" />
+            <FontAwesomeIcon icon={faCheckCircle} size="4x" />
             <h1>결제가 완료되었습니다</h1>
             <ButtonContainer>
               <button
