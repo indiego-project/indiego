@@ -614,7 +614,7 @@ export default function TicketsDetail() {
   const requestPayments = () => {
     return instance({
       method: "post",
-      url: `/payments`,
+      url: `/api/v1/payments`,
       data: {
         paymentType: "CARD",
         amount: ticketCount * ticketData.price,
@@ -648,10 +648,16 @@ export default function TicketsDetail() {
   });
 
   const handleReservation = () => {
+    sessionStorage.setItem(
+      "reservationInfo",
+      JSON.stringify({
+        showId: Number(ticketData.id),
+        date: reservationDate,
+        ticketCount: ticketCount,
+      })
+    );
     postRequestPayments();
   };
-
-  console.log(reservationDate);
 
   return (
     <>
