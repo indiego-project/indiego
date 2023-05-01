@@ -4,25 +4,18 @@ import styled from "styled-components";
 import CardItem from "./CardItem.jsx";
 
 import breakpoint from "../../styles/breakpoint.js";
-import Spinner from "../Spinner.jsx";
 
 const ItemGrid = styled.div`
   width: 90%;
   height: max-content;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-row: 1;
-  grid-gap: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   position: relative;
+  gap: 40px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     display: block;
-  }
-
-  @media screen and (max-width: 500px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 50px;
-    margin: 0 20px;
   }
 
   .null_info {
