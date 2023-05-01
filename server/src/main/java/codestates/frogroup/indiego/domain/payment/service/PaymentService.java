@@ -116,7 +116,7 @@ public class PaymentService {
         params.put("date", paymentShowInfo.getDate());
         params.put("ticketCount", paymentShowInfo.getTicketCount());
         restTemplate.postForObject(
-                "http://ec2-13-125-214-31.ap-northeast-2.compute.amazonaws.com:8080/shows/reservations/" + paymentShowInfo.getShowId(),
+                "https://api.devindiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
                 new HttpEntity<>(params, headers), Map.class);
     }
 
