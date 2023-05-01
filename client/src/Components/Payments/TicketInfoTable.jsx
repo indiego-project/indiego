@@ -4,7 +4,7 @@ import styled from "styled-components";
 import useTicketDataStore from "../../store/useTicketDataStore";
 import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
 import useReservationDateStore from "../../store/useReservationDateStore";
-import { primary, sub } from "../../styles/mixins";
+import { primary, sub, mbFontSize } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
 
 const TicketInfoTableComponent = styled.table`
@@ -16,24 +16,30 @@ const TicketInfoTableComponent = styled.table`
     width: 100%;
   }
 
+  > * {
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      font-size: ${mbFontSize.medium};
+    }
+  }
+
   > th {
     text-align: center;
-    background-color: ${primary.primary100};
-    border-top: 1px solid ${primary.primary600};
-    color: ${primary.primary600};
+    background-color: ${sub.sub100};
+    border-top: 1px solid ${sub.sub600};
+    color: ${sub.sub600};
 
-    vertical-align: top; /* 위 */
-    vertical-align: bottom; /* 아래 */
-    vertical-align: middle; /* 가운데 */
+    vertical-align: top;
+    vertical-align: bottom;
+    vertical-align: middle;
   }
   > tr > td {
-    border-top: 1px solid ${primary.primary600};
-    border-bottom: 1px solid ${primary.primary600};
+    border-top: 1px solid ${sub.sub600};
+    border-bottom: 1px solid ${sub.sub600};
     text-align: center;
 
-    vertical-align: top; /* 위 */
-    vertical-align: bottom; /* 아래 */
-    vertical-align: middle; /* 가운데 */
+    vertical-align: top;
+    vertical-align: bottom;
+    vertical-align: middle;
   }
 `;
 
