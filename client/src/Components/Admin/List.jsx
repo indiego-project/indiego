@@ -106,15 +106,13 @@ const InputModal = ({ message, setMessage, handlers, modalStates }) => {
   const { setModalStates, approveReq, rejectReq } = handlers;
   const { purpose } = modalStates;
   const sendReqHandler = (purpose) => {
-    return () => {
-      if (purpose === "approve") {
-        approveReq();
-      } else {
-        rejectReq();
-      }
-      setMessage("");
-      setModalStates({ open: false });
-    };
+    if (purpose === "approve") {
+      approveReq();
+    } else {
+      rejectReq();
+    }
+    setMessage("");
+    setModalStates({ open: false });
   };
 
   return (
@@ -134,11 +132,11 @@ const InputModal = ({ message, setMessage, handlers, modalStates }) => {
         />
         <div className="button_container">
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               sendReqHandler(purpose);
               document.querySelector("body").classList.remove("modal_open");
-            }}
-          >
+            }}>
             send
           </button>
           <button
@@ -147,8 +145,7 @@ const InputModal = ({ message, setMessage, handlers, modalStates }) => {
               setModalStates({ open: false, purpose: "" });
               setMessage("");
               document.querySelector("body").classList.remove("modal_open");
-            }}
-          >
+            }}>
             close
           </button>
         </div>
@@ -205,15 +202,13 @@ const ListCertBody = ({ data, index, handlers, queryKey }) => {
           onClick={() => {
             document.querySelector("body").classList.add("modal_open");
             setModalStates({ open: true, purpose: "approve" });
-          }}
-        >
+          }}>
           approve
         </button>
         <button
           onClick={() => {
             setModalStates({ open: true, purpose: "reject" });
-          }}
-        >
+          }}>
           reject
         </button>
       </div>

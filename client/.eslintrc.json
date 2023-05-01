@@ -19,11 +19,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "prettier/prettier": [
-      "error",
-      { "endOfLine": "auto" },
-      { "bracketSameLine": true }
-    ],
+    "prettier/prettier": ["warn", { "endOfLine": "auto" }],
     "no-unused-vars": [
       "warn",
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
