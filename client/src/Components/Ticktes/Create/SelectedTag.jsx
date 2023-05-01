@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import randomHexCode from "./randomHex";
-import { sub } from "../../../styles/mixins";
 
 const Container = styled.div`
   display: flex;

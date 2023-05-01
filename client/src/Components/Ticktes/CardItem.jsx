@@ -1,28 +1,22 @@
 import React from "react";
 
 import breakpoint from "../../styles/breakpoint";
-import {
-  primary,
-  dtFontSize,
-  sub,
-  misc,
-  mbFontSize,
-} from "../../styles/mixins";
+import { primary, dtFontSize, sub, mbFontSize } from "../../styles/mixins";
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import Spinner from "../Spinner";
 import Tag from "./Create/Tag";
 
 const CardItemContainer = styled.div`
   width: 100%;
   max-width: 250px;
+  min-width: 200px;
   background-color: ${sub.sub200};
   border-radius: 20px;
   position: relative;
   padding: 15px 10px;
   transition: all 0.1s ease-in-out;
-  min-height: 200px;
+  min-height: 350px;
 
   a {
     text-decoration: none !important;
@@ -34,6 +28,7 @@ const CardItemContainer = styled.div`
       padding: 30px 10px;
       position: relative;
       height: 100%;
+      justify-content: space-between;
     }
   }
 
@@ -45,6 +40,7 @@ const CardItemContainer = styled.div`
   }
 
   @media screen and (max-width: ${breakpoint.mobile}) {
+    max-width: 100%;
     background-color: transparent;
     border-radius: 0px;
     border-bottom: 1px solid ${sub.sub200};
@@ -56,10 +52,10 @@ const CardItemContainer = styled.div`
 
   .tag_container_desktop {
     display: flex;
-    justify-content: center;
     margin-bottom: 10px;
     flex-wrap: wrap;
     gap: 2px 0;
+    justify-content: center;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       display: none;
@@ -67,9 +63,9 @@ const CardItemContainer = styled.div`
   }
   .tag_container_mobile {
     display: flex;
-    justify-content: center;
     margin: 10px 0;
     padding: 10px 0;
+    width: max-content;
 
     @media screen and (min-width: ${breakpoint.mobile}) {
       display: none;
@@ -148,16 +144,26 @@ export default function CardItem({ data }) {
       <Link to={`/tickets/${data.id}`}>
         <ImageContainer>
           <div className="tag_container_mobile">
-            {data?.tags?.map((data) => (
-              <TagStyleExtended data={data} key={data.tagId} />
-            ))}
+            {data?.tags?.map((data, index) => {
+              if (index > 2) {
+                return null;
+              } else {
+                return <TagStyleExtended data={data} key={data.tagId} />;
+              }
+            })}
+            {data?.tags?.length > 3 && <span>...</span>}
           </div>
           <img width="100px" height="120px" src={data.image} alt="poster" />
         </ImageContainer>
         <div className="tag_container_desktop">
-          {data?.tags?.map((data) => (
-            <TagStyleExtended data={data} key={data.tagId} />
-          ))}
+          {data?.tags?.map((data, index) => {
+            if (index > 2) {
+              return null;
+            } else {
+              return <TagStyleExtended data={data} key={data.tagId} />;
+            }
+          })}
+          {data?.tags?.length > 3 && <span>...</span>}
         </div>
         <DetailContainer>
           <h4>{data.category}</h4>
