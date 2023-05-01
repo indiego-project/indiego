@@ -101,10 +101,11 @@ public class SecurityConfiguration {
 		configuration.setAllowedOrigins(List.of("http://localhost:3000",
 				"http://indiego.site.s3-website.ap-northeast-2.amazonaws.com",
 				"http://indiego.site",
+				"http://devindiego.site",
+				"http://devindiego.site.s3-website.ap-northeast-2.amazonaws.com",
 				"http://localhost", // 로컬환경 OAuth2 테스트용
 				"http://localhost:8080",
 //				"http://13.125.98.211:80",
-				"http://indiego.kro.kr:80",
 				"http://indiego-develop.s3-website.ap-northeast-2.amazonaws.com"));
 		configuration.setAllowCredentials(true);
 		configuration.addExposedHeader("Authorization");
