@@ -17,7 +17,6 @@ import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore
 //라이브러리 및 라이브러리 메소드
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentContainer = styled.div`
@@ -145,30 +144,18 @@ export default function CheckoutPage() {
 
   return (
     <>
-      {ticketData ? (
-        <>
-          <PageTitleContainer>
-            <h1>공연 결제하기</h1>
-            <h2>*테스트 환경에서는 카드 결제만 지원 가능합니다</h2>
-          </PageTitleContainer>
-          <PaymentContainer>
-            <div className="ticket_info_container">
-              <img
-                className="poster_image"
-                src={ticketData.image}
-                alt="poster"
-              />
-              <TicketInfoTable />
-            </div>
-            <div id="widget_container" />
-            <PaymentButton onClick={paymentClickHandler}>
-              결제하기
-            </PaymentButton>
-          </PaymentContainer>
-        </>
-      ) : (
-        <div>false</div>
-      )}
+      <PageTitleContainer>
+        <h1>공연 결제하기</h1>
+        <h2>*테스트 환경에서는 카드 결제만 지원합니다</h2>
+      </PageTitleContainer>
+      <PaymentContainer>
+        <div className="ticket_info_container">
+          <img className="poster_image" src={ticketData.image} alt="poster" />
+          <TicketInfoTable />
+        </div>
+        <div id="widget_container" />
+        <PaymentButton onClick={paymentClickHandler}>결제하기</PaymentButton>
+      </PaymentContainer>
     </>
   );
 }
