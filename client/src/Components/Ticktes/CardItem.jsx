@@ -1,14 +1,22 @@
 import React from "react";
 
 import breakpoint from "../../styles/breakpoint";
-import { primary, dtFontSize, sub, misc } from "../../styles/mixins";
+import {
+  primary,
+  dtFontSize,
+  sub,
+  misc,
+  mbFontSize,
+} from "../../styles/mixins";
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
+import Tag from "./Create/Tag";
 
 const CardItemContainer = styled.div`
   width: 100%;
+  max-width: 250px;
   background-color: ${sub.sub200};
   border-radius: 20px;
   position: relative;
@@ -25,6 +33,7 @@ const CardItemContainer = styled.div`
       flex-direction: row;
       padding: 30px 10px;
       position: relative;
+      height: 100%;
     }
   }
 
@@ -39,8 +48,31 @@ const CardItemContainer = styled.div`
     background-color: transparent;
     border-radius: 0px;
     border-bottom: 1px solid ${sub.sub200};
+    height: 300px;
     :hover {
       border: none;
+    }
+  }
+
+  .tag_container_desktop {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 2px 0;
+
+    @media screen and (max-width: ${breakpoint.mobile}) {
+      display: none;
+    }
+  }
+  .tag_container_mobile {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 10px 0;
+
+    @media screen and (min-width: ${breakpoint.mobile}) {
+      display: none;
     }
   }
 `;
@@ -48,11 +80,14 @@ const CardItemContainer = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
   height: 50%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     width: 50%;
+    height: 100%;
   }
 
   img {
@@ -65,6 +100,7 @@ const DetailContainer = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 120px;
+  justify-content: center;
 
   h2 {
     font-size: calc(10px + 0.3vw);
@@ -83,7 +119,9 @@ const DetailContainer = styled.div`
     margin-bottom: 5px;
 
     @media screen and (min-width: ${breakpoint.mobile}) {
+      height: 100%;
       font-size: ${dtFontSize.xsmall};
+      align-items: center;
     }
   }
 
@@ -97,13 +135,30 @@ const DetailContainer = styled.div`
   }
 `;
 
+const TagStyleExtended = styled(Tag)`
+  font-size: ${mbFontSize.xsmall};
+  padding: 5px;
+  min-width: 0px;
+  height: 15px;
+`;
+
 export default function CardItem({ data }) {
   return (
     <CardItemContainer>
       <Link to={`/tickets/${data.id}`}>
         <ImageContainer>
+          <div className="tag_container_mobile">
+            {data?.tags?.map((data) => (
+              <TagStyleExtended data={data} key={data.tagId} />
+            ))}
+          </div>
           <img width="100px" height="120px" src={data.image} alt="poster" />
         </ImageContainer>
+        <div className="tag_container_desktop">
+          {data?.tags?.map((data) => (
+            <TagStyleExtended data={data} key={data.tagId} />
+          ))}
+        </div>
         <DetailContainer>
           <h4>{data.category}</h4>
           <h2>{data.title}</h2>
