@@ -9,6 +9,7 @@ import CategorySelect from "./SearchOptions/CategorySelect";
 
 import { useTicketSearchStore } from "../../store/useTicketSearchStore";
 import breakpoint from "../../styles/breakpoint";
+import TagSelect from "./Create/TagSelect";
 
 const Overlay = styled.div`
   display: flex;
@@ -179,12 +180,22 @@ const SearchPanelContainer = styled.div`
   }
 `;
 
+const TagSelectStyleExtended = styled(TagSelect)`
+  .title {
+    display: none;
+  }
+
+  .description {
+    color: ${sub.sub500};
+  }
+`;
+
 export default function DetailSearch({
   closeModal,
   trigger,
   handleTransition,
 }) {
-  const { resetSearchParams, getSearchUrl, setAllParams } =
+  const { resetSearchParams, getSearchUrl, setAllParams, searchParams } =
     useTicketSearchStore((state) => state);
 
   const paramsCopy = useRef(
@@ -248,9 +259,10 @@ export default function DetailSearch({
                 <CategorySelect />
               </div>
             </div>
-            <div className="tag container">
+            {/* <div className="tag container">
               <p className="tag header">공연 태그 선택</p>
-            </div>
+              <TagSelectStyleExtended />
+            </div> */}
           </div>
           <div className="panel footer">
             <p onClick={removeFilterHandler}>필터 해제</p>

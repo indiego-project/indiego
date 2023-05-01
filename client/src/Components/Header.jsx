@@ -178,7 +178,7 @@ const UserStatus = styled.div`
     color: white;
     background-color: ${primary.primary500};
     min-width: 150px;
-    max-width: 200px;
+    max-width: 300px;
     padding: 10px 0;
     height: max-content;
     align-items: center;
@@ -448,19 +448,15 @@ export default function Header() {
             마이페이지
           </Link>
         )}
-        {(isLogin && userInfo?.role === "PERFORMER") ||
-          (userInfo?.role === "ADMIN" && (
-            <Link
-              className={
-                location.pathname.includes("tickets/create") ? "current" : ""
-              }
-              to={"/tickets/create"}
-            >
-              공연작성하기
-            </Link>
-          ))}
-        {isLogin && userInfo?.role === "ADMIN" && (
-          <Link to={"/admin/main"}>ADMIN</Link>
+        {isLogin && userInfo?.role.includes("PERFORMER") && (
+          <Link
+            className={
+              location.pathname.includes("tickets/create") ? "current" : ""
+            }
+            to={"/tickets/create"}
+          >
+            공연작성하기
+          </Link>
         )}
       </HeaderLinkContainer>
       {isLogin ? (

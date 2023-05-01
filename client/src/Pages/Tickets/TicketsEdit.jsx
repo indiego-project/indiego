@@ -12,6 +12,7 @@ import OKButton from "../../Components/Board/BoardList/OKButton.jsx";
 import Editor from "../../Components/Board/BoardCreate/Editor.jsx";
 import { Postcode } from "../../Components/Board/TicketsCreate/Postcode";
 import ReactDatePicker from "../../Components/Board/TicketsCreate/ReactDatePicker.jsx";
+import TagSelect from "../../Components/Ticktes/Create/TagSelect.jsx";
 
 //로컬 모듈
 import {
@@ -258,6 +259,9 @@ export default function TicketsEdit() {
     ticketData.detailDescription
   );
 
+  const [selectedTags, setSelectedTags] = useState(ticketData.tags);
+  console.log(selectedTags);
+
   // 지도 좌표
   const [latitude, setLatitude] = useState(ticketData.latitude); // 위도 // 사용
   const [longitude, setLongitude] = useState(ticketData.longitude); // 경도 // 사용
@@ -283,6 +287,7 @@ export default function TicketsEdit() {
     latitude: latitude,
     longitude: longitude,
     total: sit,
+    tags: selectedTags?.map((tagData) => tagData.tagId),
   };
 
   // 티켓 글 올리기
@@ -407,12 +412,11 @@ export default function TicketsEdit() {
     }
   }, []);
 
-  const getEditTickets = async () => {
-    const response = await instance({
+  const getEditTickets = () => {
+    return instance({
       method: "get",
       url: `${process.env.REACT_APP_SERVER_URI}/shows/${ticketData.id}`,
     });
-    return response.data;
   };
 
   const getEditTicketsOnSuccess = (response) => {
@@ -447,6 +451,11 @@ export default function TicketsEdit() {
           <CategoryDiv>
             <CategoryDropdown setCategory={setCategory}></CategoryDropdown>
           </CategoryDiv>
+          <TagSelect
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            category={category}
+          />
           <div className="postDiv">공연명</div>
           <TicketsCreateInputDiv>
             <input
