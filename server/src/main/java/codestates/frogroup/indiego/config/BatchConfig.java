@@ -26,6 +26,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -49,6 +50,7 @@ public class BatchConfig {
         return jobBuilderFactory.get("job") // job 이름
                 .start(step1())
                 .next(step2())
+                .next(step3())
                 .build();
     }
 
@@ -100,13 +102,16 @@ public class BatchConfig {
 
         while (keys.hasNext()) {
             Long showId = extractShowId(keys);
-            Show show = showRepository.findById(showId).get();
-            String key = redisKey.getScoreAverageKey(showId);
-            show.setScoreAverage(Double.parseDouble(scoreRepository.getValues(key)));
-            scoreRepository.deleteValues(key);
+            Optional<Show> showOptional = showRepository.findById(showId);
+            if(showOptional.isPresent()){
+                Show show = showOptional.get();
+                String key = redisKey.getScoreAverageKey(showId);
+                show.setScoreAverage(Double.parseDouble(scoreRepository.getValues(key)));
+                scoreRepository.deleteValues(key);
 
-            if(show.getShowBoard().getExpiredAt().isBefore(LocalDate.now())){
-                show.setStatus(Show.ShowStatus.EXPIRED);
+                if(show.getShowBoard().getExpiredAt().isBefore(LocalDate.now())){
+                    show.setStatus(Show.ShowStatus.EXPIRED);
+                }
             }
         }
     }
