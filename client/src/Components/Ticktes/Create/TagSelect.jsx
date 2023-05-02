@@ -65,16 +65,19 @@ export default function TagSelect({
   const tagClickHandler = (data) => {
     const tagData = data;
     return () => {
-      const deduplicatedTags = selectedTags.filter(
-        // eslint-disable-next-line eqeqeq
-        (selTag) => selTag.tagId != tagData.tagId
-      );
-      console.log(selectedTags, deduplicatedTags, "asdf");
-      setSelectedTags([...deduplicatedTags, data]);
+      if (selectedTags.length > 6) {
+        window.alert("태그 갯수는 7개 이상을 초과할 수 없습니다.");
+      } else {
+        const deduplicatedTags = selectedTags.filter(
+          // eslint-disable-next-line eqeqeq
+          (selTag) => selTag.tagId != tagData.tagId
+        );
+        setSelectedTags([...deduplicatedTags, data]);
+      }
     };
   };
 
-  const { isLoading } = useQuery({
+  useQuery({
     queryFn: fetchTagsData,
     queryKey: ["fetchTagsData", category],
     onSuccess: (res) => {

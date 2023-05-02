@@ -259,7 +259,7 @@ export default function TicketsCreate() {
     "https://elkcitychamber.com/wp-content/uploads/2022/08/Placeholder-Image-Square.png"
   );
 
-  // ######Tags
+  // Tags
   const [selectedTags, setSelectedTags] = useState([]);
 
   const userId = JSON.parse(localStorage.getItem("userInfoStorage"))?.id;
@@ -408,6 +408,12 @@ export default function TicketsCreate() {
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedTags.length > 7) {
+      window.alert("태그는 최대 7개 까지 설정 가능합니다.");
+    }
+  }, [selectedTags]);
+
   return (
     <PageWrapper>
       <TicketsCreateContentWrapper>
@@ -528,16 +534,14 @@ export default function TicketsCreate() {
               value={ticketInfo}
               onChange={(e) => {
                 setTicketInfo(e.target.value);
-              }}
-            ></textarea>
+              }}></textarea>
           </TicketsCreateInputDiv>
           <div className="postDiv">상세 설명</div>
           <ContentInputDiv>
             <Editor
               value={ticketsValue}
               setValue={setTicketsValue}
-              placeholder={"내용을 입력해주세요."}
-            ></Editor>
+              placeholder={"내용을 입력해주세요."}></Editor>
           </ContentInputDiv>
         </TicketsBoard>
 

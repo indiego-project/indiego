@@ -484,6 +484,12 @@ const TagsContainer = styled.div`
   display: flex;
   height: max-content;
   margin-top: 10px;
+  overflow-x: scroll;
+
+  .tag_box {
+    display: flex;
+    width: max-content;
+  }
 `;
 
 const ImpossibleButton = styled(PillButton)`
@@ -688,15 +694,13 @@ export default function TicketsDetail() {
                       <PillButton
                         color={primary.primary300}
                         hoverColor={secondary.secondary500}
-                        onClick={handleMoveToEditPage}
-                      >
+                        onClick={handleMoveToEditPage}>
                         수정하기
                       </PillButton>
                       <PillButton
                         color={misc.red}
                         hoverColor={misc.lightred}
-                        onClick={setOpenModal}
-                      >
+                        onClick={setOpenModal}>
                         삭제하기
                       </PillButton>
                     </HeaderButtonContainer>
@@ -705,9 +709,11 @@ export default function TicketsDetail() {
                   )}
                 </HeaderInfoContainer>
                 <TagsContainer>
-                  {ticketData?.tags?.map((data) => (
-                    <Tag key={data.tagId} data={data} />
-                  ))}
+                  <div className="tag_box">
+                    {ticketData?.tags?.map((data) => (
+                      <Tag key={data.tagId} data={data} />
+                    ))}
+                  </div>
                 </TagsContainer>
               </ContentHeaderContainer>
               <PosterAndInfoContainer>
@@ -760,26 +766,22 @@ export default function TicketsDetail() {
               <div
                 className={`inner-container ${
                   isReservationPossible ? "" : "disactived"
-                }`}
-              >
+                }`}>
                 <span className="sub-title">수량 선택</span>
                 <div>
                   <button
                     className="set-count-button"
-                    onClick={handleTicketMinus}
-                  >
+                    onClick={handleTicketMinus}>
                     <FontAwesomeIcon icon={faMinus} size="1x" />
                   </button>
                   <div
                     className="reservation-seat"
-                    onChange={handleTicketChange}
-                  >
+                    onChange={handleTicketChange}>
                     {ticketCount}
                   </div>
                   <button
                     className="set-count-button"
-                    onClick={handleTicketPlus}
-                  >
+                    onClick={handleTicketPlus}>
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
                   <span>매</span>
@@ -794,8 +796,7 @@ export default function TicketsDetail() {
                     <PillButton
                       color={primary.primary300}
                       hoverColor={secondary.secondary500}
-                      onClick={handleReservation}
-                    >
+                      onClick={handleReservation}>
                       예매하기
                     </PillButton>
                   </>
