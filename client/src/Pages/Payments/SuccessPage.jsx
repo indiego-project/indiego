@@ -4,22 +4,12 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons/faCheckCircle
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
-import {
-  primary,
-  secondary,
-  sub,
-  misc,
-  dtFontSize,
-  mbFontSize,
-} from "../../styles/mixins";
-import useTicketDataStore from "../../store/useTicketDataStore";
-import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
+import { primary, dtFontSize, mbFontSize } from "../../styles/mixins";
 import instance from "../../api/core/default";
 
 //라이브러리 및 라이브러리 메소드
-import { React, useEffect, useState } from "react";
+import { React, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
 
@@ -129,14 +119,14 @@ export function SuccessPage() {
     );
   };
 
-  // const postDataOnError = () => {
-  //   window.alert("결제 승인 과정 중 오류가 발생했습니다. 다시 시도해주세요.");
-  //   navigate(`/tickets/${showId}`);
-  // };
+  const postDataOnError = () => {
+    window.alert("결제 승인 과정 중 오류가 발생했습니다. 다시 시도해주세요.");
+    navigate(`/tickets/${showId}`);
+  };
 
   const { mutate: postPaymentData, isLoading } = useMutation({
     mutationFn: postData,
-    // onError: postDataOnError,
+    onError: postDataOnError,
   });
 
   useEffect(() => {

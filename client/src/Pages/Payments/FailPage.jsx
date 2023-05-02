@@ -6,15 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import breakpoint from "../../styles/breakpoint";
 import {
   primary,
-  secondary,
   sub,
   misc,
   dtFontSize,
   mbFontSize,
 } from "../../styles/mixins";
-import useTicketDataStore from "../../store/useTicketDataStore";
-import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
-import instance from "../../api/core/default";
 
 //라이브러리 및 라이브러리 메소드
 import { React, useEffect, useState } from "react";

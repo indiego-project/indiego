@@ -3,14 +3,7 @@ import TicketInfoTable from "../../Components/Payments/TicketInfoTable";
 
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
-import {
-  primary,
-  secondary,
-  sub,
-  misc,
-  dtFontSize,
-  mbFontSize,
-} from "../../styles/mixins";
+import { primary, sub, dtFontSize, mbFontSize } from "../../styles/mixins";
 import useTicketDataStore from "../../store/useTicketDataStore";
 import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
 

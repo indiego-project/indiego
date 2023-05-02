@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import useTicketDataStore from "../../store/useTicketDataStore";
 import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore";
 import useReservationDateStore from "../../store/useReservationDateStore";
-import { primary, sub, mbFontSize } from "../../styles/mixins";
+import { sub, mbFontSize } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
 
 const TicketInfoTableComponent = styled.table`
