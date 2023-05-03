@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 
+
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -55,13 +56,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // ServletInputSteam을 LoginDto 클래스 객체로 역직렬화 (즉, JSON 객체꺼냄)
         LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
-        log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}",
-                loginDto.getEmail(),loginDto.getPassword());
+        log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}, loginDto.getRole={}",
+                loginDto.getEmail(),loginDto.getPassword() ,loginDto.getRole());
+
+        //올바른 권한으로 로그인하는지 확인
+        memberService.checkRole(loginDto);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
+
+
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,

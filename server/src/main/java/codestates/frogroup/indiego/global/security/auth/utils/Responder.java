@@ -6,7 +6,6 @@ import codestates.frogroup.indiego.global.dto.SingleResponseDto;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ErrorResponse;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
-import codestates.frogroup.indiego.global.security.auth.userdetails.AuthMember;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

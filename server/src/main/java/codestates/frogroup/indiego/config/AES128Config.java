@@ -20,7 +20,7 @@ public class AES128Config {
 
     @PostConstruct
     public void init(){
-        this.key = secretKey.substring(0,24).getBytes();
+        this.key = secretKey.substring(0,16).getBytes();
     }
 
     // AES 암호화

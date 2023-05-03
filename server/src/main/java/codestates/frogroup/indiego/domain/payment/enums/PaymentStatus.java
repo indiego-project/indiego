@@ -1,4 +1,4 @@
-package codestates.frogroup.indiego.domain.payment.entity;
+package codestates.frogroup.indiego.domain.payment.enums;
 
 import lombok.Getter;
 

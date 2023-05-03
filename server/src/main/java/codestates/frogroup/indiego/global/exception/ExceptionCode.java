@@ -41,7 +41,20 @@ public enum ExceptionCode {
     SHOW_RESERVATION_NOT_FOUND(403, "후기를 작성할 수 있는 권한이 없습니다."),
     SHOW_RESERVATION_CREATE_FAIL(400,"재고가 부족합니다."),
 
+    // Tag
+    TAG_NOT_FOUND(404, "찾을 수 없는 태그입니다."),
+    TAG_EXIST(403, "존재하는 태그입니다."),
+    SHOW_TAG_NOT_FOUND(404, "찾을 수 없는 공연의 태그입니다."),
+    SHOW_TAG_EXIT(403, "존재하는 공연의 태그입니다."),
 
+    // Payment
+    PAYMENT_NOT_FOUND(404, "결제를 인식할 수 없습니다."),
+    NOT_MINIMUM_AMOUNT(400, "최소 주문 금액은 1000원 이상입니다."),
+    PAYMENT_TYPE_NOT_AVAILABLE(400, "사용할 수 없는 결제 수단입니다."),
+    AMOUNT_NOT_EQUAL(400, "금액이 일치하지 않습니다."),
+    PAYMENT_ALREADY_APPROVED(409, "이미 인증된 결제입니다."),
+    PAYMENT_TYPE_NOT_EQUALS(400, "불가능한 결제 수단입니다."),
+    PAYMENT_AUTHORIZATION_FAILED(406, "결제 승인에 실패하였습니다."),
 
     // File Upload
     UPLOAD_FAILED(404, "File Upload Failed !"),
@@ -49,8 +62,16 @@ public enum ExceptionCode {
 
     // AES
     ENCRYPTION_FAIED(404, "암호화에 실패하였습니다."),
-    DECRYPTION_FAIED(404, "복호화에 실패하였습니다.");
+    DECRYPTION_FAIED(404, "복호화에 실패하였습니다."),
 
+    //Certification
+    PERFORMER_ADD_FAILED(404, "퍼포머 인증에 실패했습니다."),
+    CERTIFICATION_REMOVE_FAILED(404, "퍼포퍼 인증 요청 삭제에 실패했습니다"),
+    CERTIFICATION_NOT_FOUND(404, "퍼포머 인증이 존재하지 않습니다."),
+    CERTIFICATION_EXIST(403, "인증을 이미 요청했습니다."),
+
+    //security
+    NULL_POINT_EXCEPTION(400, "데이터값을 확인하세요.");
     @Getter
     private int status;
 

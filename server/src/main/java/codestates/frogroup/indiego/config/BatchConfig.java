@@ -1,6 +1,7 @@
 package codestates.frogroup.indiego.config;
 
 import codestates.frogroup.indiego.domain.article.entity.Article;
+import codestates.frogroup.indiego.domain.article.repository.ArticleCommentRepository;
 import codestates.frogroup.indiego.domain.article.repository.ArticleRepository;
 import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.repository.ScoreRepository;
@@ -25,6 +26,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -38,6 +40,7 @@ public class BatchConfig {
     private final ArticleRepository articleRepository;
     private final ShowRepository showRepository;
     private final ScoreRepository scoreRepository;
+    private final ArticleCommentRepository articleCommentRepository;
     private final RedisTemplate<String, Long> redisTemplateLong;
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisKey redisKey;
@@ -47,6 +50,7 @@ public class BatchConfig {
         return jobBuilderFactory.get("job") // job 이름
                 .start(step1())
                 .next(step2())
+                .next(step3())
                 .build();
     }
 
@@ -78,19 +82,36 @@ public class BatchConfig {
                 .build();
     }
 
+    @Bean
+    public Step step3(){
+        return stepBuilderFactory.get("step3")
+                .tasklet(new Tasklet() {
+                    @Override
+                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                        log.info("step3 실행");
+                        articleCommentRepository.deleteSoftDeletedAll();
+                        return RepeatStatus.FINISHED;
+                    }
+                })
+                .build();
+    }
+
     public void updateShowRDB() {
         ScanOptions scanOptions = ScanOptions.scanOptions().match("*@scoreAverage").build();
         Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
 
         while (keys.hasNext()) {
             Long showId = extractShowId(keys);
-            Show show = showRepository.findById(showId).get();
-            String key = redisKey.getScoreAverageKey(showId);
-            show.setScoreAverage(Double.parseDouble(scoreRepository.getValues(key)));
-            scoreRepository.deleteValues(key);
+            Optional<Show> showOptional = showRepository.findById(showId);
+            if(showOptional.isPresent()){
+                Show show = showOptional.get();
+                String key = redisKey.getScoreAverageKey(showId);
+                show.setScoreAverage(Double.parseDouble(scoreRepository.getValues(key)));
+                scoreRepository.deleteValues(key);
 
-            if(show.getShowBoard().getExpiredAt().isBefore(LocalDate.now())){
-                show.setStatus(Show.ShowStatus.EXPIRED);
+                if(show.getShowBoard().getExpiredAt().isBefore(LocalDate.now())){
+                    show.setStatus(Show.ShowStatus.EXPIRED);
+                }
             }
         }
     }
@@ -113,6 +134,7 @@ public class BatchConfig {
             scoreRepository.deleteValues(key);
         }
     }
+
 
     private Long extractArticleId(Cursor<byte[]> keys) {
         String key = new String(keys.next());

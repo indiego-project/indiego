@@ -1,13 +1,17 @@
 package codestates.frogroup.indiego.domain.show.dto;
 
 import codestates.frogroup.indiego.domain.member.entity.Member;
+import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.entity.ShowBoard;
+import codestates.frogroup.indiego.domain.show.entity.ShowTag;
+import codestates.frogroup.indiego.domain.tag.dto.TagDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ShowDto {
@@ -48,6 +52,8 @@ public class ShowDto {
 
         @NotNull
         private Integer total; // 정원
+        @NotNull
+        private List<Long> tags;
     }
 
 
@@ -74,9 +80,8 @@ public class ShowDto {
         //showboard end
         private Double latitude;
         private Double longitude;
-
         private Integer total; // 정원
-
+        private List<Long> tags;
     }
 
     @Getter
@@ -111,12 +116,36 @@ public class ShowDto {
         private Integer emptySeats;
         private boolean isBookmarked;
         private String nickname;
+        private List<TagDto.Response> tags;
+
+        @Builder
+        public Response (Show show) {
+            this.id = show.getId();
+            this.title = show.getShowBoard().getBoard().getTitle();
+            this.content = show.getShowBoard().getBoard().getContent();
+            this.image = show.getShowBoard().getBoard().getImage();
+            this.category = show.getShowBoard().getBoard().getCategory();
+            this.price = show.getShowBoard().getPrice();
+            this.address = show.getShowBoard().getAddress();
+            this.detailAddress = show.getShowBoard().getDetailAddress();
+            this.expiredAt = show.getShowBoard().getExpiredAt();
+            this.showAt = show.getShowBoard().getShowAt();
+            this.showTime = show.getShowBoard().getShowTime();
+            this.detailDescription = show.getShowBoard().getDetailDescription();
+            this.latitude = show.getCoordinate().getLatitude();
+            this.longitude = show.getCoordinate().getLongitude();
+            this.status = show.getStatus().getStatus();
+            this.scoreAverage = show.getScoreAverage();
+            this.total = show.getTotal();
+            this.nickname = show.getMember().getProfile().getNickname();
+            this.tags = show.getShowTags().stream().map(ShowTag::toResponseDto).collect(Collectors.toList());
+        }
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class postResponse{
+    public static class PostResponse{
         private Long id;
         //ShowBoard
         //Board
@@ -140,6 +169,29 @@ public class ShowDto {
         private String status;
         private Double scoreAverage; // 평균별점
         private Integer total; // 정원
+        private List<TagDto.Response> tags;
+
+        @Builder
+        public PostResponse (Show show) {
+            this.id = show.getId();
+            this.title = show.getShowBoard().getBoard().getTitle();
+            this.content = show.getShowBoard().getBoard().getContent();
+            this.image = show.getShowBoard().getBoard().getImage();
+            this.category = show.getShowBoard().getBoard().getCategory();
+            this.price = show.getShowBoard().getPrice();
+            this.address = show.getShowBoard().getAddress();
+            this.detailAddress = show.getShowBoard().getDetailAddress();
+            this.expiredAt = show.getShowBoard().getExpiredAt();
+            this.showAt = show.getShowBoard().getShowAt();
+            this.showTime = show.getShowBoard().getShowTime();
+            this.detailDescription = show.getShowBoard().getDetailDescription();
+            this.latitude = show.getCoordinate().getLatitude();
+            this.longitude = show.getCoordinate().getLongitude();
+            this.status = show.getStatus().getStatus();
+            this.scoreAverage = show.getScoreAverage();
+            this.total = show.getTotal();
+            this.tags = show.getShowTags().stream().map(ShowTag::toResponseDto).collect(Collectors.toList());
+        }
 
     }
 
@@ -165,7 +217,7 @@ public class ShowDto {
         private String detailAddress;
 
         @Builder
-        ShowsResponse(Long id, ShowBoard showBoard, Member member){
+        public ShowsResponse(Long id, ShowBoard showBoard, Member member){
             this.id = id;
             this.nickname = member.getProfile().getNickname();
             this.title = showBoard.getBoard().getTitle();
@@ -195,6 +247,7 @@ public class ShowDto {
         private Integer revenue;
         @Setter
         private boolean isExpired;
+        private List<TagDto.Response> tags;
 
         @QueryProjection
         @Builder
