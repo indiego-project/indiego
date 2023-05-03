@@ -178,7 +178,7 @@ const UserStatus = styled.div`
     color: white;
     background-color: ${primary.primary500};
     min-width: 150px;
-    max-width: 200px;
+    max-width: 300px;
     padding: 10px 0;
     height: max-content;
     align-items: center;
@@ -368,9 +368,9 @@ export default function Header() {
     const headers = {
       "Content-Type": "application/json",
       // eslint-disable-next-line prettier/prettier
-      "Authorization": `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       // eslint-disable-next-line prettier/prettier
-      "Refresh": refreshToken,
+      Refresh: refreshToken,
     };
 
     return axios
@@ -378,7 +378,7 @@ export default function Header() {
       .finally((response) => {
         localStorage.clear();
         window.alert("로그아웃 되었습니다!");
-        window.location.reload();
+        window.location.replace("/");
       });
   };
 
@@ -422,27 +422,25 @@ export default function Header() {
               ? "current"
               : ""
           }
-          to="tickets"
-        >
+          to="tickets">
           티켓팅
         </Link>
         <Link
           className={location.pathname.includes("board") ? "current" : ""}
-          to="board/free?category=자유게시판&status=최신순&page=1&size=10"
-        >
+          to="board/free?category=자유게시판&status=최신순&page=1&size=10">
           커뮤니티
         </Link>
         <Link
           className={location.pathname.includes("search") ? "current" : ""}
-          to="search"
-        >
+          to="search">
           공연찾기
         </Link>
         {isLogin && (
           <Link
             className={location.pathname.includes("user") ? "current" : ""}
-            to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
-          >
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}>
             마이페이지
           </Link>
         )}
@@ -451,15 +449,17 @@ export default function Header() {
             className={
               location.pathname.includes("tickets/create") ? "current" : ""
             }
-            to={"/tickets/create"}
-          >
+            to={"/tickets/create"}>
             공연작성하기
           </Link>
         )}
       </HeaderLinkContainer>
       {isLogin ? (
         <UserStatus>
-          <Link to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}>
+          <Link
+            to={`/mypage/${
+              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo?.id}`}>
             <div className="userInfo">
               <p className="welcome">환영합니다!</p>
               <p className="username">
@@ -485,15 +485,13 @@ export default function Header() {
       <NavbarIcon
         onClick={() => {
           setNavOpen(true);
-        }}
-      >
+        }}>
         <svg
           width="18"
           height="18"
           viewBox="0 0 18 18"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path d="M2 3H16V5H2V3Z" fill="black" />
           <path d="M2 8H16V10H2V8Z" fill="black" />
           <path d="M16 13H2V15H16V13Z" fill="black" />
@@ -506,10 +504,11 @@ export default function Header() {
               <NavbarProfileBox>
                 <div className="userInfo">
                   <Link
-                    to={`/mypage/${userInfo?.role.toLowerCase()}/${
-                      userInfo.id
-                    }`}
-                  >
+                    to={`/mypage/${
+                      userInfo?.role.toLowerCase() !== "user"
+                        ? "performer"
+                        : "user"
+                    }/${userInfo.id}`}>
                     <h2>
                       {`${userInfo?.profile[0].nickname} 님,`}
                       <span>환영합니다!</span>
@@ -532,22 +531,19 @@ export default function Header() {
                 className={
                   location.pathname.includes("tickets") ? "current" : ""
                 }
-                to="/tickets"
-              >
+                to="/tickets">
                 티켓팅
               </Link>
               <Link
                 className={location.pathname.includes("board") ? "current" : ""}
-                to="board/free?category=자유게시판&status=최신순&page=1&size=10"
-              >
+                to="board/free?category=자유게시판&status=최신순&page=1&size=10">
                 커뮤니티
               </Link>
               <Link
                 className={
                   location.pathname.includes("search") ? "current" : ""
                 }
-                to="search"
-              >
+                to="search">
                 공연찾기
               </Link>
               {userInfo && (
@@ -555,10 +551,28 @@ export default function Header() {
                   className={
                     location.pathname.includes("user") ? "current" : ""
                   }
-                  to={`/mypage/${userInfo?.role.toLowerCase()}/${userInfo?.id}`}
-                >
+                  to={`/mypage/${
+                    userInfo?.role.toLowerCase() !== "user"
+                      ? "performer"
+                      : "user"
+                  }/${userInfo?.id}`}>
                   마이페이지
                 </Link>
+              )}
+              {(isLogin && userInfo?.role === "PERFORMER") ||
+                (userInfo?.role === "ADMIN" && (
+                  <Link
+                    className={
+                      location.pathname.includes("tickets/create")
+                        ? "current"
+                        : ""
+                    }
+                    to={"/tickets/create"}>
+                    공연작성하기
+                  </Link>
+                ))}
+              {isLogin && userInfo?.role === "ADMIN" && (
+                <Link to={"/admin/main"}>ADMIN</Link>
               )}
             </NavbarLinkerContainer>
           </NavbarContainer>

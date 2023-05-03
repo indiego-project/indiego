@@ -3,9 +3,11 @@ import TicketsDetailTap from "../../Components/TicketsDetail/TicketsDetailTapMen
 import KakaoMapButton from "../../Components/TicketsDetail/KakaoMapButton.jsx";
 import TicketDeleteModal from "../../Components/TicketsDetail/TicketDeleteModal.jsx";
 import ReactDatePicker from "../../Components/Board/TicketsCreate/ReactDatePicker.jsx";
+import SelectTicketDateCalendar from "../../Components/TicketsDetail/SelectTicketDateCalendar.jsx";
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tag from "../../Components/Ticktes/Create/Tag.jsx";
 
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
@@ -18,8 +20,10 @@ import {
   mbFontSize,
 } from "../../styles/mixins";
 import useTicketDataStore from "../../store/useTicketDataStore";
+import useReservationDateStore from "../../store/useReservationDateStore.js";
 import useOpenModalStore from "../../store/useOpenModalStore.js";
 import useClickedStarStore from "../../store/useClickedStarStore.js";
+import useRequestPaymentsDataStore from "../../store/useRequestPaymentsDataStore.js";
 import instance from "../../api/core/default.js";
 
 //라이브러리 및 라이브러리 메소드
@@ -28,6 +32,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
+import dayjs from "dayjs";
 
 const Container = styled.div`
   align-items: center;
@@ -42,22 +47,30 @@ const Container = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
+  height: max-content;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     width: 100%;
+    align-items: center;
   }
 `;
 
 const ContentHeaderContainer = styled.div`
-  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
   border-bottom: 1px solid ${sub.sub200};
+  margin: 20px 0;
+  padding: 20px;
+  width: 90%;
+  min-height: 120px;
+`;
+
+const HeaderInfoContainer = styled.div`
+  align-items: flex-start;
   display: flex;
   height: max-content;
   justify-content: space-between;
-  min-height: 140px;
-  padding: 40px;
-  width: 80%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     min-height: 100px;
@@ -133,24 +146,27 @@ export const PillButton = styled.button`
 
 const ContentTopContainer = styled.div`
   display: flex;
-  width: 100%;
-  height: max-content;
+  width: 90vw;
+  height: min-content;
   justify-content: space-between;
   padding: 2%;
+  height: 100vh;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
     align-items: center;
+    height: min-content;
     padding: 2%;
+    width: 100vw;
   }
 `;
 
-const TopLeftContainer = styled.div`
+const PosterAndInfoContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  min-width: max-content;
-  width: 68%;
+  width: 90%;
+  height: min-content;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
@@ -174,13 +190,13 @@ const TopLeftContainer = styled.div`
 `;
 
 const PosterImage = styled.img`
-  width: 270px;
-  height: 360px;
+  width: 20vw;
+  height: calc(20vw / 3 * 4);
   box-shadow: 0 5px 5px #6d6d6d;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    width: 240px;
-    height: 320px;
+    width: 60vw;
+    height: calc(60vw / 3 * 4);
     margin-bottom: 20px;
   }
 `;
@@ -214,8 +230,9 @@ const TicketInfoContainer = styled.div`
   border-radius: 10px;
   justify-content: space-between;
   flex-direction: column;
+  height: 100%;
   margin-left: 10px;
-  min-height: 500px;
+  min-height: 450px;
   padding: 3%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -339,39 +356,52 @@ const TicketInfoContainer = styled.div`
   }
 `;
 
-const TopRightContainer = styled.div`
-  border: 1px solid ${sub.sub300};
+const TopLeftContainer = styled.div`
   display: flex;
-  width: 22%;
+  flex-direction: column;
+  width: 90%;
+  height: 100%;
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+`;
+
+const TopRightContainer = styled.div`
+  display: flex;
   background-color: white;
+  border: 1px solid ${sub.sub300};
   border-radius: 10px;
-  justify-content: space-between;
   flex-direction: column;
   margin-left: 10px;
-  min-height: 500px;
+  height: 100%;
+  width: 30%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     margin-left: 0;
-    height: 400px;
     width: 90%;
+    height: 700px;
   }
 
   > .inner-container {
     display: flex;
     flex-direction: column;
-    height: 33.333%;
-    position: relative;
+    height: 50%;
     justify-content: center;
     align-items: center;
+    border-top: 1px solid ${sub.sub300};
 
-    > .error-message {
-      color: ${misc.red};
-      font-size: ${dtFontSize.small};
-      margin-bottom: 5px;
+    &.disactived {
+      pointer-events: none;
+    }
 
-      @media screen and (max-width: ${breakpoint.mobile}) {
-        font-size: ${mbFontSize.small};
-      }
+    > .total-price {
+      font-weight: 600;
+      font-size: ${dtFontSize.medium};
+      color: ${primary.primary400};
     }
 
     > .sub-title {
@@ -392,27 +422,42 @@ const TopRightContainer = styled.div`
       > .set-count-button {
         all: unset;
         align-items: center;
-        color: ${sub.sub400};
-        margin: 0 10px;
+        border-radius: 3px;
+        justify-content: center;
+        color: white;
+        display: flex;
+        background-color: ${primary.primary200};
+        width: 20px;
+        height: 20px;
 
         &:hover {
-          color: ${primary.primary300};
+          background-color: ${secondary.secondary400};
           cursor: pointer;
         }
       }
 
-      > .reservation-seat-input {
+      > .reservation-seat {
+        align-items: center;
+        background-color: ${sub.sub100};
+        text-align: center;
+        display: flex;
+        justify-content: center;
         width: 50px;
+        font-weight: 600;
+        font-size: ${dtFontSize.medium};
 
-        ::-webkit-outer-spin-button,
-        ::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+        @media screen and (max-width: ${breakpoint.mobile}) {
+          font-size: ${mbFontSize.medium};
+          color: ${sub.sub800};
         }
       }
 
       > span {
         margin-left: 5px;
+        font-size: ${dtFontSize.medium};
+        @media screen and (max-width: ${breakpoint.mobile}) {
+          font-size: ${mbFontSize.medium};
+        }
       }
     }
   }
@@ -422,27 +467,28 @@ const TopRightContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-top: 1px solid ${sub.sub300};
-    border-bottom: 1px solid ${sub.sub300};
-    height: 33.333%;
-    position: relative;
+    height: 50%;
     justify-content: center;
+  }
 
-    > .sub-title {
-      color: ${sub.sub800};
-      font-size: ${dtFontSize.medium};
-      font-weight: 600;
-      width: 100%;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
+  > .calendar-container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: max-content;
+    width: 100%;
+  }
+`;
 
-    > .error-message {
-      color: ${misc.red};
-      font-size: ${dtFontSize.small};
-      position: absolute;
-      top: 62%;
-    }
+const TagsContainer = styled.div`
+  display: flex;
+  height: max-content;
+  margin-top: 10px;
+  overflow-x: scroll;
+
+  .tag_box {
+    display: flex;
+    width: max-content;
   }
 `;
 
@@ -452,21 +498,30 @@ const ImpossibleButton = styled(PillButton)`
 
 export default function TicketsDetail() {
   const { ticketData, setTicketData } = useTicketDataStore((state) => state);
+  const { requestPaymentsData, setRequestPaymentsData } =
+    useRequestPaymentsDataStore((state) => state);
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
+  const { clicked, setClicked } = useClickedStarStore((state) => state);
   const [isReservationPossible, setIsReservationPossible] = useState(true);
   const [ticketCount, setTicketCount] = useState(1);
-  const [date, setDate] = useState("");
-  const [dateError, setDateError] = useState(false);
+  // eslint-disable-next-line prettier/prettier
+  const { reservationDate, setReservationDate } = useReservationDateStore((state) => state);
   const [isSameUser, setIsSameUser] = useState(false);
-  const { clicked, setClicked } = useClickedStarStore((state) => state);
   const params = useParams();
   const navigate = useNavigate();
+  const now = dayjs();
 
   useEffect(() => {
-    setDateError(false);
     setIsSameUser(false);
-    setIsReservationPossible(true);
     setClicked([false, false, false, false, false]);
+    if (
+      ticketData.emptySeats <= 0 ||
+      now.format("YYYY-MM-DD") > ticketData.expiredAt
+    ) {
+      setIsReservationPossible(false);
+    } else {
+      setIsReservationPossible(true);
+    }
   }, [ticketData]);
 
   useEffect(() => {
@@ -482,48 +537,71 @@ export default function TicketsDetail() {
   });
 
   useEffect(() => {
-    if (ticketData.emptySeats <= 0) {
-      setIsReservationPossible(false);
-    }
-  }, [ticketData]);
-
-  useEffect(() => {
-    if (
-      new Date(date) < new Date(ticketData.showAt) ||
-      new Date(date) > new Date(ticketData.expiredAt)
-    ) {
-      setDateError(true);
-    } else {
-      setDateError(false);
-    }
-  });
-
-  useEffect(() => {
     if (ticketCount <= 0) {
       setTicketCount("");
     }
   }, [ticketCount]);
 
-  const fetchData = () => {
-    return axios.get(`${process.env.REACT_APP_SERVER_URI}/shows/${params.id}`);
-  };
-
   const fetchDataOnSuccess = (response) => {
-    setTicketData(response.data.data && response.data.data);
+    const { getShowById: data } = response.data.data;
+    setTicketData(data);
   };
 
-  const fetchDataOnError = (error) => {
+  const fetchDataOnError = () => {
     navigate("/notFound");
   };
 
-  const { isLoading } = useQuery({
-    queryKey: ["fetchData"],
-    queryFn: fetchData,
-    keepPreviousData: false,
+  // graphQl
+  const gqlFetchData = () => {
+    const query = `
+      query GetShowById($showId : ID!) {
+        getShowById(showId: $showId) {
+          id
+          sellerId
+          title
+          content
+          image
+          category
+          price
+          address
+          detailAddress
+          expiredAt
+          showAt
+          showTime
+          detailDescription
+          latitude
+          longitude
+          status
+          scoreAverage
+          total
+          emptySeats
+          bookmarked
+          nickname
+          tags {
+            tagId
+            name
+            backgroundColor
+            textColor
+            type
+          }
+        }
+      }
+    `;
+
+    const variables = { showId: params.id };
+    const data = { query, variables };
+
+    return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
+  };
+
+  useQuery({
+    queryFn: gqlFetchData,
+    queryKey: ["GQLFetchShowData"],
     onSuccess: fetchDataOnSuccess,
     onError: fetchDataOnError,
     retry: false,
   });
+  // graphQl
 
   const handleMoveToEditPage = () => {
     navigate(`/tickets/${params.id}/edit`);
@@ -550,19 +628,24 @@ export default function TicketsDetail() {
     setTicketCount(Number(e.target.value));
   };
 
-  const postData = () => {
+  const requestPayments = () => {
     return instance({
       method: "post",
-      url: `/shows/reservations/${params.id}`,
-      data: { date, ticketCount },
+      url: `/api/v1/payments`,
+      data: {
+        paymentType: "CARD",
+        amount: ticketCount * ticketData.price,
+        orderName: ticketData.title,
+      },
     });
   };
 
-  const postDataOnsuccess = () => {
-    window.alert("공연 예매가 완료되었습니다.");
+  const requestPaymentsOnSuccess = (response) => {
+    setRequestPaymentsData(response.data.data);
+    navigate(`/tickets/${ticketData.id}/checkout`);
   };
 
-  const postDataOnError = (error) => {
+  const requestPaymentsOnError = (error) => {
     if (
       error.response.status === 400 &&
       error.response.data.message === "Token Expired"
@@ -575,140 +658,145 @@ export default function TicketsDetail() {
     }
   };
 
-  const { mutate: postReservation } = useMutation({
-    mutationFn: postData,
-    onSuccess: postDataOnsuccess,
-    onError: postDataOnError,
+  const { mutate: postRequestPayments } = useMutation({
+    mutationFn: requestPayments,
+    onSuccess: requestPaymentsOnSuccess,
+    onError: requestPaymentsOnError,
   });
 
   const handleReservation = () => {
-    if (dateError || ticketCount === "") {
-      return;
-    }
-    postReservation();
+    sessionStorage.setItem(
+      "reservationInfo",
+      JSON.stringify({
+        showId: Number(ticketData.id),
+        date: reservationDate,
+        ticketCount: ticketCount,
+      })
+    );
+    postRequestPayments();
   };
+
   return (
     <>
       <TicketDeleteModal ticketId={params.id} />
       <Container>
-        <ContentHeaderContainer>
-          <HeaderTitleContainer>
-            <h1>공연 상세페이지</h1>
-            <h2>
-              {ticketData.title} / {ticketData.nickname}
-            </h2>
-          </HeaderTitleContainer>
-          {isSameUser ? (
-            <HeaderButtonContainer>
-              <PillButton
-                color={primary.primary300}
-                hoverColor={secondary.secondary500}
-                onClick={handleMoveToEditPage}
-              >
-                수정하기
-              </PillButton>
-              <PillButton
-                color={misc.red}
-                hoverColor={misc.lightred}
-                onClick={setOpenModal}
-              >
-                삭제하기
-              </PillButton>
-            </HeaderButtonContainer>
-          ) : (
-            ""
-          )}
-        </ContentHeaderContainer>
         <ContentContainer>
           <ContentTopContainer>
             <TopLeftContainer>
-              <PosterImage alt="poster" src={ticketData.image} />
-              <TicketInfoContainer>
-                <div>
-                  <h3>{ticketData.title}</h3>
-                  <h4>{ticketData.nickname}</h4>
-                  <span className="title-description">
-                    {ticketData.detailAddress}
-                  </span>
-                </div>
-                <div>
-                  <span className="sub-title">공연 소개</span>
-                  <span className="description">{ticketData.content}</span>
-                </div>
-                <div>
-                  <span className="sub-title">공연 기간 / 공연 시간</span>
-                  <span className="description">
-                    {ticketData.showAt} ~ {ticketData.expiredAt} /{" "}
-                    {ticketData.showTime}시
-                  </span>
-                </div>
-                <div className="location-container">
+              <ContentHeaderContainer>
+                <HeaderInfoContainer>
+                  <HeaderTitleContainer>
+                    <h1>{ticketData.title}</h1>
+                    <h2>{ticketData.nickname}</h2>
+                  </HeaderTitleContainer>
+                  {isSameUser ? (
+                    <HeaderButtonContainer>
+                      <PillButton
+                        color={primary.primary300}
+                        hoverColor={secondary.secondary500}
+                        onClick={handleMoveToEditPage}>
+                        수정하기
+                      </PillButton>
+                      <PillButton
+                        color={misc.red}
+                        hoverColor={misc.lightred}
+                        onClick={setOpenModal}>
+                        삭제하기
+                      </PillButton>
+                    </HeaderButtonContainer>
+                  ) : (
+                    ""
+                  )}
+                </HeaderInfoContainer>
+                <TagsContainer>
+                  <div className="tag_box">
+                    {ticketData?.tags?.map((data) => (
+                      <Tag key={data.tagId} data={data} />
+                    ))}
+                  </div>
+                </TagsContainer>
+              </ContentHeaderContainer>
+              <PosterAndInfoContainer>
+                <PosterImage alt="poster" src={ticketData.image} />
+                <TicketInfoContainer>
                   <div>
-                    <span className="location-title">위치</span>
-                    <span className="location-description">
+                    <h3>{ticketData.title}</h3>
+                    <h4>{ticketData.nickname}</h4>
+                    <span className="title-description">
                       {ticketData.detailAddress}
                     </span>
                   </div>
-                  <KakaoMapButton
-                    detailAddress={ticketData.detailAddress}
-                    latitude={ticketData.latitude}
-                    longitude={ticketData.longitude}
-                  />
-                </div>
-              </TicketInfoContainer>
+                  <div>
+                    <span className="sub-title">공연 소개</span>
+                    <span className="description">{ticketData.content}</span>
+                  </div>
+                  <div>
+                    <span className="sub-title">공연 기간 / 공연 시간</span>
+                    <span className="description">
+                      {ticketData.showAt} ~ {ticketData.expiredAt} /{" "}
+                      {ticketData.showTime}시
+                    </span>
+                  </div>
+                  <div className="location-container">
+                    <div>
+                      <span className="location-title">위치</span>
+                      <span className="location-description">
+                        {ticketData.detailAddress}
+                      </span>
+                    </div>
+                    <KakaoMapButton
+                      detailAddress={ticketData.detailAddress}
+                      latitude={ticketData.latitude}
+                      longitude={ticketData.longitude}
+                    />
+                  </div>
+                </TicketInfoContainer>
+              </PosterAndInfoContainer>
             </TopLeftContainer>
             <TopRightContainer>
-              <div className="inner-container">
-                <span className="sub-title">티켓 정보</span>
-                <Price>₩ {ticketData.price}</Price>
+              <div className="calender-container">
+                <SelectTicketDateCalendar />
+              </div>
+              <div className="middle-container">
+                <Price>티켓 가격: ₩ {ticketData.price}</Price>
                 <EmptySeat>
                   잔여 좌석: {ticketData.emptySeats} / {ticketData.total}
                 </EmptySeat>
               </div>
-              <div className="middle-container">
-                <span className="sub-title">예매 날짜 선택</span>
-                <ReactDatePicker setDate={setDate}></ReactDatePicker>
-                {dateError ? (
-                  <span className="error-message">공연 기간이 아닙니다</span>
-                ) : (
-                  ""
-                )}
+              <div
+                className={`inner-container ${
+                  isReservationPossible ? "" : "disactived"
+                }`}>
+                <span className="sub-title">수량 선택</span>
+                <div>
+                  <button
+                    className="set-count-button"
+                    onClick={handleTicketMinus}>
+                    <FontAwesomeIcon icon={faMinus} size="1x" />
+                  </button>
+                  <div
+                    className="reservation-seat"
+                    onChange={handleTicketChange}>
+                    {ticketCount}
+                  </div>
+                  <button
+                    className="set-count-button"
+                    onClick={handleTicketPlus}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                  <span>매</span>
+                </div>
               </div>
               <div className="inner-container">
-                <span className="sub-title">수량 선택</span>
                 {isReservationPossible ? (
                   <>
-                    <div>
-                      <button
-                        className="set-count-button"
-                        onClick={handleTicketMinus}
-                      >
-                        <FontAwesomeIcon icon={faMinus} size="1x" />
-                      </button>
-                      <input
-                        className="reservation-seat-input"
-                        onChange={handleTicketChange}
-                        type="number"
-                        value={ticketCount}
-                      />
-                      <span>매</span>
-                      <button
-                        className="set-count-button"
-                        onClick={handleTicketPlus}
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
+                    <div className="total-price">
+                      총 티켓 가격: {ticketCount * ticketData.price}₩
                     </div>
-                    {ticketCount === "" ? (
-                      <span className="error-message">수량을 입력해주세요</span>
-                    ) : (
-                      ""
-                    )}
                     <PillButton
                       color={primary.primary300}
                       hoverColor={secondary.secondary500}
-                      onClick={handleReservation}
-                    >
+                      onClick={handleReservation}>
                       예매하기
                     </PillButton>
                   </>

@@ -13,7 +13,7 @@ const BackDrop = styled.div`
   left: 0;
   z-index: 30;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: ${sub.sub800}D2;
   display: flex;
   flex-direction: column;
