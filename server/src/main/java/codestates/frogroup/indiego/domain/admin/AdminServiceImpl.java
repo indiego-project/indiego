@@ -6,7 +6,6 @@ import codestates.frogroup.indiego.domain.article.mapper.ArticleCommentMapper;
 import codestates.frogroup.indiego.domain.article.repository.ArticleCommentRepository;
 import codestates.frogroup.indiego.domain.article.service.ArticleCommentService;
 import codestates.frogroup.indiego.domain.member.entity.Member;
-import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.dto.MultiResponseDto;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
@@ -25,10 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Slf4j

@@ -3,14 +3,11 @@ package codestates.frogroup.indiego.domain.show.dto;
 import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.entity.ShowTag;
 import codestates.frogroup.indiego.domain.tag.dto.TagDto;
-import codestates.frogroup.indiego.domain.tag.entity.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
