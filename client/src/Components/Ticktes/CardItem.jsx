@@ -28,7 +28,6 @@ const CardItemContainer = styled.div`
       padding: 30px 10px;
       position: relative;
       height: 100%;
-      justify-content: space-between;
     }
   }
 

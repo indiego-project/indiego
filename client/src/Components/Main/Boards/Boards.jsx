@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 
 const BoardsContainer = styled.div`
   width: 100%;
-  height: 265px;
+  height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,6 +34,7 @@ const BoardList = styled.ul`
   flex-direction: column;
   border-radius: 10px;
   background-color: ${sub.sub100};
+  margin-bottom: 10px;
 
   a {
     text-decoration: none;
@@ -45,6 +46,14 @@ const BoardList = styled.ul`
   }
 
   .null_data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner_box {
     width: 100%;
     height: 100%;
     display: flex;
@@ -80,7 +89,9 @@ export default function Boards({ category, children, path }) {
       <h1>{children}</h1>
       <BoardList>
         {isLoading ? (
-          <Spinner />
+          <div className="spinner_box">
+            <Spinner />
+          </div>
         ) : !data.length ? (
           <div className="null_data">
             <p>데이터가 없습니다.</p>
@@ -91,8 +102,7 @@ export default function Boards({ category, children, path }) {
               return (
                 <Link
                   to={`board${path ? `/${path}` : ""}/${data.id}`}
-                  key={data.id}
-                >
+                  key={data.id}>
                   <Board data={data} isLast={true} />
                 </Link>
               );
@@ -100,8 +110,7 @@ export default function Boards({ category, children, path }) {
             return (
               <Link
                 to={`board${path ? `/${path}` : ""}/${data.id}`}
-                key={data.id}
-              >
+                key={data.id}>
                 <Board data={data} />
               </Link>
             );

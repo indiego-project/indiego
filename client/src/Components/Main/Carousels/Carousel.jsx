@@ -18,6 +18,7 @@ const CarouselContainer = styled.div`
   max-width: 480px;
   min-width: 350px;
   height: 100%;
+  min-height: 200px;
   background-color: ${sub.sub200};
   border-radius: 20px;
   display: flex;
@@ -197,8 +198,7 @@ export default function Carousel({ isRankMode, status, address }) {
         <PrevButton
           onClick={() => {
             pageButtonClickHandler(-1);
-          }}
-        >
+          }}>
           <img src={Arrow} alt="prev" />
         </PrevButton>
       )}
@@ -226,8 +226,7 @@ export default function Carousel({ isRankMode, status, address }) {
         <NextButton
           onClick={() => {
             pageButtonClickHandler(1);
-          }}
-        >
+          }}>
           <img src={Arrow} alt="next" />
         </NextButton>
       )}
