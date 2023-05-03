@@ -1,9 +1,7 @@
 package codestates.frogroup.indiego.domain.show.entity;
 
-import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.tag.dto.TagDto;
 import codestates.frogroup.indiego.domain.tag.entity.Tag;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

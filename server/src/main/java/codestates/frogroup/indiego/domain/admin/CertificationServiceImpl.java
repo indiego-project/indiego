@@ -1,9 +1,7 @@
 package codestates.frogroup.indiego.domain.admin;
 
-import codestates.frogroup.indiego.domain.article.entity.Article;
 import codestates.frogroup.indiego.domain.common.utils.CustomBeanUtils;
 import codestates.frogroup.indiego.domain.member.entity.Member;
-import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
@@ -17,11 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static codestates.frogroup.indiego.domain.admin.QCertification.certification;
 
 @Slf4j
 @Service

@@ -1,6 +1,5 @@
 package codestates.frogroup.indiego.domain.payment.service;
 
-import codestates.frogroup.indiego.domain.payment.dto.PaymentFailDto;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentShowInfo;
 import codestates.frogroup.indiego.domain.payment.dto.PaymentSuccessDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
@@ -11,9 +10,6 @@ import codestates.frogroup.indiego.domain.payment.dto.PaymentResponseDto;
 import codestates.frogroup.indiego.domain.payment.entity.Payment;
 import codestates.frogroup.indiego.domain.payment.enums.PaymentType;
 import codestates.frogroup.indiego.domain.payment.repository.PaymentRepository;
-import codestates.frogroup.indiego.domain.show.dto.ShowReservationDto;
-import codestates.frogroup.indiego.global.dto.MultiResponseDto;
-import codestates.frogroup.indiego.global.dto.PagelessMultiResponseDto;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +18,6 @@ import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;

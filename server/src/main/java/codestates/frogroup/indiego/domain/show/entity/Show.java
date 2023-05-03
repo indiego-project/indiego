@@ -6,13 +6,10 @@ import codestates.frogroup.indiego.domain.common.auditing.BaseTime;
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.thymeleaf.util.ObjectUtils;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Getter
