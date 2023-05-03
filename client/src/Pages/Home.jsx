@@ -82,10 +82,14 @@ const CarouselDisplay = styled.div`
     h1 {
       color: ${primary.primary500};
       font-size: ${dtFontSize.large};
-      margin-bottom: 10px;
       width: 65%;
       height: max-content;
+      margin-bottom: 20px;
       text-align: start;
+
+      @media screen and (max-width: ${breakpoint.mobile}) {
+        text-align: center;
+      }
     }
 
     @media screen and (max-width: ${breakpoint.mobile}) {
@@ -215,8 +219,7 @@ export default function Home() {
                   <Carousel
                     status="별점순"
                     address={userAddress}
-                    isRankMode={true}
-                  ></Carousel>
+                    isRankMode={true}></Carousel>
                 ) : (
                   <div className="loading_container">
                     <p>사용자 지역정보를 불러오고 있습니다.</p>
@@ -226,8 +229,7 @@ export default function Home() {
                 <Carousel
                   status="별점순"
                   address={"강남구"}
-                  isRankMode={true}
-                ></Carousel>
+                  isRankMode={true}></Carousel>
               )}
             </div>
             <div className="carousel_box">
