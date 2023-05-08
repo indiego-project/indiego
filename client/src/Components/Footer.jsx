@@ -8,11 +8,11 @@ import notion from "../assets/notion.png";
 const FooterContainer = styled.div`
   width: 100%;
   height: 80px;
-  margin-top: 200px;
   background-color: ${sub.sub700};
   color: white;
   display: flex;
-  position: relative;
+  bottom: 0;
+  position: absolute;
 
   p {
     font-size: ${dtFontSize.small};
@@ -170,8 +170,7 @@ export default function Footer() {
               height="34"
               viewBox="0 0 153 34"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+              xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M26.75 5C27.0815 5 27.3995 5.1317 27.6339 5.36612C27.8683 5.60054 28 5.91848 28 6.25V13.125C27.1712 13.125 26.3763 13.4542 25.7903 14.0403C25.2042 14.6263 24.875 15.4212 24.875 16.25C24.875 17.0788 25.2042 17.8737 25.7903 18.4597C26.3763 19.0458 27.1712 19.375 28 19.375V26.25C28 26.5815 27.8683 26.8995 27.6339 27.1339C27.3995 27.3683 27.0815 27.5 26.75 27.5H4.25C3.91848 27.5 3.60054 27.3683 3.36612 27.1339C3.1317 26.8995 3 26.5815 3 26.25V19.375C3.8288 19.375 4.62366 19.0458 5.20971 18.4597C5.79576 17.8737 6.125 17.0788 6.125 16.25C6.125 15.4212 5.79576 14.6263 5.20971 14.0403C4.62366 13.4542 3.8288 13.125 3 13.125V6.25C3 5.91848 3.1317 5.60054 3.36612 5.36612C3.60054 5.1317 3.91848 5 4.25 5H26.75Z"
                 fill="#070707"
@@ -205,15 +204,13 @@ export default function Footer() {
         <LinkContainer>
           <a
             href="https://github.com/codestates-seb/seb41_main_020"
-            className="link"
-          >
+            className="link">
             <img className="logo" src={github} alt="github" />
             <span>Github</span>
           </a>
           <a
             href="https://www.notion.so/ffbb3cab6709480f8466d9bee1c503d3"
-            className="link"
-          >
+            className="link">
             <img className="logo" src={notion} alt="notion" />
             <span>Notion</span>
           </a>
