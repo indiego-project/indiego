@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import Tag from "./Create/Tag";
 
 const CardItemContainer = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100%;
   max-width: 250px;
   min-width: 200px;
@@ -28,6 +30,8 @@ const CardItemContainer = styled.div`
       padding: 30px 10px;
       position: relative;
       height: 100%;
+      width: 100%;
+      justify-content: space-evenly;
     }
   }
 
@@ -97,15 +101,32 @@ const DetailContainer = styled.div`
   min-height: 120px;
   justify-content: center;
 
-  h2 {
-    font-size: calc(10px + 0.3vw);
-    margin-bottom: 5px;
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    padding: 40px 0px;
+    width: 50%;
+    max-width: 200px;
   }
 
-  h3 {
+  .title {
+    font-size: calc(10px + 0.3vw);
+    margin-bottom: 5px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    overflow-x: hidden;
+    -webkit-box-orient: vertical;
+    max-width: 180px;
+  }
+
+  .nickname {
     font-size: calc(8px + 0.3vw);
     font-weight: 500;
     margin-bottom: 5px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    overflow-x: hidden;
+    -webkit-box-orient: vertical;
   }
 
   h4 {
@@ -165,9 +186,9 @@ export default function CardItem({ data }) {
           {data?.tags?.length > 3 && <span>...</span>}
         </div>
         <DetailContainer>
-          <h4>{data.category}</h4>
-          <h2>{data.title}</h2>
-          <h3>{data.nickname}</h3>
+          <h4 className="category">{data.category}</h4>
+          <h2 className="title">{data.title}</h2>
+          <h3 className="nickname">{data.nickname}</h3>
           <h4 className="price">{`${data.price ? data.price + "₩" : ""}`}</h4>
           <h4>
             {data.showAt && data.expiredAt

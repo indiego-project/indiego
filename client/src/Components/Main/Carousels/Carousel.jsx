@@ -109,15 +109,9 @@ export default function Carousel({ isRankMode, status, address }) {
   const [transition, setTransition] = useState(true);
   const serverURI = process.env.REACT_APP_SERVER_URI;
 
-  // console.log(data);
-
-  // const fetchShowData = () => {
-  //   const params = { status, address };
-  //   return axios.get(`${serverURI}/shows`, { params });
-  // };
-
   const fetchShowDataOnSuccess = (response) => {
-    const data = response.data.data;
+    const data = response.data.data.getSortShows.data;
+    console.log(data);
     if (data.length > 1) {
       data.push(data[0]);
       data.unshift(data[data.length - 1]);
@@ -125,13 +119,6 @@ export default function Carousel({ isRankMode, status, address }) {
 
     setData(data);
   };
-
-  // const { isLoading } = useQuery({
-  //   queryKey: ["fetchShowData", status],
-  //   queryFn: fetchShowData,
-  //   onSuccess: fetchShowDataOnSuccess,
-  //   retry: false,
-  // });
 
   // GraphQl
   const gqlFetchShowData = () => {
@@ -145,6 +132,7 @@ export default function Carousel({ isRankMode, status, address }) {
       }
     }`;
     const variables = { address, status };
+    console.log(address, status);
     const data = { query, variables };
 
     return axios.post(`${serverURI}/graphql`, data);
