@@ -53,8 +53,6 @@ const SideList = styled.div`
 
 const Aside = () => {
   const { pathname } = useLocation();
-  console.log(123);
-  console.log(location.pathname);
   return (
     <Side>
       <SideList>
@@ -62,8 +60,7 @@ const Aside = () => {
           className={
             location.pathname.includes("free") ? "thisLinkNav" : "linkNav"
           }
-          to="/board/free?category=자유게시판&status=최신순&page=1&size=10"
-        >
+          to="/board/free?category=자유게시판&status=최신순&page=1&size=10">
           자유게시판
         </Link>
         <br />
@@ -71,8 +68,7 @@ const Aside = () => {
           className={
             location.pathname.includes("employ") ? "thisLinkNav" : "linkNav"
           }
-          to="/board/employ?category=구인게시판&status=최신순&page=1&size=10"
-        >
+          to="/board/employ?category=구인게시판&status=최신순&page=1&size=10">
           구인게시판
         </Link>
         <br />
@@ -80,8 +76,7 @@ const Aside = () => {
           className={
             location.pathname.includes("request") ? "thisLinkNav" : "linkNav"
           }
-          to="/board/request?category=초청게시판&status=최신순&page=1&size=10"
-        >
+          to="/board/request?category=초청게시판&status=최신순&page=1&size=10">
           초청게시판
         </Link>
         <br />
@@ -89,8 +84,7 @@ const Aside = () => {
           className={
             location.pathname.includes("advertise") ? "thisLinkNav" : "linkNav"
           }
-          to="/board/advertise?category=홍보게시판&status=최신순&page=1&size=10"
-        >
+          to="/board/advertise?category=홍보게시판&status=최신순&page=1&size=10">
           홍보게시판
         </Link>
         <br />
@@ -98,8 +92,7 @@ const Aside = () => {
           className={
             location.pathname.includes("review") ? "thisLinkNav" : "linkNav"
           }
-          to="/board/review?category=후기게시판&status=최신순&page=1&size=10"
-        >
+          to="/board/review?category=후기게시판&status=최신순&page=1&size=10">
           후기게시판
         </Link>
         <br />

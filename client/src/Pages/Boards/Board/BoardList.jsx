@@ -301,13 +301,11 @@ export default function BoardList() {
         </WriteButtonDiv>
         <PageNation
           location={`${pathname}?${PageNationURI}`}
-          pageData={pageData}
-        ></PageNation>
+          pageData={pageData}></PageNation>
         <SearchBar
           placeholder="검색어를 입력해주세요"
           location={`${pathname}?${SearchBarUri}`}
-          setPageData={setPageData}
-        ></SearchBar>
+          setPageData={setPageData}></SearchBar>
       </BoardWrapper>
     </PageWrapper>
   );
