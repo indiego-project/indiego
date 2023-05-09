@@ -47,18 +47,18 @@ const SeoulMapStyled = styled(SeoulMap)`
 `;
 
 export default function LocationSelect() {
-  const { location } = useTicketSearchStore((state) => state.searchParams);
-  const { setLocation } = useTicketSearchStore((state) => state);
+  const { address } = useTicketSearchStore((state) => state.searchParams);
+  const { setAddress } = useTicketSearchStore((state) => state);
 
-  const locationClickHanlder = (e) => {
+  const addressClickHanlder = (e) => {
     const address = JSON.parse(e.target.attributes.value.value).address;
-    setLocation(address);
+    setAddress(address);
   };
 
   return (
     <LocationPickerContainer>
-      <p className="location">현재 지역: {location || "없음"}</p>
-      <SeoulMapStyled clickHandler={locationClickHanlder} />
+      <p className="location">현재 지역: {address || "없음"}</p>
+      <SeoulMapStyled clickHandler={addressClickHanlder} />
     </LocationPickerContainer>
   );
 }
