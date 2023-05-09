@@ -301,6 +301,7 @@ const LocationandAboutContainer = styled.div`
       font-size: ${dtFontSize.small};
       font-weight: 400;
       text-align: center;
+      word-break: break-all;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         font-size: ${mbFontSize.small};
