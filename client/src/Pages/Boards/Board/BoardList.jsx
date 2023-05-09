@@ -238,6 +238,7 @@ export default function BoardList() {
     }
     PageNationURI += `${queryArr[0]}=${queryArr[1]}&`;
   }
+  PageNationURI = PageNationURI.slice(0, PageNationURI.length - 1);
 
   // 로그인 ID 정보
   const userId = localStorage.getItem("userInfoStorage");
