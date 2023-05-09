@@ -260,7 +260,6 @@ export default function TicketsEdit() {
   );
 
   const [selectedTags, setSelectedTags] = useState(ticketData.tags);
-  console.log(selectedTags);
 
   // 지도 좌표
   const [latitude, setLatitude] = useState(ticketData.latitude); // 위도 // 사용
@@ -353,8 +352,8 @@ export default function TicketsEdit() {
     if (response.response.status === 500) {
       alert("서버 오류. 잠시 후 다시 시도해 주세요");
     }
-    alert("로그인 시간이 만료되었습니다");
-    navigate("/login");
+    alert("알 수 없는 오류가 발생하였습니다.");
+    // navigate("/login");
   };
 
   const { mutate: createTickets } = useMutation({
@@ -438,6 +437,10 @@ export default function TicketsEdit() {
     onError: getEditTicketsOnError,
     retry: false,
   });
+
+  useEffect(() => {
+    setSelectedTags([]);
+  }, [category]);
 
   return (
     <PageWrapper>
@@ -557,16 +560,14 @@ export default function TicketsEdit() {
               value={ticketInfo}
               onChange={(e) => {
                 setTicketInfo(e.target.value);
-              }}
-            ></textarea>
+              }}></textarea>
           </TicketsCreateInputDiv>
           <div className="postDiv">상세 설명</div>
           <ContentInputDiv>
             <Editor
               value={ticketsValue}
               setValue={setTicketsValue}
-              placeholder={"내용을 입력해주세요."}
-            ></Editor>
+              placeholder={"내용을 입력해주세요."}></Editor>
           </ContentInputDiv>
         </TicketsBoard>
 

@@ -347,8 +347,8 @@ export default function TicketsCreate() {
     if (response.response.status === 500) {
       alert("서버 오류. 잠시 후 다시 시도해 주세요");
     }
-    alert("로그인 시간이 만료되었습니다");
-    navigate("/login");
+    alert("알수 없는 오류가 발생했습니다.");
+    // navigate("/login");
   };
 
   const { mutate: createTickets } = useMutation({
@@ -360,6 +360,11 @@ export default function TicketsCreate() {
 
   useEffect(() => {
     const { kakao } = window;
+    if (!kakao) {
+      throw new Error(
+        "카카오맵 로딩이 실패했습니다. 카카오맵 API를 확인해주세요."
+      );
+    }
     var geocoder = new kakao.maps.services.Geocoder();
     geocoder.addressSearch(
       place,
@@ -413,6 +418,10 @@ export default function TicketsCreate() {
       window.alert("태그는 최대 7개 까지 설정 가능합니다.");
     }
   }, [selectedTags]);
+
+  useEffect(() => {
+    setSelectedTags([]);
+  }, [category]);
 
   return (
     <PageWrapper>
