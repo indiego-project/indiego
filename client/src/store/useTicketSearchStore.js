@@ -104,16 +104,21 @@ export const useTicketSearchStore = create((set, get) => ({
     );
   },
   getSearchUrl: () => {
-    const params = get().searchParams;
+    const params = { ...get().searchParams };
     let searchUrl = "/tickets?";
+    if (params.search === "") {
+      delete params.filter;
+    }
     for (let paramKey in params) {
       if (params[paramKey]) {
         searchUrl += paramKey + "=";
         searchUrl += params[paramKey] + "&";
       }
     }
-    searchUrl = searchUrl.slice(0, searchUrl.length - 1);
-    return searchUrl;
+
+    return searchUrl.slice(-1) === "?"
+      ? searchUrl
+      : searchUrl.slice(0, searchUrl.length - 1);
   },
   resetSearchParams: () => {
     set(

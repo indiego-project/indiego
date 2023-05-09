@@ -195,7 +195,7 @@ export default function DetailSearch({
   trigger,
   handleTransition,
 }) {
-  const { resetSearchParams, getSearchUrl, setAllParams, searchParams } =
+  const { resetSearchParams, getSearchUrl, setAllParams } =
     useTicketSearchStore((state) => state);
 
   const paramsCopy = useRef(
@@ -264,7 +264,7 @@ export default function DetailSearch({
             </div> */}
           </div>
           <div className="panel footer">
-            <p onClick={removeFilterHandler}>필터 해제</p>
+            <p onClick={removeFilterHandler}>필터 초기화</p>
             <button onClick={filterApplyHandler}>전체 적용</button>
           </div>
         </SearchPanelContainer>

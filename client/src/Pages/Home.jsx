@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 
 import Banner from "../Components/Main/Banner.jsx";
 import SearchBar from "../Components/Main/SearchBar.jsx";
@@ -16,11 +16,9 @@ const DatePopup = React.lazy(() =>
 import { dtFontSize, primary, sub } from "../styles/mixins.js";
 import breakpoint from "../styles/breakpoint.js";
 import instance from "../api/core/default.js";
-// test
-import axios from "axios";
-// test
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
+import { useTicketSearchStore } from "../store/useTicketSearchStore.js";
 
 const MainContainer = styled.div`
   display: flex;
@@ -153,6 +151,7 @@ export default function Home() {
   const [DatePopupOpen, setDatePopupOpen] = useState(false);
   const [userAddress, setUserAddress] = useState("");
   const isLogin = !!localStorage.getItem("accessToken");
+  const { setSearch } = useTicketSearchStore((state) => state);
 
   const locationPopupOnClickHandler = () => {
     const body = document.querySelector("body");
@@ -178,12 +177,16 @@ export default function Home() {
     setUserAddress(userAddress);
   };
 
-  const { isLoading: userAddressLoading } = useQuery({
+  useQuery({
     queryKey: ["fetchUserAddressAtHome", isLogin],
     queryFn: fetchUserAddressAtHome,
     onSuccess: fetchUserAddressAtHomeOnSuccess,
     enabled: isLogin,
   });
+
+  useEffect(() => {
+    setSearch("");
+  }, []);
 
   return (
     <MainContainer popupOpen={LocationPopupOpen || DatePopupOpen}>

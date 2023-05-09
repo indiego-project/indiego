@@ -15,7 +15,6 @@ import styled from "styled-components";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "../../Components/Spinner.jsx";
 import DetailSearch from "../../Components/Ticktes/DetailSearch.jsx";
 
 import { useAnimation } from "../../utils/useAnimation.js";
