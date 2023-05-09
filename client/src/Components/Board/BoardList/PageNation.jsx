@@ -1,11 +1,12 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import right from "../../../assets/right.svg";
 import left from "../../../assets/left.svg";
 
-import { sub, dtFontSize, primary } from "../../../styles/mixins";
+import { sub, dtFontSize, primary, secondary } from "../../../styles/mixins";
 
 import styled from "styled-components";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 const PageNationDiv = styled.div`
   display: flex;
@@ -38,39 +39,35 @@ const PageNationDiv = styled.div`
     align-items: center;
     justify-content: center;
     list-style: none;
+    padding: 0 5px;
 
     li {
-      margin: 3px;
+      background-color: white;
+      border: none;
+      color: ${sub.sub900};
+      font-size: ${dtFontSize.medium};
+      padding: 5px;
+      text-decoration-line: none;
 
-      a {
-        background-color: white;
-        border: none;
-        color: ${sub.sub900};
-        font-size: ${dtFontSize.medium};
-        width: 20px;
-        height: 35px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding: 0;
-        text-decoration-line: none;
+      :hover {
+        cursor: pointer;
+        color: ${sub.sub400};
       }
-      &.on a {
-        color: ${primary.primary200};
-      }
+    }
+    .on {
+      color: ${primary.primary200};
     }
   }
 `;
 
 // props로 page를 뺀 현재의 주소와 axios.get으로 가져온 res.pageData를 가져와야 합니다
 const PageNation = ({ pageData, location, className }) => {
-  const navigate = useNavigate();
-
   const handlePreviousPage = () => {
-    navigate(`${location}page=${pageData.page - 1}`);
+    window.location.href = `${location}&page=${pageData.page - 1}`;
   };
 
   const handleNextPage = () => {
-    navigate(`${location}page=${pageData.page + 1}`);
+    window.location.href = `${location}&page=${pageData.page + 1}`;
   };
 
   const PageLengthData = [...Array(pageData.totalPages)].map((it, idx) => {
@@ -106,8 +103,13 @@ const PageNation = ({ pageData, location, className }) => {
       </button>
       <ul>
         {FilterData.map((it, idx) => (
-          <li key={idx} className={it.nowNum ? "on" : ""}>
-            <Link to={`${location}page=${it.num}`}>{it.num}</Link>
+          <li
+            key={idx}
+            className={it.nowNum ? "on" : ""}
+            onClick={() => {
+              window.location.href = `${location}&page=${it.num}`;
+            }}>
+            {it.num}
           </li>
         ))}
       </ul>

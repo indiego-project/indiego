@@ -23,9 +23,9 @@ export const useTicketSearchStore = create((set, get) => ({
     filter: "공연명",
     start: "",
     end: "",
-    location: "",
+    address: "",
     category: "전체",
-    tags: [],
+    // tags: [],
   },
 
   setSearch: (searchInput) => {
@@ -65,10 +65,10 @@ export const useTicketSearchStore = create((set, get) => ({
       },
     ];
   },
-  setLocation: (locationInput) => {
+  setAddress: (addressInput) => {
     set(
       produce((state) => {
-        state.searchParams.location = locationInput;
+        state.searchParams.address = addressInput;
       })
     );
   },
@@ -120,7 +120,7 @@ export const useTicketSearchStore = create((set, get) => ({
       produce((state) => {
         state.searchParams.start = "";
         state.searchParams.end = "";
-        state.searchParams.location = "";
+        state.searchParams.address = "";
         state.searchParams.category = "";
       })
     );
@@ -132,7 +132,7 @@ export const useTicketSearchStore = create((set, get) => ({
         filter: "공연명",
         start: "",
         end: "",
-        location: "",
+        address: "",
         category: "",
       };
     });

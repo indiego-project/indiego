@@ -12,7 +12,7 @@ import { primary, sub, dtFontSize, mbFontSize } from "../../styles/mixins";
 import "../../styles/ReactDatePicker.css";
 
 import styled from "styled-components";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../../Components/Spinner.jsx";
@@ -162,18 +162,6 @@ const ItemListContainer = styled.div`
   }
 `;
 
-const SpinnerExtended = styled(Spinner)`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  .lds-dual-ring:after {
-    border: 6px solid ${primary.primary300};
-    border-color: ${primary.primary300} transparent ${primary.primary300}
-      transparent;
-  }
-`;
-
 const PaginationExtended = styled(PageNation)`
   margin-top: 50px;
 
@@ -205,8 +193,6 @@ const PaginationExtended = styled(PageNation)`
 export default function Tickets() {
   const [searchParams] = useSearchParams();
   const queryParams = [...searchParams.entries()];
-  const location = useLocation();
-  const [searchURI, setSearchURI] = useState(location.pathname + "?");
   const [pageInfo, setPageInfo] = useState([]);
   const [data, setData] = useState(placeHolderArr);
   const [detailSearchOpen, setDetailSearchOpen] = useState(false);
@@ -283,6 +269,7 @@ export default function Tickets() {
     }
   `;
     const data = { query, variables };
+    console.log(data, "data");
     return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
   };
 
@@ -301,6 +288,10 @@ export default function Tickets() {
     const body = document.querySelector("body");
     body.classList.add("modal_open");
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
 
   return (
     <Container>
@@ -342,10 +333,7 @@ export default function Tickets() {
         )}
       </ContentContainer>
       {pageInfo.totalPages > 0 && (
-        <PaginationExtended
-          location={process.env.REACT_APP_SERVER_URI + getSearchUrl()}
-          pageData={pageInfo}
-        />
+        <PaginationExtended location={getSearchUrl()} pageData={pageInfo} />
       )}
     </Container>
   );
