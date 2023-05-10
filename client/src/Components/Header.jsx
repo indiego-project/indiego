@@ -26,6 +26,7 @@ import instance from "../api/core/default";
 
 import styled from "styled-components";
 import useIsLoginStore from "../store/useIsLoginStore.js";
+import { useUserInfoStore } from "../store/useUserInfoStore.js";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -39,6 +40,7 @@ const HeaderContainer = styled.div`
   background-color: white;
   z-index: 30;
   box-shadow: 0 1px 3px 0 ${sub.sub700};
+  padding: 0 2%;
 `;
 
 const LogoContainer = styled.div`
@@ -48,13 +50,11 @@ const LogoContainer = styled.div`
 
   img {
     width: 140px;
-    margin-left: 19%;
   }
 
   @media screen and (max-width: 1000px) {
     img {
       width: 130px;
-      margin-left: 10%;
     }
   }
 
@@ -164,7 +164,6 @@ const LogoutStatusContainer = styled.div`
 const UserStatus = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 4.5%;
   width: max-content;
   height: max-content;
 
@@ -178,8 +177,8 @@ const UserStatus = styled.div`
     color: white;
     background-color: ${primary.primary500};
     min-width: 150px;
-    max-width: 300px;
-    padding: 10px 0;
+    max-width: 350px;
+    padding: 10px;
     height: max-content;
     align-items: center;
   }
@@ -357,8 +356,8 @@ const NavbarLinkerContainer = styled.div`
 export default function Header() {
   const location = useLocation();
   const [navOpen, setNavOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
-  const isLogin = !!localStorage.getItem("accessToken");
+  const { userInfo } = useUserInfoStore((state) => state);
+  const { isLogin } = useIsLoginStore((state) => state);
 
   useWindowSize(setNavOpen);
 
@@ -375,30 +374,12 @@ export default function Header() {
 
     return axios
       .get(`${process.env.REACT_APP_SERVER_URI}/members/logout`, { headers })
-      .finally((response) => {
+      .finally(() => {
         localStorage.clear();
         window.alert("로그아웃 되었습니다!");
         window.location.replace("/");
       });
   };
-
-  const fetchUserInfo = () => {
-    const userId = JSON.parse(localStorage.getItem("userInfoStorage")).id;
-    return instance.get(`/members/${userId}`);
-  };
-
-  const fetchUserInfoOnSuccess = (res) => {
-    const data = res.data.data;
-    setUserInfo(data);
-  };
-
-  useQuery({
-    queryKey: ["fetchUserInfo", isLogin],
-    queryFn: fetchUserInfo,
-    enabled: isLogin,
-    onSuccess: fetchUserInfoOnSuccess,
-    refetchOnWindowFocus: false,
-  });
 
   return (
     <HeaderContainer>
@@ -439,12 +420,12 @@ export default function Header() {
           <Link
             className={location.pathname.includes("user") ? "current" : ""}
             to={`/mypage/${
-              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
-            }/${userInfo?.id}`}>
+              userInfo.role.toLowerCase() !== "user" ? "performer" : "user"
+            }/${userInfo.id}`}>
             마이페이지
           </Link>
         )}
-        {isLogin && userInfo?.role === "PERFORMER" && (
+        {isLogin && userInfo.role === "PERFORMER" && (
           <Link
             className={
               location.pathname.includes("tickets/create") ? "current" : ""
@@ -458,12 +439,12 @@ export default function Header() {
         <UserStatus>
           <Link
             to={`/mypage/${
-              userInfo?.role.toLowerCase() !== "user" ? "performer" : "user"
+              userInfo.role.toLowerCase() !== "user" ? "performer" : "user"
             }/${userInfo?.id}`}>
             <div className="userInfo">
               <p className="welcome">환영합니다!</p>
               <p className="username">
-                {userInfo?.profile[0].nickname}
+                {userInfo.nickname}
                 <span>님</span>
               </p>
             </div>
@@ -505,12 +486,12 @@ export default function Header() {
                 <div className="userInfo">
                   <Link
                     to={`/mypage/${
-                      userInfo?.role.toLowerCase() !== "user"
+                      userInfo.role.toLowerCase() !== "user"
                         ? "performer"
                         : "user"
                     }/${userInfo.id}`}>
                     <h2>
-                      {`${userInfo?.profile[0].nickname} 님,`}
+                      {`${userInfo.nickname} 님,`}
                       <span>환영합니다!</span>
                     </h2>
                   </Link>
@@ -552,26 +533,25 @@ export default function Header() {
                     location.pathname.includes("user") ? "current" : ""
                   }
                   to={`/mypage/${
-                    userInfo?.role.toLowerCase() !== "user"
+                    userInfo.role.toLowerCase() !== "user"
                       ? "performer"
                       : "user"
-                  }/${userInfo?.id}`}>
+                  }/${userInfo.id}`}>
                   마이페이지
                 </Link>
               )}
-              {(isLogin && userInfo?.role === "PERFORMER") ||
-                (userInfo?.role === "ADMIN" && (
-                  <Link
-                    className={
-                      location.pathname.includes("tickets/create")
-                        ? "current"
-                        : ""
-                    }
-                    to={"/tickets/create"}>
-                    공연작성하기
-                  </Link>
-                ))}
-              {isLogin && userInfo?.role === "ADMIN" && (
+              {isLogin && userInfo.role === "PERFORMER" && (
+                <Link
+                  className={
+                    location.pathname.includes("tickets/create")
+                      ? "current"
+                      : ""
+                  }
+                  to={"/tickets/create"}>
+                  공연작성하기
+                </Link>
+              )}
+              {isLogin && userInfo.role === "ADMIN" && (
                 <Link to={"/admin/main"}>ADMIN</Link>
               )}
             </NavbarLinkerContainer>
