@@ -733,7 +733,7 @@ export default function TicketsDetail() {
                   </div>
                   <div className="location-container">
                     <div>
-                      <span className="location-title">위치</span>
+                      <span className="location-title">공연 장소</span>
                       <span className="location-description">
                         {ticketData.detailAddress}
                       </span>

@@ -520,7 +520,7 @@ export default function TicketsCreate() {
             />{" "}
             원
           </TicketsCreateInputDiv>
-          <div className="postDiv">공연 상세</div>
+          <div className="postDiv">공연 소개</div>
           <TicketsCreateInputDiv>
             <textarea
               ref={ticketInfoRef}
@@ -531,7 +531,7 @@ export default function TicketsCreate() {
               }}
             ></textarea>
           </TicketsCreateInputDiv>
-          <div className="postDiv">상세 설명</div>
+          <div className="postDiv">공연 상세</div>
           <ContentInputDiv>
             <Editor
               value={ticketsValue}
