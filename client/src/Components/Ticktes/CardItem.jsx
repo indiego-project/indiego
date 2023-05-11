@@ -1,7 +1,13 @@
 import React from "react";
 
 import breakpoint from "../../styles/breakpoint";
-import { primary, dtFontSize, sub, mbFontSize } from "../../styles/mixins";
+import {
+  primary,
+  dtFontSize,
+  sub,
+  mbFontSize,
+  secondary,
+} from "../../styles/mixins";
 
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -35,7 +41,7 @@ const CardItemContainer = styled.div`
     }
   }
 
-  &:hover {
+  :hover {
     background-color: ${primary.primary300};
     color: white;
     cursor: pointer;
@@ -49,7 +55,9 @@ const CardItemContainer = styled.div`
     border-bottom: 1px solid ${sub.sub200};
     height: 300px;
     :hover {
-      border: none;
+      background-color: transparent;
+      color: ${secondary.secondary500};
+      box-shadow: none;
     }
   }
 
@@ -102,13 +110,13 @@ const DetailContainer = styled.div`
   justify-content: center;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    padding: 40px 0px;
+    padding-top: 50px;
     width: 50%;
     max-width: 200px;
   }
 
   .title {
-    font-size: calc(10px + 0.3vw);
+    font-size: calc(12px + 0.3vw);
     margin-bottom: 5px;
     white-space: normal;
     display: -webkit-box;
@@ -119,7 +127,7 @@ const DetailContainer = styled.div`
   }
 
   .nickname {
-    font-size: calc(8px + 0.3vw);
+    font-size: calc(10px + 0.3vw);
     font-weight: 500;
     margin-bottom: 5px;
     white-space: normal;
@@ -130,7 +138,7 @@ const DetailContainer = styled.div`
   }
 
   h4 {
-    font-size: calc(3px + 0.3vw);
+    font-size: calc(8px + 0.3vw);
     font-weight: 400;
     margin-bottom: 5px;
 
@@ -142,7 +150,7 @@ const DetailContainer = styled.div`
   }
 
   .price {
-    font-size: calc(5px + 1vw);
+    font-size: calc(8px + 1vw);
     font-weight: 500;
 
     @media screen and (min-width: ${breakpoint.mobile}) {
