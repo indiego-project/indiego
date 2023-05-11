@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-export const useUserInfoStore = create((set, get) => ({
+export const useUserInfoStore = create((set) => ({
   userInfo: {},
 
   setUserInfo: (userData) => {

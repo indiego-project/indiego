@@ -391,7 +391,7 @@ export default function Header() {
         </Link>
       </HeaderSearchIcon>
       <LogoContainer>
-        <Link to="/">
+        <Link to="/" reloadDocument>
           <img width={153} src={logo} alt="logo"></img>
         </Link>
       </LogoContainer>
@@ -413,7 +413,8 @@ export default function Header() {
         </Link>
         <Link
           className={location.pathname.includes("search") ? "current" : ""}
-          to="search">
+          to="search"
+          reloadDocument>
           공연찾기
         </Link>
         {isLogin && (

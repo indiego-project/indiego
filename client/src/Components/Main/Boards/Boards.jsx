@@ -35,6 +35,8 @@ const BoardList = styled.ul`
   border-radius: 10px;
   background-color: ${sub.sub100};
   margin-bottom: 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   a {
     text-decoration: none;
@@ -97,8 +99,8 @@ export default function Boards({ category, children, path }) {
             <p>데이터가 없습니다.</p>
           </div>
         ) : (
-          data.map((data, index, datas) => {
-            if (index === datas.length - 1) {
+          data.map((data, index) => {
+            if (index === 4) {
               return (
                 <Link
                   to={`board${path ? `/${path}` : ""}/${data.id}`}
