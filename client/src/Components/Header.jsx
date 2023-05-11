@@ -528,7 +528,7 @@ export default function Header() {
                 to="search">
                 공연찾기
               </Link>
-              {userInfo && (
+              {isLogin && userInfo && (
                 <Link
                   className={
                     location.pathname.includes("user") ? "current" : ""
