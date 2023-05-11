@@ -56,7 +56,7 @@ function App() {
     }
   };
 
-  const setLoginAndUserInfo = async () => {
+  const setLoginAndUserInfo = () => {
     if (accessToken) {
       setIsLogin(true);
       const memberId = userData.id;
