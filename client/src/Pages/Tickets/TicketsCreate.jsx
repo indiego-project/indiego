@@ -346,6 +346,11 @@ export default function TicketsCreate() {
       return;
     }
 
+    if (ticketInfoStatus !== VALIDATE_STATUS.VALID) {
+      window.alert("공연 소개란이 비어있습니다.");
+      return;
+    }
+
     if (ticketValueStatus !== VALIDATE_STATUS.VALID) {
       window.alert("공연 상세란이 비어있습니다.");
       return;
@@ -567,6 +572,11 @@ export default function TicketsCreate() {
 
   // 8. 공연 소개
   useEffect(() => {
+    if (!ticketInfo) {
+      setTicketInfoStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
     if (ticketInfo.length > 500) {
       setTicketInfoStatus(VALIDATE_STATUS.INVALID);
       return;

@@ -352,6 +352,11 @@ export default function TicketsEditTemp() {
       return;
     }
 
+    if (ticketInfoStatus !== VALIDATE_STATUS.VALID) {
+      window.alert("공연 소개란이 비어있습니다.");
+      return;
+    }
+
     if (isValidData) {
       if (window.confirm("작성하시겠습니까?")) {
         createTickets();
@@ -408,8 +413,8 @@ export default function TicketsEditTemp() {
 
           if (status === "ZERO_RESULT") {
             window.alert("공연 장소로 선택할 수 없는 장소 입니다.");
-            setPlace("공연 장소");
-            setGu("");
+            setPlace(newAdress[0]);
+            setGu(ticketData.address);
           }
         },
         [place]
@@ -519,10 +524,10 @@ export default function TicketsEditTemp() {
 
     if (place !== "공연 장소" && !place.includes("서울")) {
       window.alert("현재 공연장소는 서울 외의 지역을 선택할 수 없습니다.");
-      setPlace("공연 장소");
-      setLatitude("");
-      setLongitude("");
-      setGu("");
+      setPlace(newAdress[0]);
+      setLatitude(ticketData.latitude);
+      setLongitude(ticketData.longitude);
+      setGu(ticketData.address);
       return;
     }
 
@@ -531,7 +536,6 @@ export default function TicketsEditTemp() {
 
   // 3. 상세 주소
   useEffect(() => {
-    console.log(detailPlace);
     if (!detailPlace) {
       setDetailPlaceStatus(VALIDATE_STATUS.NOT_NULL);
       return;
@@ -547,8 +551,8 @@ export default function TicketsEditTemp() {
 
     if (showEnd - showStart < 0) {
       window.alert("공연 기간이 올바르지 않습니다.");
-      setStartDate(null);
-      setEndDate(null);
+      setStartDate(ticketData.showAt);
+      setEndDate(ticketData.expiredAt);
     } else {
       setDateStatus(VALIDATE_STATUS.VALID);
     }
@@ -589,6 +593,11 @@ export default function TicketsEditTemp() {
 
   // 8. 공연 소개
   useEffect(() => {
+    if (!ticketInfo) {
+      setTicketInfoStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
     if (ticketInfo.length > 500) {
       setTicketInfoStatus(VALIDATE_STATUS.INVALID);
       return;
