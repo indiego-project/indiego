@@ -45,8 +45,11 @@ function App() {
       const res = await instance.get(
         `${process.env.REACT_APP_SERVER_URI}/members/${memberId}`
       );
-      const profile = res.data.data.profile[0];
-      const userDataWithAddress = { ...userData, address: profile.address };
+      let { address } = res.data.data.profile[0];
+      if (address === "없음") {
+        address = "강남구";
+      }
+      const userDataWithAddress = { ...userData, address };
       setUserInfo(userDataWithAddress);
     } catch (err) {
       throw new Error("member 정보를 불러오는데 실패했습니다.", err);
