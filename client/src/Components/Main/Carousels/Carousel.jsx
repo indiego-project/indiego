@@ -111,7 +111,6 @@ export default function Carousel({ isRankMode, status, address }) {
 
   const fetchShowDataOnSuccess = (response) => {
     const data = response.data.data.getSortShows.data;
-    console.log(data);
     if (data.length > 1) {
       data.push(data[0]);
       data.unshift(data[data.length - 1]);
@@ -128,11 +127,15 @@ export default function Carousel({ isRankMode, status, address }) {
         data {
           id
           nickname
+          image
+          showAt
+          expiredAt
+          address
+          category
         }
       }
     }`;
     const variables = { address, status };
-    console.log(address, status);
     const data = { query, variables };
 
     return axios.post(`${serverURI}/graphql`, data);
