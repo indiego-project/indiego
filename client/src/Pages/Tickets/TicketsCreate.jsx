@@ -540,7 +540,9 @@ export default function TicketsCreate() {
             <textarea
               ref={ticketInfoRef}
               className="textAreaInput"
+              placeholder="공연 소개는 500자 이내로 제한됩니다"
               value={ticketInfo}
+              maxLength="500"
               onChange={(e) => {
                 setTicketInfo(e.target.value);
               }}></textarea>

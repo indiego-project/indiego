@@ -145,9 +145,10 @@ export const PillButton = styled.button`
 `;
 
 const ContentTopContainer = styled.div`
+  align-items: flex-end;
   display: flex;
   width: 90vw;
-  height: min-content;
+  min-height: min-content;
   justify-content: space-between;
   padding: 2%;
   height: 100vh;
@@ -190,8 +191,8 @@ const PosterAndInfoContainer = styled.div`
 `;
 
 const PosterImage = styled.img`
-  width: 20vw;
-  height: calc(20vw / 3 * 4);
+  width: 16vw;
+  height: calc(16vw / 3 * 4);
   box-shadow: 0 5px 5px #6d6d6d;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -225,14 +226,14 @@ const EmptySeat = styled.span`
 
 const TicketInfoContainer = styled.div`
   display: flex;
-  width: 60%;
+  width: 68%;
   background-color: ${sub.sub100};
   border-radius: 10px;
   justify-content: space-between;
   flex-direction: column;
-  height: 100%;
+  height: min-content;
   margin-left: 10px;
-  min-height: 450px;
+  min-height: 500px;
   padding: 3%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -359,7 +360,8 @@ const TicketInfoContainer = styled.div`
 const TopLeftContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 90%;
+  justify-content: flex-end;
+  width: 100%;
   height: 100%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
