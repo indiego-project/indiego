@@ -10,26 +10,61 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import axios from "axios";
+import instance from "../src/api/core/default";
+import styled from "styled-components";
+import Spinner from "./Components/Spinner.jsx";
+import { primary } from "./styles/mixins.js";
 
 const queryClient = new QueryClient();
 
+const LoadingContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SpinnerApp = styled(Spinner)`
+  .lds-dual-ring:after {
+    border: 6px solid ${primary.primary300};
+    border-color: ${primary.primary300} transparent ${primary.primary300}
+      transparent;
+  }
+`;
+
 function App() {
-  const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
-  const { userInfo, setUserInfo } = useUserInfoStore((state) => state);
   const userData = JSON.parse(localStorage.getItem("userInfoStorage"));
+  const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
+  const { userInfo, setUserInfo } = useUserInfoStore((state) => state);
 
-  useEffect(() => {
+  const fetchUserProfileAndSet = async (memberId) => {
+    try {
+      const res = await instance.get(
+        `${process.env.REACT_APP_SERVER_URI}/members/${memberId}`
+      );
+      const profile = res.data.data.profile[0];
+      const userDataWithAddress = { ...userData, address: profile.address };
+      setUserInfo(userDataWithAddress);
+    } catch (err) {
+      throw new Error("member 정보를 불러오는데 실패했습니다.", err);
+    }
+  };
+
+  const setLoginAndUserInfo = async () => {
     if (accessToken) {
       setIsLogin(true);
-      setUserInfo(userData);
+      const memberId = userData.id;
+      fetchUserProfileAndSet(memberId);
       return;
+    } else {
+      setIsLogin(false);
     }
 
+    // refreshToken 로직을 App 컴포넌트 flow에 맞게 조금 수정할 필요가 있을 것 같습니다.
     if (refreshToken) {
-      setIsLogin(true);
-      setUserInfo(userData);
       axios
         .get(`${process.env.REACT_APP_SERVER_URI}/members/reissue`, {
           headers: {
@@ -45,21 +80,27 @@ function App() {
             "accessToken",
             response.headers.get("Authorization").split(" ")[1]
           );
+          setIsLogin(true);
+          fetchUserProfileAndSet(userData.id);
         })
         .catch((err) => {
+          setIsLogin(false);
           throw new Error("Refresh Token 인증에 실패했습니다.", err);
         });
       return;
     }
+  };
 
-    setIsLogin(false);
+  useEffect(() => {
+    try {
+      setLoginAndUserInfo();
+    } catch (err) {
+      throw new Error("로그인 초기 설정에 문제가 발생했습니다.", err);
+    }
   }, []);
 
-  if (isLogin === "loading") {
-    return null;
-  }
-
-  if (isLogin && userInfo) {
+  // 로그인 및 userInfo 가 존재할 때
+  if (isLogin && Object.keys(userInfo).length !== 0) {
     return (
       <>
         <QueryClientProvider client={queryClient}>
@@ -70,13 +111,23 @@ function App() {
     );
   }
 
+  // 로그인이 되지 않았을 때
+  if (!isLogin) {
+    return (
+      <>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Router />
+        </QueryClientProvider>
+      </>
+    );
+  }
+
+  // UserInfo 및 Login 상태를 로딩하는 중일 때,
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Router />
-      </QueryClientProvider>
-    </>
+    <LoadingContainer>
+      <SpinnerApp />
+    </LoadingContainer>
   );
 }
 

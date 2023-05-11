@@ -12,6 +12,7 @@ import { useInterval } from "../../../utils/useInterval";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useUserInfoStore } from "../../../store/useUserInfoStore";
 
 const CarouselContainer = styled.div`
   width: 70%;
@@ -103,11 +104,13 @@ const Rank = styled.h2`
   }
 `;
 
-export default function Carousel({ isRankMode, status, address }) {
+export default function Carousel({ isRankMode, status }) {
   const [currentIdx, setCurrentIdx] = useState(1);
   const [data, setData] = useState([]);
   const [transition, setTransition] = useState(true);
   const serverURI = process.env.REACT_APP_SERVER_URI;
+  const { userInfo } = useUserInfoStore((state) => state);
+  const address = userInfo.address;
 
   const fetchShowDataOnSuccess = (response) => {
     const data = response.data.data.getSortShows.data;
