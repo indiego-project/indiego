@@ -260,11 +260,11 @@ export default function TicketsCreate() {
   // 티켓 가격
   const [ticketPrice, setTicketPrice] = useState(""); // 사용
   const ticketPriceRef = useRef();
-  // 공연 상세
+  // 공연 소개
   const [ticketInfo, setTicketInfo] = useState(""); // 사용
   const ticketInfoRef = useRef();
-  // quill 에디터 -> ????
-  const [ticketsValue, setTicketsValue] = useState("");
+  // 공연 상세
+  const [ticketDetail, setTicketDetail] = useState("");
 
   // 지도 좌표
   const [latitude, setLatitude] = useState(null); // 위도 // 사용
@@ -303,7 +303,7 @@ export default function TicketsCreate() {
   ); // 경도
   const [sitStatus, setSitStatus] = useState(VALIDATE_STATUS.NOT_NULL);
 
-  const [ticketValueStatus, setTicketValueStatus] = useState(
+  const [ticketDetailStatus, setTicketDetailStatus] = useState(
     VALIDATE_STATUS.NOT_NULL
   );
 
@@ -323,7 +323,7 @@ export default function TicketsCreate() {
     expiredAt: endDate,
     showAt: startDate,
     showTime: startTime,
-    detailDescription: ticketsValue,
+    detailDescription: ticketDetail,
     latitude: latitude,
     longitude: longitude,
     total: sit,
@@ -351,7 +351,7 @@ export default function TicketsCreate() {
       return;
     }
 
-    if (ticketValueStatus !== VALIDATE_STATUS.VALID) {
+    if (ticketDetailStatus !== VALIDATE_STATUS.VALID) {
       window.alert("공연 상세란이 비어있습니다.");
       return;
     }
@@ -586,13 +586,13 @@ export default function TicketsCreate() {
 
   // 9. 공연 상세
   useEffect(() => {
-    if (ticketsValue === "" || ticketsValue === "<p><br></p>") {
-      setTicketValueStatus(VALIDATE_STATUS.NOT_NULL);
+    if (ticketDetail === "" || ticketDetail === "<p><br></p>") {
+      setTicketDetailStatus(VALIDATE_STATUS.NOT_NULL);
       return;
     }
 
-    setTicketValueStatus(VALIDATE_STATUS.VALID);
-  }, [ticketsValue]);
+    setTicketDetailStatus(VALIDATE_STATUS.VALID);
+  }, [ticketDetail]);
 
   // 10. 모든 유효성 검사 상태
   useEffect(() => {
@@ -603,7 +603,7 @@ export default function TicketsCreate() {
       startTimeStatus === VALIDATE_STATUS.VALID &&
       ticketPriceStatus === VALIDATE_STATUS.VALID &&
       sitStatus === VALIDATE_STATUS.VALID &&
-      ticketValueStatus === VALIDATE_STATUS.VALID &&
+      ticketDetailStatus === VALIDATE_STATUS.VALID &&
       coordinateStatus === VALIDATE_STATUS.VALID
     ) {
       setIsValidData(true);
@@ -615,7 +615,7 @@ export default function TicketsCreate() {
     startTimeStatus,
     ticketPriceStatus,
     sitStatus,
-    ticketValueStatus,
+    ticketDetailStatus,
     coordinateStatus,
   ]);
 
@@ -642,7 +642,7 @@ export default function TicketsCreate() {
           {/* Tags */}
           <div className="postDiv">공연명</div>
           <p className="valid_info">
-            공연면은 비워둘 수 없고, 30자 이내로 제한됩니다.
+            공연명은 비워둘 수 없고, 30자 이내로 제한됩니다.
           </p>
           <TicketsCreateInputDiv>
             <input
@@ -808,8 +808,8 @@ export default function TicketsCreate() {
           <div className="postDiv">공연 상세</div>
           <ContentInputDiv>
             <Editor
-              value={ticketsValue}
-              setValue={setTicketsValue}
+              value={ticketDetail}
+              setValue={setTicketDetail}
               placeholder={"내용을 입력해주세요."}></Editor>
           </ContentInputDiv>
         </TicketsBoard>

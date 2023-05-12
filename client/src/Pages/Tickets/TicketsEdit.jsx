@@ -263,11 +263,11 @@ export default function TicketsEditTemp() {
   // 티켓 가격
   const [ticketPrice, setTicketPrice] = useState(ticketData.price); // 사용
   const ticketPriceRef = useRef();
-  // 공연 상세
+  // 공연 소개
   const [ticketInfo, setTicketInfo] = useState(ticketData.content); // 사용
   const ticketInfoRef = useRef();
-  // quill 에디터 -> ????
-  const [ticketsValue, setTicketsValue] = useState(
+  // 공연 상세
+  const [ticketDetail, setTicketDetail] = useState(
     ticketData.detailDescription
   );
 
@@ -324,7 +324,7 @@ export default function TicketsEditTemp() {
     expiredAt: endDate,
     showAt: startDate,
     showTime: startTime,
-    detailDescription: ticketsValue,
+    detailDescription: ticketDetail,
     latitude: latitude,
     longitude: longitude,
     total: sit,
@@ -607,13 +607,13 @@ export default function TicketsEditTemp() {
 
   // 9. 공연 상세
   useEffect(() => {
-    if (ticketsValue === "" || ticketsValue === "<p><br></p>") {
+    if (ticketDetail === "" || ticketDetail === "<p><br></p>") {
       setTicketValueStatus(VALIDATE_STATUS.NOT_NULL);
       return;
     }
 
     setTicketValueStatus(VALIDATE_STATUS.VALID);
-  }, [ticketsValue]);
+  }, [ticketDetail]);
 
   // 태그
   useEffect(() => {
@@ -670,7 +670,7 @@ export default function TicketsEditTemp() {
           {/* Tags */}
           <div className="postDiv">공연명</div>
           <p className="valid_info">
-            공연면은 비워둘 수 없고, 30자 이내로 제한됩니다.
+            공연명은 비워둘 수 없고, 30자 이내로 제한됩니다.
           </p>
           <TicketsCreateInputDiv>
             <input
@@ -836,8 +836,8 @@ export default function TicketsEditTemp() {
           <div className="postDiv">공연 상세</div>
           <ContentInputDiv>
             <Editor
-              value={ticketsValue}
-              setValue={setTicketsValue}
+              value={ticketDetail}
+              setValue={setTicketDetail}
               placeholder={"내용을 입력해주세요."}></Editor>
           </ContentInputDiv>
         </TicketsBoard>
