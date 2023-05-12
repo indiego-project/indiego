@@ -31,8 +31,18 @@ import styled from "styled-components";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { set } from "date-fns/esm";
 
-const TicketsCreateContentWrapper = styled(PostWrapper)``;
+const TicketsCreateContentWrapper = styled(PostWrapper)`
+  .valid_info {
+    font-size: ${dtFontSize.small};
+    color: ${sub.sub400};
+    font-weight: 300;
+    margin-left: 5px;
+    text-align: start;
+    padding: 5px 0;
+  }
+`;
 
 const TicketsBoard = styled(PostBoard)`
   height: max-content;
@@ -218,6 +228,13 @@ const CancelButton = styled(PostButton)`
   background-color: ${misc.lightred};
 `;
 
+const VALIDATE_STATUS = Object.freeze({
+  NOT_NULL: "NOT_NULL",
+  INVALID: "INVALID",
+  OVERFLOW: "OVERFLOW",
+  VALID: "VALID",
+});
+
 export default function TicketsCreate() {
   // 카테고리
   const [category, setCategory] = useState("음악"); // 사용
@@ -226,7 +243,7 @@ export default function TicketsCreate() {
   const ticketNameRef = useRef();
   // 장소
   const [gu, setGu] = useState(""); // 사용
-  const [place, setPlace] = useState("어디서 공연을 하시나요?"); // 사용
+  const [place, setPlace] = useState("공연 장소"); // 사용
   const placeRef = useRef();
   const [detailPlace, setDetailPlace] = useState(""); // 사용
   const detailPlaceRef = useRef();
@@ -243,15 +260,15 @@ export default function TicketsCreate() {
   // 티켓 가격
   const [ticketPrice, setTicketPrice] = useState(""); // 사용
   const ticketPriceRef = useRef();
-  // 공연 상세
+  // 공연 소개
   const [ticketInfo, setTicketInfo] = useState(""); // 사용
   const ticketInfoRef = useRef();
-  // quill 에디터
-  const [ticketsValue, setTicketsValue] = useState("");
+  // 공연 상세
+  const [ticketDetail, setTicketDetail] = useState("");
 
   // 지도 좌표
-  const [latitude, setLatitude] = useState(""); // 위도 // 사용
-  const [longitude, setLongitude] = useState(""); // 경도 // 사용
+  const [latitude, setLatitude] = useState(null); // 위도 // 사용
+  const [longitude, setLongitude] = useState(null); // 경도 // 사용
   const navigate = useNavigate();
 
   // 이미지 정보
@@ -265,6 +282,35 @@ export default function TicketsCreate() {
   const userId = JSON.parse(localStorage.getItem("userInfoStorage"))?.id;
   const userRole = JSON.parse(localStorage.getItem("userInfoStorage"))?.role;
 
+  // 유효성 검사 STATUS
+  const [ticketNameStatus, setTicketNameStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  ); // 제목
+  const [placeStatus, setPlaceStatus] = useState(VALIDATE_STATUS.NOT_NULL); // 장소(address)
+  const [detailPlaceStatus, setDetailPlaceStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  ); // 상세주소 (detailAddress)
+  const [dateStatus, setDateStatus] = useState(VALIDATE_STATUS.VALID); // 시작 기간 (showAt)
+  const [startTimeStatus, setStartTimeStatus] = useState(VALIDATE_STATUS.VALID); // 공연 시간
+  const [ticketPriceStatus, setTicketPriceStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  ); // 가격
+  const [ticketInfoStatus, setTicketInfoStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  ); // 공연 상세
+  const [coordinateStatus, setCoordinateStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  ); // 경도
+  const [sitStatus, setSitStatus] = useState(VALIDATE_STATUS.NOT_NULL);
+
+  const [ticketDetailStatus, setTicketDetailStatus] = useState(
+    VALIDATE_STATUS.NOT_NULL
+  );
+
+  const [isValidData, setIsValidData] = useState(false);
+
+  // 유효성 검사 STATUS
+
   // 티켓 post에 보낼 데이터
   const data = {
     title: ticketName,
@@ -277,7 +323,7 @@ export default function TicketsCreate() {
     expiredAt: endDate,
     showAt: startDate,
     showTime: startTime,
-    detailDescription: ticketsValue,
+    detailDescription: ticketDetail,
     latitude: latitude,
     longitude: longitude,
     total: sit,
@@ -286,48 +332,38 @@ export default function TicketsCreate() {
 
   // 티켓 글 올리기
   const handlePost = () => {
-    if (ticketName === "") {
+    if (ticketNameStatus !== VALIDATE_STATUS.VALID) {
       ticketNameRef.current.focus();
       return;
     }
-    if (place === "어디서 공연을 하시나요?") {
+    if (placeStatus !== VALIDATE_STATUS.VALID) {
       placeRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
-    if (detailPlace === "") {
+    if (detailPlaceStatus !== VALIDATE_STATUS.VALID) {
       detailPlaceRef.current.focus();
       return;
     }
 
-    if (startDate > endDate) {
-      alert("시작일과 종료일을 확인해주세요");
-      window.scrollTo(0, 900);
+    if (ticketInfoStatus !== VALIDATE_STATUS.VALID) {
+      window.alert("공연 소개란이 비어있습니다.");
       return;
     }
 
-    if (startTime === "" || startTime > 24) {
-      startTimeRef.current.focus();
+    if (ticketDetailStatus !== VALIDATE_STATUS.VALID) {
+      window.alert("공연 상세란이 비어있습니다.");
       return;
     }
-    if (sit === "") {
-      sitRef.current.focus();
-      return;
-    }
-    if (ticketPrice === "") {
-      ticketPriceRef.current.focus();
-      return;
-    }
-    if (ticketInfo === "") {
-      ticketInfoRef.current.focus();
-      return;
-    }
-    if (ticketsValue === "" || ticketsValue === "<p><br></p>") {
-      window.scrollTo(0, 1850);
-      return;
-    }
-    if (window.confirm("작성하시겠습니까?")) {
-      createTickets();
+
+    if (isValidData) {
+      if (window.confirm("작성하시겠습니까?")) {
+        createTickets();
+      }
+    } else {
+      window.alert(
+        "올바르게 작성되지 않은 공연 정보가 있습니다. 다시 한 번 확인해주세요."
+      );
     }
   };
   const handleCreateTickets = async () => {
@@ -347,8 +383,7 @@ export default function TicketsCreate() {
     if (response.response.status === 500) {
       alert("서버 오류. 잠시 후 다시 시도해 주세요");
     }
-    alert("알수 없는 오류가 발생했습니다.");
-    // navigate("/login");
+    alert("전송에 실패했습니다. 잠시 후 다시 시도해 주세요");
   };
 
   const { mutate: createTickets } = useMutation({
@@ -359,24 +394,32 @@ export default function TicketsCreate() {
   });
 
   useEffect(() => {
-    const { kakao } = window;
-    if (!kakao) {
-      throw new Error(
-        "카카오맵 로딩이 실패했습니다. 카카오맵 API를 확인해주세요."
+    if (place !== "공연 장소") {
+      const { kakao } = window;
+      if (!kakao) {
+        throw new Error(
+          "카카오맵 로딩이 실패했습니다. 카카오맵 API를 확인해주세요."
+        );
+      }
+      var geocoder = new kakao.maps.services.Geocoder();
+      geocoder.addressSearch(
+        place,
+        function (result, status) {
+          if (status === "OK") {
+            setLongitude(result[0].x);
+            setLatitude(result[0].y);
+            setCoordinateStatus(VALIDATE_STATUS.VALID);
+          }
+
+          if (status === "ZERO_RESULT") {
+            window.alert("공연 장소로 선택할 수 없는 장소 입니다.");
+            setPlace("공연 장소");
+            setGu("");
+          }
+        },
+        [place]
       );
     }
-    var geocoder = new kakao.maps.services.Geocoder();
-    geocoder.addressSearch(
-      place,
-      function (result, status) {
-        // 정상적으로 검색이 완료됐으면
-        if (status === kakao.maps.services.Status.OK) {
-          setLongitude(result[0].x);
-          setLatitude(result[0].y);
-        }
-      },
-      [place]
-    );
   });
 
   const handleCancel = () => {
@@ -384,23 +427,32 @@ export default function TicketsCreate() {
   };
 
   const onLoadFile = async (e) => {
-    const file = e.target.files;
-    const formData = new FormData();
-    formData.append("file", file[0]); // formData는 키-밸류 구조
-    try {
-      const result = await axios.post(
-        `${process.env.REACT_APP_SERVER_URI}/shows/uploads`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setImageUrl(result.data.data);
-    } catch (error) {
-      alert("이미지 업로드에 실패하였습니다");
+    const file = e.target.files[0];
+    if (!file.type.includes("image")) {
+      window.alert("올바른 이미지 파일이 아닙니다.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      window.alert("파일 용량이 너무 큽니다. 10mb 이하의 이미지를 올려주세요.");
+      return;
+    } else {
+      const formData = new FormData();
+      formData.append("file", file); // formData는 키-밸류 구조
+      try {
+        const result = await axios.post(
+          `${process.env.REACT_APP_SERVER_URI}/shows/uploads`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        setImageUrl(result.data.data);
+      } catch (error) {
+        alert("이미지 업로드에 실패하였습니다");
+      }
     }
   };
 
@@ -423,6 +475,152 @@ export default function TicketsCreate() {
     setSelectedTags([]);
   }, [category]);
 
+  // 유효성 검사
+
+  // 1. 공연 제목
+  useEffect(() => {
+    if (ticketName.length === 0) {
+      setTicketNameStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
+    if (ticketName.length >= 30) {
+      setTicketNameStatus(VALIDATE_STATUS.INVALID);
+      return;
+    }
+
+    setTicketNameStatus(VALIDATE_STATUS.VALID);
+    return;
+  }, [ticketName]);
+
+  // 2. 공연 장소
+  useEffect(() => {
+    if (place === "공연 장소") {
+      setPlaceStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
+    if (place !== "공연 장소" && !place.includes("서울")) {
+      window.alert("현재 공연장소는 서울 외의 지역을 선택할 수 없습니다.");
+      setPlace("공연 장소");
+      setLatitude("");
+      setLongitude("");
+      setGu("");
+      return;
+    }
+
+    setPlaceStatus(VALIDATE_STATUS.VALID);
+  }, [place]);
+
+  // 3. 상세 주소
+  useEffect(() => {
+    console.log(detailPlace);
+    if (!detailPlace) {
+      setDetailPlaceStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
+    setDetailPlaceStatus(VALIDATE_STATUS.VALID);
+  }, [detailPlace]);
+
+  // 4. 공연 기간
+  useEffect(() => {
+    const showStart = new Date(startDate);
+    const showEnd = new Date(endDate);
+
+    if (showEnd - showStart < 0) {
+      window.alert("공연 기간이 올바르지 않습니다.");
+      setStartDate(null);
+      setEndDate(null);
+    } else {
+      setDateStatus(VALIDATE_STATUS.VALID);
+    }
+  }, [startDate, endDate]);
+
+  // 5. 공연 시간
+  useEffect(() => {
+    if (startTime < 0) {
+      setStartTime(0);
+    }
+
+    if (startTime > 24) {
+      setStartTime(24);
+    }
+
+    setStartTimeStatus(VALIDATE_STATUS.VALID);
+  }, [startTime]);
+
+  // 6. 공연 좌석
+  useEffect(() => {
+    if (sit < 10 || sit > 100000) {
+      setSitStatus(VALIDATE_STATUS.INVALID);
+      return;
+    }
+
+    setSitStatus(VALIDATE_STATUS.VALID);
+  }, [sit]);
+
+  // 7. 공연 가격
+  useEffect(() => {
+    if (ticketPrice < 100 || ticketPrice > 1000000) {
+      setTicketPriceStatus(VALIDATE_STATUS.INVALID);
+      return;
+    }
+
+    setTicketPriceStatus(VALIDATE_STATUS.VALID);
+  }, [ticketPrice]);
+
+  // 8. 공연 소개
+  useEffect(() => {
+    if (!ticketInfo) {
+      setTicketInfoStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
+    if (ticketInfo.length > 500) {
+      setTicketInfoStatus(VALIDATE_STATUS.INVALID);
+      return;
+    }
+    setTicketInfoStatus(VALIDATE_STATUS.VALID);
+  }, [ticketInfo]);
+
+  // 9. 공연 상세
+  useEffect(() => {
+    if (ticketDetail === "" || ticketDetail === "<p><br></p>") {
+      setTicketDetailStatus(VALIDATE_STATUS.NOT_NULL);
+      return;
+    }
+
+    setTicketDetailStatus(VALIDATE_STATUS.VALID);
+  }, [ticketDetail]);
+
+  // 10. 모든 유효성 검사 상태
+  useEffect(() => {
+    if (
+      ticketNameStatus === VALIDATE_STATUS.VALID &&
+      placeStatus === VALIDATE_STATUS.VALID &&
+      dateStatus === VALIDATE_STATUS.VALID &&
+      startTimeStatus === VALIDATE_STATUS.VALID &&
+      ticketPriceStatus === VALIDATE_STATUS.VALID &&
+      sitStatus === VALIDATE_STATUS.VALID &&
+      ticketDetailStatus === VALIDATE_STATUS.VALID &&
+      coordinateStatus === VALIDATE_STATUS.VALID
+    ) {
+      setIsValidData(true);
+    }
+  }, [
+    ticketNameStatus,
+    placeStatus,
+    dateStatus,
+    startTimeStatus,
+    ticketPriceStatus,
+    sitStatus,
+    ticketDetailStatus,
+    coordinateStatus,
+  ]);
+
+  // 유효성 검사
+
   return (
     <PageWrapper>
       <TicketsCreateContentWrapper>
@@ -443,6 +641,9 @@ export default function TicketsCreate() {
           />
           {/* Tags */}
           <div className="postDiv">공연명</div>
+          <p className="valid_info">
+            공연명은 비워둘 수 없고, 30자 이내로 제한됩니다.
+          </p>
           <TicketsCreateInputDiv>
             <input
               ref={ticketNameRef}
@@ -450,7 +651,17 @@ export default function TicketsCreate() {
               placeholder="게시글의 제목을 작성해주세요."
               value={ticketName}
               onChange={(e) => {
-                setTicketName(e.target.value);
+                if (ticketNameStatus !== VALIDATE_STATUS.INVALID) {
+                  setTicketName(e.target.value);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (
+                  ticketNameStatus === VALIDATE_STATUS.INVALID &&
+                  e.code === "Backspace"
+                ) {
+                  setTicketName(ticketName.slice(0, ticketName.length - 1));
+                }
               }}
             />
           </TicketsCreateInputDiv>
@@ -469,6 +680,7 @@ export default function TicketsCreate() {
           </ImageDiv>
 
           <div className="postDiv">공연 장소</div>
+          <p className="valid_info">공연 장소는 현재 서울로 제한됩니다.</p>
           <ChoiceButtonDiv>
             <div className="place" ref={placeRef}>
               {place}
@@ -476,7 +688,7 @@ export default function TicketsCreate() {
             <input
               ref={detailPlaceRef}
               className="placeInput"
-              placeholder="상세 주소 입력"
+              placeholder="상세 주소를 입력해주세요. 상세 주소는 비워둘 수 없습니다."
               value={detailPlace}
               onChange={(e) => {
                 setDetailPlace(e.target.value);
@@ -489,20 +701,27 @@ export default function TicketsCreate() {
           <DatePickerDiv>
             시작일
             <div className="DatePickerInfoDiv">
-              <ReactDatePicker setDate={setStartDate}></ReactDatePicker>
+              <ReactDatePicker
+                date={startDate}
+                setDate={setStartDate}></ReactDatePicker>
             </div>
             종료일
             <div className="DatePickerInfoDiv">
-              <ReactDatePicker setDate={setEndDate}></ReactDatePicker>
+              <ReactDatePicker
+                date={endDate}
+                selected={endDate}
+                setDate={setEndDate}></ReactDatePicker>
             </div>
-            시작시간 - 숫자만 입력 (ex: 9)
+            <span>시작시간</span>
+            <p className="valid_info">24시간 단위로 입력 가능합니다.</p>
             <div className="DatePickerInfoDiv">
               <input
                 ref={startTimeRef}
                 type="number"
+                min="0"
                 max="24"
                 className="DatePickerInput"
-                placeholder="시작 시간"
+                placeholder="시작 시간을 숫자로 입력해 주세요."
                 value={startTime}
                 onChange={(e) => {
                   setStartTime(e.target.value.replace(/[^0-9]/g, ""));
@@ -511,26 +730,55 @@ export default function TicketsCreate() {
             </div>
           </DatePickerDiv>
           <div className="postDiv">공연 좌석 수</div>
+          <p className="valid_info">
+            공연 좌석은 최소 10석에서 최대 100,000석 까지 설정할 수 있습니다.
+          </p>
           <TicketsCreateInputDiv>
             <input
               ref={sitRef}
+              type="number"
+              min="10"
+              max="100000"
               className="contentInput"
               placeholder="공연 좌석 수"
               value={sit}
               onChange={(e) => {
                 setSit(e.target.value.replace(/[^0-9]/g, ""));
               }}
+              onBlur={(e) => {
+                if (e.target.value < 10) {
+                  setSit(10);
+                }
+                if (e.target.value > 100000) {
+                  setSit(100000);
+                }
+              }}
             />
+            <span>석</span>
           </TicketsCreateInputDiv>
           <div className="postDiv">티켓 가격</div>
+          <p className="valid_info">
+            공연 가격은 최소 100원에서 최대 1,000,000원 까지 설정할 수 있습니다.
+          </p>
           <TicketsCreateInputDiv>
             <input
               ref={ticketPriceRef}
+              type="number"
+              min={100}
+              max={1000000}
               className="contentInput"
               placeholder="티켓 가격"
               value={ticketPrice}
               onChange={(e) => {
                 setTicketPrice(e.target.value.replace(/[^0-9]/g, ""));
+              }}
+              onBlur={(e) => {
+                if (e.target.value < 100) {
+                  setTicketPrice(100);
+                }
+                if (e.target.value > 100000) {
+                  setTicketPrice(1000000);
+                }
               }}
             />{" "}
             원
@@ -544,14 +792,24 @@ export default function TicketsCreate() {
               value={ticketInfo}
               maxLength="500"
               onChange={(e) => {
-                setTicketInfo(e.target.value);
+                if (ticketInfoStatus !== VALIDATE_STATUS.INVALID) {
+                  setTicketInfo(e.target.value);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (
+                  ticketInfoStatus === VALIDATE_STATUS.INVALID &&
+                  e.code === "Backspace"
+                ) {
+                  setTicketInfo(ticketInfo.slice(0, ticketName.length - 1));
+                }
               }}></textarea>
           </TicketsCreateInputDiv>
           <div className="postDiv">공연 상세</div>
           <ContentInputDiv>
             <Editor
-              value={ticketsValue}
-              setValue={setTicketsValue}
+              value={ticketDetail}
+              setValue={setTicketDetail}
               placeholder={"내용을 입력해주세요."}></Editor>
           </ContentInputDiv>
         </TicketsBoard>
