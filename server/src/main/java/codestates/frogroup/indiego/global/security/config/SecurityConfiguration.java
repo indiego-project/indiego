@@ -81,6 +81,7 @@ public class SecurityConfiguration {
 						.antMatchers(HttpMethod.GET, "/certifications/**").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(),Roles.ADMIN.getRole())
 						.antMatchers(HttpMethod.DELETE, "/certifications").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole())
 						.antMatchers(HttpMethod.PUT, "/certifications").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole())
+						.antMatchers(HttpMethod.POST, "/api/v1/payments").hasAnyRole(Roles.USER.getRole(), Roles.PERFORMER.getRole(), Roles.NON_CERTIFIED_PERFORMER.getRole(), Roles.ADMIN.getRole())
 						.anyRequest().permitAll()
 				)
 				.addFilterBefore(
