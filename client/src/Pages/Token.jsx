@@ -2,7 +2,7 @@ import { React, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useIsLoginStore from "../store/useIsLoginStore";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export default function Token() {
   console.log("inside token");
@@ -21,8 +21,7 @@ export default function Token() {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      setIsLogin(true);
-      console.log("after setislogin");
+      fetchUserInfo();
     }
   }, []);
 
@@ -37,23 +36,36 @@ export default function Token() {
     });
   };
 
-  const getUserInfoOnSuccess = (response) => {
-    console.log("onSuccess get userinfo");
-    localStorage.setItem("userInfoStorage", JSON.stringify(response.data.data));
-    navigate("/");
-  };
+  // const getUserInfoOnSuccess = (response) => {
+  //   console.log("onSuccess get userinfo");
+  //   localStorage.setItem("userInfoStorage", JSON.stringify(response.data.data));
+  //   navigate("/");
+  // };
 
-  useQuery({
-    queryKey: ["getUserInfo"],
-    queryFn: getUserInfo,
-    enabled: isLogin,
-    onSuccess: getUserInfoOnSuccess,
-    onError: (err) => {
-      console.log(err);
-      window.alert("token error");
-      setIsLogin(false);
+  const { mutate: fetchUserInfo } = useMutation({
+    mutationKey: ["fetchUserInfo"],
+    mutationFn: getUserInfo,
+    onSuccess: (response) => {
+      localStorage.setItem(
+        "userInfoStorage",
+        JSON.stringify(response.data.data)
+      );
+      setIsLogin(true);
+      navigate("/");
     },
   });
+
+  // useQuery({
+  //   queryKey: ["getUserInfo"],
+  //   queryFn: getUserInfo,
+  //   enabled: isLogin,
+  //   onSuccess: getUserInfoOnSuccess,
+  //   onError: (err) => {
+  //     console.log(err);
+  //     window.alert("token error");
+  //     setIsLogin(false);
+  //   },
+  // });
 
   return <></>;
 }

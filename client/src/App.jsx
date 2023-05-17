@@ -35,6 +35,9 @@ const SpinnerApp = styled(Spinner)`
   }
 `;
 
+// Token 페이지에서 Userdata를 fetching 하는 로직이 섞여있어서, App 컴포넌트의 로직에 문제 발생
+// Token 의 Userdata fetching 을 App 컴포넌트에서 수행.
+
 function App() {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -142,9 +145,6 @@ function App() {
   return (
     <LoadingContainer>
       <SpinnerApp />
-      <Routes>
-        <Route path="/token" element={<Token />}></Route>
-      </Routes>
     </LoadingContainer>
   );
 }
