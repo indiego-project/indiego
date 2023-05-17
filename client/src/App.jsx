@@ -40,7 +40,7 @@ function App() {
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
   const { userInfo, setUserInfo } = useUserInfoStore((state) => state);
 
-  console.log("app head");
+  console.log("app head / current login:", isLogin);
 
   const fetchUserProfileAndSet = async (memberId) => {
     try {
@@ -140,6 +140,7 @@ function App() {
   return (
     <LoadingContainer>
       <SpinnerApp />
+      <Router />
     </LoadingContainer>
   );
 }
