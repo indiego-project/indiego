@@ -14,6 +14,8 @@ import instance from "../src/api/core/default";
 import styled from "styled-components";
 import Spinner from "./Components/Spinner.jsx";
 import { primary } from "./styles/mixins.js";
+import Token from "./Pages/Token.jsx";
+import { Route, Routes } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -140,6 +142,9 @@ function App() {
   return (
     <LoadingContainer>
       <SpinnerApp />
+      <Routes>
+        <Route path="/token" element={<Token />}></Route>
+      </Routes>
     </LoadingContainer>
   );
 }
