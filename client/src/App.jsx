@@ -98,7 +98,7 @@ function App() {
     try {
       setLoginAndUserInfo();
     } catch (err) {
-      throw new Error("로그인 초기 설정에 문제가 발생했습니다.", err);
+      setIsLogin(false);
     }
   }, []);
 
