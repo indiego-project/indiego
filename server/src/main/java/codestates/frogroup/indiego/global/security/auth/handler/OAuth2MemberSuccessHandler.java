@@ -100,10 +100,10 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
-                .host("indiego.site")
+                .scheme("https") // prod = http
+                .host("devindiego.site") // prod = indiego.site
                 //.host("localhost")
-                .port(80) // 기본 포트가 80이기 때문에 괜찮다
+                .port(443) // prod = 80
                 .path("/token")
                 .queryParams(queryParams)
                 .build()
