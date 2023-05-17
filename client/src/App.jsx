@@ -140,7 +140,6 @@ function App() {
   return (
     <LoadingContainer>
       <SpinnerApp />
-      <Router />
     </LoadingContainer>
   );
 }
