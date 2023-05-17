@@ -14,7 +14,12 @@ const loginStatus = Object.freeze({
 
 const useIsLoginStore = create((set) => ({
   isLogin: loginStatus.LOADING,
-  setIsLogin: (loginstate) => set(() => ({ isLogin: loginstate })),
+  setIsLogin: (loginstate) =>
+    set((state) => {
+      console.log("current login", state.isLogin);
+      console.log(loginstate);
+      return { isLogin: loginstate };
+    }),
 }));
 
 export default useIsLoginStore;

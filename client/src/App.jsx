@@ -40,8 +40,11 @@ function App() {
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
   const { userInfo, setUserInfo } = useUserInfoStore((state) => state);
 
+  console.log("app head");
+
   const fetchUserProfileAndSet = async (memberId) => {
     try {
+      console.log("inside  try, fetchUser");
       const res = await instance.get(
         `${process.env.REACT_APP_SERVER_URI}/members/${memberId}`
       );
@@ -52,17 +55,21 @@ function App() {
       const userDataWithAddress = { ...userData, address };
       setUserInfo(userDataWithAddress);
     } catch (err) {
+      console.log("inside catch, fetchUser");
       setIsLogin(false);
     }
   };
 
   const setLoginAndUserInfo = () => {
+    console.log("inside setloginUserInfo");
     if (accessToken) {
+      console.log("inside if accesstoken");
       setIsLogin(true);
       const memberId = userData.id;
       fetchUserProfileAndSet(memberId);
       return;
     } else {
+      console.log("inside else, accesstoken");
       setIsLogin(false);
     }
 
@@ -95,10 +102,13 @@ function App() {
   };
 
   useEffect(() => {
+    console.log("inside useEffect");
     try {
       setLoginAndUserInfo();
+      console.log("after set login and userinfo");
     } catch (err) {
       setIsLogin(false);
+      console.log("inside catch set login and userinfo");
     }
   }, []);
 

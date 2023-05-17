@@ -5,21 +5,29 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Token() {
+  console.log("inside token");
+
   const [searchParams] = useSearchParams();
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
   const navigate = useNavigate();
 
+  console.log("searchparams", searchParams);
+
   useEffect(() => {
+    console.log("inside useEffect");
     const accessToken = searchParams.get("access_token");
     const refreshToken = searchParams.get("refresh_token");
     if (accessToken && refreshToken) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
       setIsLogin(true);
+      console.log("after setislogin");
     }
   }, []);
 
   const getUserInfo = () => {
+    console.log("inside get userinfo");
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -30,6 +38,7 @@ export default function Token() {
   };
 
   const getUserInfoOnSuccess = (response) => {
+    console.log("onSuccess get userinfo");
     localStorage.setItem("userInfoStorage", JSON.stringify(response.data.data));
     navigate("/");
   };
@@ -39,6 +48,11 @@ export default function Token() {
     queryFn: getUserInfo,
     enabled: isLogin,
     onSuccess: getUserInfoOnSuccess,
+    onError: (err) => {
+      console.log(err);
+      window.alert("token error");
+      setIsLogin(false);
+    },
   });
 
   return <></>;
