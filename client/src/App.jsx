@@ -52,7 +52,7 @@ function App() {
       const userDataWithAddress = { ...userData, address };
       setUserInfo(userDataWithAddress);
     } catch (err) {
-      throw new Error("member 정보를 불러오는데 실패했습니다.", err);
+      setIsLogin(false);
     }
   };
 
