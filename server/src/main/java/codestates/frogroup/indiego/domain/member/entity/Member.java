@@ -40,7 +40,7 @@ public class Member extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private OAuthStatus oAuthStatus;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "customer")
     private List<Payment> payments = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
