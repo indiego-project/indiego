@@ -40,10 +40,10 @@ public class Member extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private OAuthStatus oAuthStatus;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
