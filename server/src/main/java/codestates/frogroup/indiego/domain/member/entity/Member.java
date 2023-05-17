@@ -43,7 +43,7 @@ public class Member extends BaseTime {
     @OneToMany(mappedBy = "customer")
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
