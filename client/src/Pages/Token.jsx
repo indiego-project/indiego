@@ -5,16 +5,10 @@ import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 export default function Token() {
-  console.log("inside token");
-
   const [searchParams] = useSearchParams();
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
-  const navigate = useNavigate();
-
-  console.log("searchparams", searchParams);
 
   useEffect(() => {
-    console.log("inside useEffect");
     const accessToken = searchParams.get("access_token");
     const refreshToken = searchParams.get("refresh_token");
     if (accessToken && refreshToken) {
@@ -22,11 +16,13 @@ export default function Token() {
       localStorage.setItem("refreshToken", refreshToken);
 
       fetchUserInfo();
+    } else {
+      setIsLogin(false);
+      window.location.replace("/");
     }
   }, []);
 
   const getUserInfo = () => {
-    console.log("inside get userinfo");
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -51,7 +47,13 @@ export default function Token() {
         JSON.stringify(response.data.data)
       );
       setIsLogin(true);
-      navigate("/");
+      window.location.replace("/");
+    },
+    onError: (response) => {
+      window.alert("로그인에 실패했습니다. 다시 시도해주세요.");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.replace("/");
     },
   });
 

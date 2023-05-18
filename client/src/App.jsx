@@ -14,8 +14,6 @@ import instance from "../src/api/core/default";
 import styled from "styled-components";
 import Spinner from "./Components/Spinner.jsx";
 import { primary } from "./styles/mixins.js";
-import Token from "./Pages/Token.jsx";
-import { Route, Routes } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +33,6 @@ const SpinnerApp = styled(Spinner)`
   }
 `;
 
-// Token 페이지에서 Userdata를 fetching 하는 로직이 섞여있어서, App 컴포넌트의 로직에 문제 발생
-// Token 의 Userdata fetching 을 App 컴포넌트에서 수행.
-
 function App() {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -45,11 +40,8 @@ function App() {
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
   const { userInfo, setUserInfo } = useUserInfoStore((state) => state);
 
-  console.log("app head / current login:", isLogin);
-
   const fetchUserProfileAndSet = async (memberId) => {
     try {
-      console.log("inside  try, fetchUser");
       const res = await instance.get(
         `${process.env.REACT_APP_SERVER_URI}/members/${memberId}`
       );
@@ -60,21 +52,17 @@ function App() {
       const userDataWithAddress = { ...userData, address };
       setUserInfo(userDataWithAddress);
     } catch (err) {
-      console.log("inside catch, fetchUser");
       setIsLogin(false);
     }
   };
 
   const setLoginAndUserInfo = () => {
-    console.log("inside setloginUserInfo");
     if (accessToken) {
-      console.log("inside if accesstoken");
       setIsLogin(true);
       const memberId = userData.id;
       fetchUserProfileAndSet(memberId);
       return;
     } else {
-      console.log("inside else, accesstoken");
       setIsLogin(false);
     }
 
@@ -107,15 +95,12 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("inside useEffect");
     try {
       setLoginAndUserInfo();
-      console.log("after set login and userinfo");
     } catch (err) {
       setIsLogin(false);
-      console.log("inside catch set login and userinfo");
     }
-  }, []);
+  }, [isLogin]);
 
   // 로그인 및 userInfo 가 존재할 때
   if (isLogin && Object.keys(userInfo).length !== 0) {
