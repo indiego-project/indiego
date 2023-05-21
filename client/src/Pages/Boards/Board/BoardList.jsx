@@ -269,7 +269,7 @@ export default function BoardList() {
 
   const handleWriteButton = () => {
     if (userId === null) {
-      alert("로그인 후 이용할 수 있습니다");
+      alert("로그인 후 이용해주세요.");
       navigate("/login");
       return;
     }

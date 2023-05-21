@@ -165,7 +165,7 @@ const Board = () => {
   };
 
   const handleHeartCountOnError = () => {
-    alert("로그인 후 이용하세요");
+    alert("로그인 후 이용해주세요.");
     navigate("/login");
   };
   const { mutate: heartCount } = useMutation({
