@@ -144,8 +144,7 @@ public class ShowRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .leftJoin(showTag.tag, tag).fetchJoin() // Tag 조인하여 정보 가져오기, N+1 문제로 fetchJoin()
                 .where(
                         addressEqOfFindShow(address),
-                        show.showBoard.showAt.goe(now()),
-                        show.showBoard.expiredAt.loe(now())
+                        show.showBoard.showAt.goe(now())
                 )
                 .orderBy(sortDesc(status))
                 .limit(10)
