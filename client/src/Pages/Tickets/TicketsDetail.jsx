@@ -657,6 +657,9 @@ export default function TicketsDetail() {
       navigate("/");
     } else if (error.response.status === 500) {
       window.alert("일시적인 오류입니다. 잠시 후에 다시 시도해주세요.");
+    } else if (error.response.status === 404) {
+      window.alert("로그인 후 이용해주세요.");
+      navigate("/login");
     }
   };
 

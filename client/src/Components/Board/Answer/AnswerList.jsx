@@ -11,6 +11,7 @@ import {
 } from "../../../styles/mixins.js";
 import breakpoint from "../../../styles/breakpoint.js";
 import instance from "../../../api/core/default.js";
+import useIsLoginStore from "../../../store/useIsLoginStore.js";
 
 //라이브러리 및 라이브러리 메소드
 import React, { useRef, useState } from "react";
@@ -79,20 +80,19 @@ const AnswerList = ({ boardData, answerListData, refetch, id, userId }) => {
   const [answerData, setAnswerData] = useState("");
   const createAnswerRef = useRef();
   const navigate = useNavigate();
+  const { isLogin } = useIsLoginStore((state) => state);
 
   const handleCreateAnswer = () => {
-    if (answerData.length < 1) {
+    if (answerData.length < 1 && isLogin) {
       createAnswerRef.current.focus();
       return;
     }
-    if (window.confirm("작성하시겠습니까?")) {
-      createAnswer();
-    }
+    createAnswer();
   };
 
-  const handleButton = async () => {
+  const handleButton = () => {
     const data = { comment: answerData };
-    return await instance({
+    return instance({
       method: "post",
       url: `${process.env.REACT_APP_SERVER_URI}/articles/${id}/comments`,
       data,
@@ -107,13 +107,14 @@ const AnswerList = ({ boardData, answerListData, refetch, id, userId }) => {
 
   const handleButtonOnError = (response) => {
     if (response.response.status === 401) {
-      alert("로그인 후 이용하세요");
+      alert("로그인 후 이용해주세요");
+      navigate("/login");
+      return;
+    } else if (response.response.status === 400) {
+      alert("로그인 시간이 만료되었습니다");
       navigate("/login");
       return;
     }
-    alert("로그인 시간이 만료되었습니다");
-    navigate("/login");
-    return;
   };
 
   const { mutate: createAnswer, isLoading } = useMutation({
