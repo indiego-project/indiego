@@ -65,33 +65,6 @@ function App() {
     } else {
       setIsLogin(false);
     }
-
-    // refreshToken 로직을 App 컴포넌트 flow에 맞게 조금 수정할 필요가 있을 것 같습니다.
-    if (refreshToken) {
-      axios
-        .get(`${process.env.REACT_APP_SERVER_URI}/members/reissue`, {
-          headers: {
-            "Content-Type": "application/json",
-            // eslint-disable-next-line prettier/prettier
-            Authorization: `Bearer ${accessToken}`,
-            // eslint-disable-next-line prettier/prettier
-            Refresh: refreshToken,
-          },
-        })
-        .then((response) => {
-          localStorage.setItem(
-            "accessToken",
-            response.headers.get("Authorization").split(" ")[1]
-          );
-          setIsLogin(true);
-          fetchUserProfileAndSet(userData.id);
-        })
-        .catch((err) => {
-          setIsLogin(false);
-          throw new Error("Refresh Token 인증에 실패했습니다.", err);
-        });
-      return;
-    }
   };
 
   useEffect(() => {
@@ -101,6 +74,30 @@ function App() {
       setIsLogin(false);
     }
   }, [isLogin]);
+
+  useEffect(() => {
+    if (refreshToken) {
+      axios
+        .get(`${process.env.REACT_APP_SERVER_URI}/members/reissue`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            Refresh: refreshToken,
+          },
+        })
+        .then((response) => {
+          localStorage.setItem(
+            "accessToken",
+            response.headers.get("Authorization").split(" ")[1]
+          );
+        })
+        .catch((err) => {
+          setIsLogin(false);
+          throw new Error("accessToken 재발급에 실패했습니다.", err);
+        });
+      return;
+    }
+  }, []);
 
   // 로그인 및 userInfo 가 존재할 때
   if (isLogin && Object.keys(userInfo).length !== 0) {
