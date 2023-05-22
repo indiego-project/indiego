@@ -67,14 +67,10 @@ public class PaymentService {
     @Transactional
     public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount,
                                                   PaymentShowInfo paymentShowInfo, String token) {
-//        PagelessMultiResponseDto response = new PagelessMultiResponseDto<>();
-
         PaymentSuccessDto paymentSuccessDto = null;
+
         try {
             paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
-
-//            response.getData().add(paymentSuccessDto);
-//            response.getData().add(responseEntity.getBody());
         } catch (Exception e) {
             throw new BusinessLogicException(ExceptionCode.PAYMENT_AUTHORIZATION_FAILED);
         }
@@ -111,7 +107,7 @@ public class PaymentService {
         params.put("date", paymentShowInfo.getDate());
         params.put("ticketCount", paymentShowInfo.getTicketCount());
         restTemplate.postForObject(
-                "https://api.devindiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
+                "https://api.indiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
                 new HttpEntity<>(params, headers), Map.class);
     }
 
