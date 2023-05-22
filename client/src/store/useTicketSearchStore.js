@@ -32,7 +32,6 @@ export const useTicketSearchStore = create((set, get) => ({
     set(
       produce((state) => {
         state.searchParams.search = searchInput;
-        console.log("set search running");
       })
     );
   },

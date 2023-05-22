@@ -268,7 +268,6 @@ export default function Tickets() {
     }
   `;
     const data = { query, variables };
-    console.log(data, "data");
     return axios.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
   };
 
