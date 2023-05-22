@@ -162,7 +162,10 @@ const EditContainer = styled.div`
       color: ${sub.sub400};
       font-size: ${dtFontSize.small};
       font-weight: 400;
-      margin-top: 30px;
+      margin-bottom: 10px;
+      @media screen and (max-width: ${breakpoint.mobile}) {
+        font-size: ${mbFontSize.small};
+      }
     }
   }
 
@@ -224,6 +227,16 @@ const EditContainer = styled.div`
   > .edit-about-container {
     display: flex;
     flex-direction: column;
+
+    > span {
+      color: ${sub.sub400};
+      font-size: ${dtFontSize.small};
+      font-weight: 400;
+      margin-bottom: 10px;
+      @media screen and (max-width: ${breakpoint.mobile}) {
+        font-size: ${mbFontSize.small};
+      }
+    }
 
     > .about-input {
       font-size: ${dtFontSize.small};
@@ -443,6 +456,10 @@ export default function ProfileEdit() {
                 <EditContainerSubTitle fontColor={fontColor}>
                   나의 프로필 사진
                 </EditContainerSubTitle>
+                <p>
+                  이미지 파일의 형식은 jpg, jpeg, png로 권장합니다 <br /> 파일의
+                  크기는 10MB 이하로 제한됩니다
+                </p>
                 <div className="profile-image-container">
                   <img alt="profile img" src={imageUrl} />
                   <input
@@ -453,10 +470,6 @@ export default function ProfileEdit() {
                     onChange={onLoadFile}
                   />
                 </div>
-                <p>
-                  이미지 파일의 형식은 jpg, jpeg, png로 권장합니다 <br /> 파일의
-                  크기는 10MB 이하로 제한됩니다
-                </p>
               </div>
               <div className="edit-nickname-container">
                 <EditContainerSubTitle fontColor={fontColor}>
@@ -504,9 +517,11 @@ export default function ProfileEdit() {
                 <EditContainerSubTitle fontColor={fontColor}>
                   소개
                 </EditContainerSubTitle>
+                <span>소개는 150자 이내로 제한됩니다</span>
                 <textarea
                   className="about-input"
                   defaultValue={introduction || ""}
+                  maxLength="150"
                   onChange={(e) => {
                     setIntroduction(e.target.value);
                   }}

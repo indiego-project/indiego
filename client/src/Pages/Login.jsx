@@ -205,6 +205,7 @@ const LoginContainer = styled.div`
     color: ${misc.red};
     font-size: ${dtFontSize.medium};
     font-weight: 600;
+    text-align: center;
     @media screen and (max-width: ${breakpoint.mobile}) {
       font-size: ${mbFontSize.medium};
     }
@@ -282,10 +283,10 @@ export default function Login() {
   });
   const [errorMessageContent, setErrorMessageContent] = useState();
   const [checked, setChecked] = useState(false);
-  const [isLoginTypeUser, setIsLoginTypeUser] = useState(true);
+  const [isLoginTypeUser, setIsLoginTypeUser] = useState("USER");
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  const data = { email: email, password: password };
+  const data = { email: email, password: password, role: isLoginTypeUser };
   const navigate = useNavigate();
 
   const { isLogin, setIsLogin } = useIsLoginStore((state) => state);
@@ -299,7 +300,15 @@ export default function Login() {
   };
 
   const handleLoginType = () => {
-    setIsLoginTypeUser(!isLoginTypeUser);
+    if (isLoginTypeUser === "USER") {
+      setIsLoginTypeUser("PERFORMER");
+    } else {
+      setIsLoginTypeUser("USER");
+    }
+    setEmail("");
+    setPassword("");
+    setErrorMessageContent("");
+    setChecked(false);
   };
 
   const handlePasswordInputType = () => {
@@ -343,7 +352,11 @@ export default function Login() {
 
   const postLoginOnError = (err) => {
     if (err.response.status === 401) {
-      setErrorMessageContent("이메일 혹은 비밀번호를 다시 확인해주세요");
+      setErrorMessageContent("이메일 혹은 비밀번호를 다시 확인해주세요.");
+    } else if (err.response.status === 404) {
+      setErrorMessageContent(
+        "존재하지 않는 회원입니다. 로그인 정보를 다시 확인해주세요."
+      );
     }
   };
 
@@ -387,11 +400,17 @@ export default function Login() {
           </button>
         </SelectLoginTypeTab>
         <LoginContainer
-          color={isLoginTypeUser ? primary.primary100 : secondary.secondary300}
+          color={
+            isLoginTypeUser === "USER"
+              ? primary.primary100
+              : secondary.secondary300
+          }
         >
           <div className="input-container">
             <InputLabel
-              fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+              fontColor={
+                isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+              }
             >
               이메일
             </InputLabel>
@@ -411,7 +430,9 @@ export default function Login() {
           </div>
           <div className="input-container">
             <InputLabel
-              fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+              fontColor={
+                isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+              }
             >
               비밀번호
             </InputLabel>
@@ -438,9 +459,13 @@ export default function Login() {
             </div>
             <div className="keep-login-container">
               <KeepLoginCheckbox
-                borderColor={isLoginTypeUser ? "white" : secondary.secondary700}
+                borderColor={
+                  isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+                }
                 color={
-                  isLoginTypeUser ? primary.primary300 : secondary.secondary500
+                  isLoginTypeUser === "USER"
+                    ? primary.primary300
+                    : secondary.secondary500
                 }
                 checked={checked}
                 type="checkbox"
@@ -448,25 +473,31 @@ export default function Login() {
               />
               <KeepLoginCheckboxLabel
                 id="keepLogin"
-                fontColor={isLoginTypeUser ? "white" : secondary.secondary700}
+                fontColor={
+                  isLoginTypeUser === "USER" ? "white" : secondary.secondary700
+                }
               >
                 로그인 유지
               </KeepLoginCheckboxLabel>
             </div>
           </div>
           {errorMessageContent ? (
-            <span className="error-message">{errorMessageContent}</span>
+            <p className="error-message">{errorMessageContent}</p>
           ) : (
             ""
           )}
           <LoginButton
             onClick={handleLogin}
             color={
-              isLoginTypeUser ? primary.primary300 : secondary.secondary500
+              isLoginTypeUser === "USER"
+                ? primary.primary300
+                : secondary.secondary500
             }
             fontColor={"white"}
             hoverColor={
-              isLoginTypeUser ? secondary.secondary500 : primary.primary300
+              isLoginTypeUser === "USER"
+                ? secondary.secondary500
+                : primary.primary300
             }
           >
             로그인

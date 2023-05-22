@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { primary, dtFontSize, secondary, sub } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
-import Search from "../../assets/search.svg";
 
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+
+import { useTicketSearchStore } from "../../store/useTicketSearchStore";
 
 const SearchBarContainer = styled.div`
   margin-top: 20px;
@@ -101,10 +101,11 @@ const OptionsList = styled.div`
 const InputContainer = styled.div`
   display: flex;
   width: 34%;
-  height: 80%;
+  height: 82%;
   border-radius: 0 10px 10px 0;
   border: 2px solid ${primary.primary700};
   border-width: 2px 2px 2px 0;
+  min-width: 200px;
 
   svg {
     margin: 10px 10px 0 0;
@@ -145,30 +146,27 @@ const InputContainer = styled.div`
   }
 `;
 
-export default function SearchBar({
-  className,
-  navigateTo,
-  defaultValue,
-  additionalParams,
-}) {
+// 모든 검색 로직 (상세 필터 포함)을 url에 담아 새로고침 시켜야함
+
+export default function SearchBar({ className, children }) {
+  const { search } = useTicketSearchStore((state) => state.searchParams);
+  const { filter } = useTicketSearchStore((state) => state.searchParams);
+  const { setSearch, setFilter, getSearchUrl } = useTicketSearchStore(
+    (state) => state
+  );
+
   const [isSearchOptionsClicked, setIsSearchOptionsClicked] = useState(false);
-  const [searchOption, setSearchOption] = useState("공연명");
-  const [searchInput, setSearchInput] = useState(defaultValue);
-  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
 
-  let searchURI = `${navigateTo}?search=${searchInput}&filter=${searchOption}`;
-
-  additionalParams?.forEach((param) => {
-    if (Array.isArray(param)) {
-      searchURI += "&" + param[0] + "=" + param[1];
-    }
-  });
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
 
   const searchOptionsContainerEventHandler = (e, props) => {
     if (props === "blur") {
       const next = e.relatedTarget;
       if (next instanceof HTMLLIElement) {
-        setSearchOption(next.innerText);
+        setFilter(next.innerText);
         setIsSearchOptionsClicked(false);
       } else {
         setIsSearchOptionsClicked(false);
@@ -178,24 +176,20 @@ export default function SearchBar({
     }
   };
 
-  const searchInputOnChangeHandler = (e) => {
-    setSearchInput(e.target.value);
-  };
-
   const searchInputOnKeyUpHandler = (e) => {
-    if (searchInput && e.key === "Enter") {
-      navigate(searchURI);
+    if (e.key === "Enter") {
+      setSearch(searchInput);
+      window.location.replace(getSearchUrl());
     }
   };
 
   const searchIconClickHandler = () => {
-    if (searchInput) {
-      navigate(searchURI);
-    }
+    setSearch(searchInput);
+    window.location.replace(getSearchUrl());
   };
 
   return (
-    <SearchBarContainer className={className}>
+    <SearchBarContainer className={className} defaultValue={""}>
       <OptionContainer className="option_container">
         <OptionSelector
           tabIndex="0"
@@ -203,16 +197,14 @@ export default function SearchBar({
           onClick={searchOptionsContainerEventHandler}
           onBlur={(e) => {
             searchOptionsContainerEventHandler(e, "blur");
-          }}
-        >
-          <p>{searchOption}</p>
+          }}>
+          <p>{filter}</p>
           {/* traingle icon */}
           <svg
             width="20"
             height="20"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 320 512"
-          >
+            viewBox="0 0 320 512">
             <path
               fill="white"
               d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
@@ -228,7 +220,9 @@ export default function SearchBar({
         <input
           placeholder="검색어를 입력하세요."
           value={searchInput}
-          onChange={searchInputOnChangeHandler}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
           onKeyUp={searchInputOnKeyUpHandler}
         />
         {/* search icon */}
@@ -237,11 +231,11 @@ export default function SearchBar({
           height={20}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
-          onClick={searchIconClickHandler}
-        >
+          onClick={searchIconClickHandler}>
           <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
         </svg>
       </InputContainer>
+      {children}
     </SearchBarContainer>
   );
 }

@@ -7,27 +7,26 @@ import breakpoint from "../../styles/breakpoint.js";
 
 const ItemGrid = styled.div`
   width: 90%;
-  height: 100%;
+  height: max-content;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 20%));
   position: relative;
+  justify-content: space-evenly;
+  column-gap: 50px;
+  row-gap: 100px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 50px;
-    margin: 0 20px;
-  }
-
-  @media screen and (max-width: 500px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 50px;
-    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 25px;
+    column-gap: 100px;
   }
 
   .null_info {
-    position: absolute;
-    left: 40%;
+    width: 100%;
+    height: 100%;
+    background-color: red;
 
     @media screen and (max-width: 500px) {
       left: 30%;
@@ -38,13 +37,9 @@ const ItemGrid = styled.div`
 export default function ItemList({ data }) {
   return (
     <ItemGrid>
-      {data.length === 0 ? (
-        <p className="null_info">공연이 존재하지 않습니다</p>
-      ) : (
-        data.map((item, index) => {
-          return <CardItem data={item} key={index} />;
-        })
-      )}
+      {data.map((item, index) => {
+        return <CardItem data={item} key={index} />;
+      })}
     </ItemGrid>
   );
 }

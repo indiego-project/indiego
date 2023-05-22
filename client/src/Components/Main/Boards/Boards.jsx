@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Board from "./Board.jsx";
 import Spinner from "../../Spinner.jsx";
 
-import { primary, dtFontSize } from "../../../styles/mixins";
+import { primary, dtFontSize, sub } from "../../../styles/mixins";
 
 import styled from "styled-components";
 import axios from "axios";
@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 
 const BoardsContainer = styled.div`
   width: 100%;
-  height: 265px;
+  height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,8 +32,11 @@ const BoardList = styled.ul`
   height: 300px;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   border-radius: 10px;
+  background-color: ${sub.sub100};
+  margin-bottom: 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   a {
     text-decoration: none;
@@ -42,6 +45,22 @@ const BoardList = styled.ul`
     :hover {
       color: ${primary.primary500};
     }
+  }
+
+  .null_data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner_box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -72,16 +91,20 @@ export default function Boards({ category, children, path }) {
       <h1>{children}</h1>
       <BoardList>
         {isLoading ? (
-          <Spinner />
+          <div className="spinner_box">
+            <Spinner />
+          </div>
+        ) : !data.length ? (
+          <div className="null_data">
+            <p>데이터가 없습니다.</p>
+          </div>
         ) : (
-          data &&
-          data.map((data, index, datas) => {
-            if (index === datas.length - 1) {
+          data.map((data, index) => {
+            if (index === 4) {
               return (
                 <Link
                   to={`board${path ? `/${path}` : ""}/${data.id}`}
-                  key={data.id}
-                >
+                  key={data.id}>
                   <Board data={data} isLast={true} />
                 </Link>
               );
@@ -89,8 +112,7 @@ export default function Boards({ category, children, path }) {
             return (
               <Link
                 to={`board${path ? `/${path}` : ""}/${data.id}`}
-                key={data.id}
-              >
+                key={data.id}>
                 <Board data={data} />
               </Link>
             );

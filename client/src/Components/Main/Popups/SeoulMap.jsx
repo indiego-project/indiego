@@ -1,16 +1,18 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
+import React, { useEffect } from "react";
+import { useTicketSearchStore } from "../../../store/useTicketSearchStore";
 
-import { primary, secondary, sub } from "../../../styles/mixins";
+import { primary, sub } from "../../../styles/mixins";
 import breakpoint from "../../../styles/breakpoint";
 
 import styled from "styled-components";
+import locationIdTranslate from "./locationIdTranslate";
 
 const MapContainer = styled.div`
   width: 40%;
   height: max-content;
   min-width: 400px;
-  min-height: 500px;
+  min-height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,205 +42,16 @@ const MapContainer = styled.div`
       }
     }
 
-    #Dobong-gu:hover ~ .dobong {
-      fill: white;
-      transform: translate(0, -10px);
+    path:focus {
+      outline: none;
     }
-    #Dobong-gu:focus ~ .dobong {
+
+    path.hover ~ text.hover {
       fill: white;
-      transform: translate(0, -10px);
     }
-    #Nowon-gu:hover ~ .nowon {
+
+    path.active ~ text.active {
       fill: white;
-      transform: translate(0, -10px);
-    }
-    #Nowon-gu:focus ~ .nowon {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangbuk-gu:focus ~ .gangbuk {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangbuk-gu:hover ~ .gangbuk {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jungnang-gu:focus ~ .jungnang {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jungnang-gu:hover ~ .jungnang {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seongbuk-gu:focus ~ .seongbuk {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seongbuk-gu:hover ~ .seongbuk {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Dongdaemun-gu:focus ~ .dongdaemun {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Dongdaemun-gu:hover ~ .dongdaemun {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gwangjin-gu:focus ~ .gwangjin {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gwangjin-gu:hover ~ .gwangjin {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jung-gu:focus ~ .junggu {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jung-gu:hover ~ .junggu {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seongdong-gu:focus ~ .seongdong {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seongdong-gu:hover ~ .seongdong {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jongno-gu:focus ~ .jongno {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Jongno-gu:hover ~ .jongno {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yongsan-gu:focus ~ .yongsan {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yongsan-gu:hover ~ .yongsan {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Eunpyeong-gu:focus ~ .eunpyeong {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Eunpyeong-gu:hover ~ .eunpyeong {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seodaemun-gu:focus ~ .seodaemun {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seodaemun-gu:hover ~ .seodaemun {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Mapo-gu:focus ~ .mapo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Mapo-gu:hover ~ .mapo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangseo-gu:focus ~ .gangseo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangseo-gu:hover ~ .gangseo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yangcheon-gu:focus ~ .yangcheon {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yangcheon-gu:hover ~ .yangcheon {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Guro-gu:focus ~ .guro {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Guro-gu:hover ~ .guro {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yeongdeungpo-gu:focus ~ .yeongdeungpo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Yeongdeungpo-gu:hover ~ .yeongdeungpo {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Dongjak-gu:focus ~ .dongjak {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Dongjak-gu:hover ~ .dongjak {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Geumcheon-gu:focus ~ .geumcheon {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Geumcheon-gu:hover ~ .geumcheon {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gwanak-gu:focus ~ .gwanak {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gwanak-gu:hover ~ .gwanak {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seocho-gu:focus ~ .seocho {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Seocho-gu:hover ~ .seocho {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangnam-gu:focus ~ .gangnam {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangnam-gu:hover ~ .gangnam {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Songpa-gu:focus ~ .songpa {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Songpa-gu:hover ~ .songpa {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangdong-gu:focus ~ .gangdong {
-      fill: white;
-      transform: translate(0, -10px);
-    }
-    #Gangdong-gu:hover ~ .gangdong {
-      fill: white;
-      transform: translate(0, -10px);
     }
   }
 
@@ -246,27 +59,69 @@ const MapContainer = styled.div`
     transition: all 0.1s ease-in-out;
   }
 
-  path:hover {
+  path.hover {
     position: absolute;
     z-index: 100;
     fill: ${primary.primary300};
     cursor: pointer;
-    transform: translate(0, -10px);
-    filter: drop-shadow(3px 10px ${secondary.secondary500});
   }
 
-  path:focus {
+  path.active {
+    position: absolute;
+    z-index: 100;
     fill: ${primary.primary300};
-    outline: none;
     cursor: pointer;
-    transform: translate(0, -10px);
-    filter: drop-shadow(3px 10px ${secondary.secondary500});
   }
 `;
 
-export default function SeoulMap({ clickHandler }) {
+export default function SeoulMap({ clickHandler, className }) {
+  const { address } = useTicketSearchStore((state) => state.searchParams);
+
+  useEffect(() => {
+    if (address) {
+      const locationId = "#" + locationIdTranslate(address);
+      const curSelectedPath = document.querySelector(locationId);
+      const curSelectedText = document.querySelector(
+        `text[data-name=${address}]`
+      );
+      curSelectedPath.classList.add("active");
+      curSelectedText.classList.add("active");
+    }
+  }, []);
+
+  const pathClickHandler = (e) => {
+    const previousSelected = document.querySelectorAll(".active");
+    for (let el of previousSelected) {
+      el.classList.remove("active");
+    }
+    e.target.classList.add("active");
+    let pathName = e.target.dataset.name;
+    if (pathName) {
+      const textEl = document.querySelector(`text[data-name="${pathName}"`);
+      textEl.classList.add("active");
+    }
+    clickHandler(e);
+  };
+
+  const pathMouseInHanlder = (e) => {
+    e.target.classList.add("hover");
+    let pathName = e.target.dataset.name;
+    if (pathName) {
+      const textEl = document.querySelector(`text[data-name="${pathName}"`);
+      textEl.classList.add("hover");
+    }
+  };
+  const pathMouseOutHanlder = (e) => {
+    e.target.classList.remove("hover");
+    let pathName = e.target.dataset.name;
+    if (pathName) {
+      const textEl = document.querySelector(`text[data-name="${pathName}"`);
+      textEl.classList.remove("hover");
+    }
+  };
+
   return (
-    <MapContainer>
+    <MapContainer className={className}>
       {/* 서울지도svg */}
       <svg
         version="1.1"
@@ -279,20 +134,22 @@ export default function SeoulMap({ clickHandler }) {
         height="85%"
         viewBox="50 110 1300 1300"
         enableBackground="new 0 0 1400 1400"
-        xmlSpace="preserve"
-      >
+        xmlSpace="preserve">
         <path
           id="Dobong-gu"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
           tabIndex={0}
+          data-name="도봉구"
           value={JSON.stringify({
             address: "도봉구",
             latitude: 37.6687735,
             longitude: 127.047071,
           })}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           className="dobong"
           d="M964.064,164.667
 c-1.447,9.018-0.285,18.105-2.002,27.506c-2.068,11.332-9.018,22.101-11.502,33.507c-0.867,3.979-0.977,9.201-1.5,14.003
@@ -312,9 +169,16 @@ c7.441,0.328,14.299,0.634,21.004,1C944.035,158.024,948.826,166.568,964.064,164.6
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "동작구", latitude: 37.5124298, longitude: 126.9397997 })}
+          data-name="동작구"
+          value={JSON.stringify({
+            address: "동작구",
+            latitude: 37.5124298,
+            longitude: 126.9397997,
+          })}
           d="M549.469,914.338
 c12.88,1.814,26.066,2.353,40.509,1.5c5.67-0.331,12.667,0.665,17.504-0.5c1.864,0.031,3.163-0.504,4.501-1
 c6.505,6.898,12.973,14.271,19.505,22.006c6.095,7.215,12.891,16.18,21.505,20.504c7.69,3.861,17.505,3.021,28.006,5.502
@@ -333,9 +197,16 @@ c0.636-3.48,3.329-7.236,5.001-11.002C533.56,938.992,541.504,925.207,549.469,914.
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "은평구", latitude: 37.602749, longitude: 126.929256})}
+          data-name="은평구"
+          value={JSON.stringify({
+            address: "은평구",
+            latitude: 37.602749,
+            longitude: 126.929256,
+          })}
           d="M575.476,330.705
 c7.587,0.952,9.29-2.505,13.003-6.501c7.224-7.775,13.519-17.169,18.004-25.505c14.693,12.132,30.782,26.277,46.01,39.509
 c3.894,3.383,13.752,9.375,15.003,13.503c0.862,2.844-0.673,6.792,0,9.002c0,4.834,0,9.669,0,14.503
@@ -360,9 +231,16 @@ C569.141,330.705,572.308,330.705,575.476,330.705z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "강북구", latitude: 37.6397767, longitude: 127.0255184})}
+          data-name="강북구"
+          value={JSON.stringify({
+            address: "강북구",
+            latitude: 37.6397767,
+            longitude: 127.0255184,
+          })}
           d="M809.029,188.173
 c0.912,12.448,6.383,24.226,6.5,36.508c0.084,8.802-3.998,17.245-3,27.006c-1.156,1.678-0.176,5.492-0.5,8.001
 c0,4.167,0,8.335,0,12.503c1.809,14.38-6.305,20.132-3.5,34.008c1.307,1.693,2.83,3.171,4,5.001
@@ -382,9 +260,16 @@ C784.264,197.082,796.582,192.563,809.029,188.173z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "강동구", latitude: 37.5300852, longitude: 127.1237639})}
+          data-name="강동구"
+          value={JSON.stringify({
+            address: "강동구",
+            latitude: 37.5300852,
+            longitude: 127.1237639,
+          })}
           d="M1169.111,741.299
 c5.732-6.754,13.379-10.111,22.004-15.504c8.936-5.586,14.174-12.908,26.506-13.003c10.67-0.333,22.672,0.667,32.508-0.5
 c18.525-4.354,29.406-16.417,44.01-25.006c8.764-5.154,19.996-8.898,28.506-14.003c0,1.667,0,3.334,0,5.001
@@ -403,8 +288,15 @@ c4.039-21.131,4.615-45.729,18.504-57.012C1164.984,745.842,1167.152,743.675,1169.
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "강서구", latitude: 37.550833, longitude: 126.849650})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="강서구"
+          value={JSON.stringify({
+            address: "강서구",
+            latitude: 37.550833,
+            longitude: 126.84965,
+          })}
           tabIndex={0}
           d="M134.875,530.751
 c14.186,7.902,28.88,17.473,41.509,27.006c4.251,3.209,9.459,6.075,13.003,9.502c4.232,4.093,7.689,10.18,11.502,15.004
@@ -430,9 +322,16 @@ c1.876-13.255-8.925-25.063-6.001-37.508C126.606,538.5,132.789,536.269,134.875,53
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "관악구", latitude: 37.4781098, longitude: 126.9514931})}
+          data-name="관악구"
+          value={JSON.stringify({
+            address: "관악구",
+            latitude: 37.4781098,
+            longitude: 126.9514931,
+          })}
           d="M694.002,1210.906
 c-4.465,4.478-9.49,9.332-15.003,14.503c-4.905,4.601-9.783,10.629-15.504,14.503c-5.579,3.778-12.692,6.807-20.004,11.003
 c-6.592,3.783-13.672,10.269-20.004,11.503c-4.604,0.896-10.121,0.33-15.004,0.5c-4.958,0.172-10.222,0.289-15.503,0.5
@@ -452,8 +351,15 @@ C718.799,1185.691,706.297,1198.194,694.002,1210.906z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "강남구", latitude: 37.5175066, longitude: 127.0473753})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="강남구"
+          value={JSON.stringify({
+            address: "강남구",
+            latitude: 37.5175066,
+            longitude: 127.0473753,
+          })}
           tabIndex={0}
           d="M809.529,885.332
 c3.344-3.51,7.164-6.168,11.002-9.502c3.58-3.111,6.844-7.933,11.002-9.503c3.145-1.187,8.471-1.302,12.504-2.001
@@ -480,9 +386,16 @@ c-1.125-6.854-1.74-14.938-3.5-20.506c-2.148-6.789-6.955-12.942-10.002-19.004C815
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "종로구", latitude: 37.5734684, longitude: 126.978984})}
+          data-name="종로구"
+          value={JSON.stringify({
+            address: "종로구",
+            latitude: 37.5734684,
+            longitude: 126.978984,
+          })}
           d="M720.008,682.285
 c-13.643,8.694-29.509,15.167-47.511,19.505c-6.417-5.753-13.255-11.084-19.004-17.504c-1.625-2.043-3.458-3.876-5.501-5.501
 c-4.496-4.668-9.113-12.79-9.002-20.004c0.059-3.846,2.49-9.455,4.001-14.504c3.006-10.049,6.144-18.898,9.002-28.506
@@ -504,9 +417,16 @@ c-4.959-3.876-8.289-9.382-14.004-12.503C726.826,681.454,721.691,681.454,720.008,
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "중구", latitude: 37.5637584, longitude: 126.9975517})}
+          data-name="중구"
+          value={JSON.stringify({
+            address: "중구",
+            latitude: 37.5637584,
+            longitude: 126.9975517,
+          })}
           d="M852.039,722.795
 c-3.846,7.49-7.141,15.533-13.504,20.504c-2.877,2.459-5.543,5.126-8.002,8.002c-0.404,0.096-0.498,0.502-1,0.5
 c-2.299,2.201-5.035,3.969-6.502,7.002c-4.045,11.457-9.639,21.369-14.502,32.008c-7.918-3.086-13.068-8.938-21.506-11.503
@@ -524,8 +444,15 @@ C852.039,717.46,852.039,720.127,852.039,722.795z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "노원구", latitude: 37.6540782, longitude: 127.0566045})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="노원구"
+          value={JSON.stringify({
+            address: "노원구",
+            latitude: 37.6540782,
+            longitude: 127.0566045,
+          })}
           tabIndex={0}
           d="M1083.592,305.699
 c-0.51,4.537-3.662,5.613-4.502,10.002c-0.775,4.05,0.262,18.509,1.5,23.005c0.885,3.208,6.793,14.643,9.002,16.004
@@ -551,8 +478,15 @@ c-1.809,4.022,0.287,9.412-0.5,16.003C1083.416,300.207,1082.436,304.021,1083.592,
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "중랑구", latitude: 37.6063046, longitude: 127.0931523})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="중랑구"
+          value={JSON.stringify({
+            address: "중랑구",
+            latitude: 37.6063046,
+            longitude: 127.0931523,
+          })}
           tabIndex={0}
           d="M1120.1,474.238
 c4.662,7.841,18.324,6.681,27.006,10.502c-2.287,12.067,11.305,15.833,13.004,24.506c1.773,9.058-4.662,14.91-5.502,24.005
@@ -570,9 +504,16 @@ C1110.217,479.025,1114.6,476.073,1120.1,474.238z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "광진구", latitude: 37.5383742, longitude: 127.0822077})}
+          data-name="광진구"
+          value={JSON.stringify({
+            address: "광진구",
+            latitude: 37.5383742,
+            longitude: 127.0822077,
+          })}
           d="M968.564,871.328
 c2.316-14.521,7.197-26.477,7.502-43.01c8.822-11.86,18.256-21.808,24.006-37.008c5.83-15.418,6.246-33.637,11.002-51.012
 c2.184-7.975,6.811-15.682,10.002-23.506c3.381-8.283,5.756-16.752,10.002-23.505c13.057-2.375,26.496,0.72,38.01-2.501
@@ -589,8 +530,15 @@ C995.094,881.143,980.262,877.802,968.564,871.328z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "서초구", latitude: 37.4835872, longitude: 127.0326987})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="서초구"
+          value={JSON.stringify({
+            address: "서초구",
+            latitude: 37.4835872,
+            longitude: 127.0326987,
+          })}
           tabIndex={0}
           d="M806.527,888.332
 c4.836,12.346,15.342,23.65,19.506,37.509c1.785,5.944,2.385,13.452,3.5,20.005c1.16,6.825,0.615,14.923,3,20.504
@@ -620,8 +568,15 @@ c19.89-0.508,35.938,1.268,50.012-4.502c6.559-2.688,13.355-10.818,19.004-16.004C7
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "서대문구", latitude: 37.5792607, longitude: 126.9364946})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="서대문구"
+          value={JSON.stringify({
+            address: "서대문구",
+            latitude: 37.5792607,
+            longitude: 126.9364946,
+          })}
           tabIndex={0}
           d="M651.993,687.787
 c5.392,5.944,12.344,10.328,17.504,16.503c-9.036,16.137-28.058,22.287-41.509,34.008c-13.573-1.495-30.166-3.397-45.511-5.001
@@ -641,8 +596,15 @@ c-0.115,6.354,4.344,11.713,5.501,18.004c1.625,2.043,3.458,3.876,5.501,5.501C648.
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "마포구", latitude: 37.5660739, longitude: 126.9014792})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="마포구"
+          value={JSON.stringify({
+            address: "마포구",
+            latitude: 37.5660739,
+            longitude: 126.9014792,
+          })}
           tabIndex={0}
           d="M402.936,583.763
 c6.628,6.041,6.576,18.764,20.004,18.004c5.968,13.406,17.593,19.237,29.007,28.007c7.357,5.653,15.368,10.769,22.005,16.504
@@ -664,8 +626,15 @@ c3.063-3.346,9.383-8.809,10.502-12.503c0.708-2.338-0.158-4.918,0.5-7.001C393.398
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "동대문구", latitude: 37.5742015, longitude: 127.0398327})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="동대문구"
+          value={JSON.stringify({
+            address: "동대문구",
+            latitude: 37.5742015,
+            longitude: 127.0398327,
+          })}
           tabIndex={0}
           d="M943.059,562.258
 c17.314-12.86,45.85-14.498,69.016-21.505c4.727,50.787,10.273,100.752,15.504,151.034c-6.555,14.951-12.34,30.67-19.004,45.511
@@ -681,8 +650,15 @@ c5.984-9.353,9.824-20.849,17.004-29.006C935.932,569.802,939.6,566.134,943.059,56
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "성동구", latitude: 37.5634092, longitude: 127.0369449})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="성동구"
+          value={JSON.stringify({
+            address: "성동구",
+            latitude: 37.5634092,
+            longitude: 127.0369449,
+          })}
           tabIndex={0}
           d="M874.543,701.29c2.168,0,4.334,0,6.502,0
 c5.318-3.184,4.223-12.782,14.504-11.002c0.693,1.141,3.48,0.187,5,0.5c9.426-0.09,18.045,0.627,27.006,1
@@ -699,8 +675,15 @@ C870.236,701.93,873.023,700.976,874.543,701.29z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "성북구", latitude: 37.589366, longitude: 127.016743})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="성북구"
+          value={JSON.stringify({
+            address: "성북구",
+            latitude: 37.589366,
+            longitude: 127.016743,
+          })}
           tabIndex={0}
           d="M729.51,392.219
 c4.775,3.428,6.586,11.528,11.504,15.003c6.434,4.547,15.797,4.11,23.004,8.002c4.41,2.381,8.689,6.688,13.004,10.002
@@ -722,8 +705,15 @@ c6.551-1.802,13.174,0.948,18.004-1C724.17,405.237,724.545,395.769,729.51,392.219
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "송파구", latitude: 37.5144533, longitude: 127.1059047})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="송파구"
+          value={JSON.stringify({
+            address: "송파구",
+            latitude: 37.5144533,
+            longitude: 127.1059047,
+          })}
           tabIndex={0}
           d="M1142.104,808.314
 c3.291,2.545,5.451,6.219,8.002,9.502c3.914,0.421,8.018,0.652,12.504,0.5c6.393,10.426,0.719,26.423-3.502,37.508
@@ -750,8 +740,15 @@ C1133.998,825.777,1137.637,816.13,1142.104,808.314z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "양천구", latitude: 37.5169508, longitude: 126.8665644})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="양천구"
+          value={JSON.stringify({
+            address: "양천구",
+            latitude: 37.5169508,
+            longitude: 126.8665644,
+          })}
           tabIndex={0}
           d="M199.39,804.313
 c2.805-5.029,4.873-10.797,8.502-15.003c6.626,0.688,11.923-2.626,17.004-1.501c2.33,0.518,7.231,5.06,8.502,7.002
@@ -772,8 +769,15 @@ c1.75-11.883,0-27.833,0-43.01c0-15.213,2.144-31.803,0-43.51C207.808,816.662,200.
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "영등포구", latitude: 37.526344, longitude: 126.896256})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="영등포구"
+          value={JSON.stringify({
+            address: "영등포구",
+            latitude: 37.526344,
+            longitude: 126.896256,
+          })}
           tabIndex={0}
           d="M385.432,872.828
 c3.914-3.196,8.258-7.184,13.503-11.502c3.549-2.922,11.847-7.633,13.003-12.003c1.547-5.849-1.958-11.689-1-19.505
@@ -794,8 +798,15 @@ c10.17,2.929,21.25,0.715,34.008,1.001C589.714,900.138,598.159,902.816,597.48,900
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "용산구", latitude: 37.5323264, longitude: 126.9907031})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="용산구"
+          value={JSON.stringify({
+            address: "용산구",
+            latitude: 37.5323264,
+            longitude: 126.9907031,
+          })}
           tabIndex={0}
           d="M737.012,767.305
 c8.662,5.808,11.73,17.15,28.506,14.504c1.02,1.146,4.154,0.18,6.002,0.5c3.002,0,6.002,0,9.002,0c1.02,1.146,4.154,0.181,6.002,0.5
@@ -812,9 +823,16 @@ C730.596,766.053,735.563,764.919,737.012,767.305z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
           tabIndex={0}
-          value={JSON.stringify({address: "구로구", latitude: 37.4954703, longitude: 126.8876391})}
+          data-name="구로구"
+          value={JSON.stringify({
+            address: "구로구",
+            latitude: 37.4954703,
+            longitude: 126.8876391,
+          })}
           d="M428.942,1040.367c0.317,1.684-0.644,4.645,0.5,5.501
 c0,1,0,2.001,0,3.001c-7.014,3.32-11.124,9.547-20.504,10.502c-1.849,0.319-4.982-0.647-6.001,0.5c-2.667,0-5.334,0-8.002,0
 c-1.848,0.319-4.982-0.647-6.001,0.5c-2.834,0-5.668,0-8.502,0c-3.834,0-7.668,0-11.502,0c-3.07-0.264-7.24,0.572-9.502-0.5
@@ -841,8 +859,15 @@ C428.942,1035.032,428.942,1037.699,428.942,1040.367z"
           fillRule="evenodd"
           clipRule="evenodd"
           fill="#C8C8C8"
-          onClick={clickHandler}
-          value={JSON.stringify({address: "금천구", latitude: 37.4567667, longitude: 126.8954005})}
+          onClick={pathClickHandler}
+          onMouseEnter={pathMouseInHanlder}
+          onMouseLeave={pathMouseOutHanlder}
+          data-name="금천구"
+          value={JSON.stringify({
+            address: "금천구",
+            latitude: 37.4567667,
+            longitude: 126.8954005,
+          })}
           tabIndex={0}
           d="M409.438,1062.872
 c10.055-0.948,14.109-7.896,22.005-11.003c8.709,3.959,17.785,18.691,29.007,11.503c1.936,4.731,4.911,8.425,7.001,13.003
@@ -855,79 +880,83 @@ c-2.895-34.114-17.084-56.934-26.506-84.52c2.5,0,5.001,0,7.501,0c3.009,0.833,9.49
 c1.849-0.319,4.982,0.647,6.002-0.5c2.667,0,5.334,0,8.001,0C405.284,1063.053,408.418,1064.02,409.438,1062.872z"
         />
 
-        <text x="840" y="300" className="label dobong">
+        <text x="840" y="300" data-name="도봉구" className="label dobong">
           도봉구
         </text>
-        <text x="770" y="400" className="label gangbuk">
+        <text x="770" y="400" data-name="강북구" className="label gangbuk">
           강북구
         </text>
-        <text x="975" y="400" className="label nowon">
+        <text x="975" y="400" data-name="노원구" className="label nowon">
           노원구
         </text>
-        <text x="1025" y="580" className="label jungnang">
+        <text x="1025" y="580" data-name="중랑구" className="label jungnang">
           중랑구
         </text>
-        <text x="790" y="570" className="label seongbuk">
+        <text x="790" y="570" data-name="성북구" className="label seongbuk">
           성북구
         </text>
-        <text x="880" y="650" className="label dongdaemun">
+        <text x="880" y="650" data-name="동대문구" className="label dongdaemun">
           동대문구
         </text>
-        <text x="660" y="650" className="label jongno">
+        <text x="660" y="650" data-name="종로구" className="label jongno">
           종로구
         </text>
-        <text x="850" y="790" className="label seongdong">
+        <text x="850" y="790" data-name="성동구" className="label seongdong">
           성동구
         </text>
-        <text x="1010" y="810" className="label gwangjin">
+        <text x="1010" y="810" data-name="광진구" className="label gwangjin">
           광진구
         </text>
-        <text x="720" y="750" className="label junggu">
+        <text x="720" y="750" data-name="중구" className="label junggu">
           중구
         </text>
-        <text x="660" y="860" className="label yongsan">
+        <text x="660" y="860" data-name="용산구" className="label yongsan">
           용산구
         </text>
-        <text x="500" y="790" className="label mapo">
+        <text x="500" y="790" data-name="마포구" className="label mapo">
           마포구
         </text>
-        <text x="500" y="660" className="label seodaemun">
+        <text x="500" y="660" data-name="서대문구" className="label seodaemun">
           서대문구
         </text>
-        <text x="500" y="520" className="label eunpyeong">
+        <text x="500" y="520" data-name="은평구" className="label eunpyeong">
           은평구
         </text>
-        <text x="150" y="720" className="label gangseo">
+        <text x="150" y="720" data-name="강서구" className="label gangseo">
           강서구
         </text>
-        <text x="250" y="900" className="label yangcheon">
+        <text x="250" y="900" data-name="양천구" className="label yangcheon">
           양천구
         </text>
-        <text x="250" y="1010" className="label guro">
+        <text x="250" y="1010" data-name="구로구" className="label guro">
           구로구
         </text>
-        <text x="400" y="930" className="label yeongdeungpo">
+        <text
+          x="400"
+          y="930"
+          data-name="영등포구"
+          className="label yeongdeungpo">
           영등포구
         </text>
-        <text x="550" y="990" className="label dongjak">
+        <text x="550" y="990" data-name="동작구" className="label dongjak">
           동작구
         </text>
-        <text x="530" y="1150" className="label gwanak">
+        <text x="530" y="1150" data-name="관악구" className="label gwanak">
           관악구
         </text>
-        <text x="380" y="1150" className="label geumcheon">
+        <text x="380" y="1150" data-name="금천구" className="label geumcheon">
           금천구
         </text>
-        <text x="750" y="1100" className="label seocho">
+        <text x="750" y="1100" data-name="서초구" className="label seocho">
           서초구
         </text>
-        <text x="880" y="1020" className="label gangnam">
+        <text x="880" y="1020" data-name="강남구" className="label gangnam">
           강남구
         </text>
-        <text x="1050" y="980" className="label songpa">
+        <text x="1050" y="980" data-name="송파구" className="label songpa">
           송파구
         </text>
-        <text x="1200" y="800" className="label gangdong">
+        <text x="1200" y="800" data-name="강동구" className="label gangdong">
           강동구
         </text>
       </svg>

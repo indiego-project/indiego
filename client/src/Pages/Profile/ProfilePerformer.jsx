@@ -4,6 +4,7 @@ import performerBadge from "../../assets/performerBadge.jpg";
 import useOpenModalStore from "../../store/useOpenModalStore.js";
 import useProfileDataStore from "../../store/useProfileDataStore";
 import WithdrawModal from "../../Components/Profile/WithdrawModal";
+// import CertLists from "../../Components/Profile/CertLists";
 
 //로컬 모듈
 import breakpoint from "../../styles/breakpoint";
@@ -23,7 +24,7 @@ import { React, useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 import AllShowListPerformer from "../../Components/Profile/AllShowListPerformer.jsx";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 const Container = styled.div`
   align-items: center;
@@ -98,26 +99,41 @@ const ContentInnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: max-content;
-  padding: 5%;
+  height: 500px;
+  padding: 0 5%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
     align-items: center;
     padding: 20px 5%;
+    height: max-content;
   }
 `;
 
 const ProfileInfoContainer = styled.div`
-  align-items: flex-start;
+  align-items: center;
   border-bottom: 1px solid ${sub.sub100};
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding-bottom: 20px;
+  height: 40%;
+  min-height: 150px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     flex-direction: column;
+    padding-bottom: 10px;
+  }
+
+  .performer-profile-container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  .performer-info-container {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
   }
 
   > div {
@@ -127,8 +143,8 @@ const ProfileInfoContainer = styled.div`
     > img {
       border: 2px solid ${sub.sub200};
       border-radius: 100%;
-      height: 140px;
-      width: 140px;
+      height: 120px;
+      width: 120px;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         height: 80px;
@@ -139,7 +155,6 @@ const ProfileInfoContainer = styled.div`
     > div {
       display: flex;
       flex-direction: column;
-      margin: 0 0 4% 7%;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         margin-left: 4%;
@@ -199,7 +214,10 @@ const ProfileInfoContainer = styled.div`
 
   > .button-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 70%;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
       margin-top: 15px;
@@ -218,6 +236,7 @@ const ProfileInfoContainer = styled.div`
       padding: 5px 20px;
       width: max-content;
       text-align: center;
+      margin-top: 10px;
 
       &:hover {
         background-color: ${primary.primary200};
@@ -282,6 +301,7 @@ const LocationandAboutContainer = styled.div`
       font-size: ${dtFontSize.small};
       font-weight: 400;
       text-align: center;
+      word-break: break-all;
 
       @media screen and (max-width: ${breakpoint.mobile}) {
         font-size: ${mbFontSize.small};
@@ -293,8 +313,11 @@ const LocationandAboutContainer = styled.div`
 export default function Profile() {
   const { openModal, setOpenModal } = useOpenModalStore((state) => state);
   const { profileData, setProfileData } = useProfileDataStore((state) => state);
+  const [certStatus, setCertStatus] = useState(0); // 0: 인증X 요청 X, 1: 인증됨, 2: 요청됨
+  const [certId, setCertId] = useState(null);
   const navigate = useNavigate();
   const params = useParams();
+  const { id: memberId } = params;
   const isLogin = !!localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -311,7 +334,19 @@ export default function Profile() {
   };
 
   const fetchDataOnSuccess = (response) => {
-    setProfileData(response.data.data && response.data.data);
+    const { data } = response.data;
+    const { role } = data;
+    const { certiId: certId } = data;
+
+    if (role === "PERFORMER") {
+      setCertStatus(1);
+    }
+
+    if (certId && role.includes("NON")) {
+      setCertId(certId);
+      setCertStatus(2);
+    }
+    setProfileData(data);
   };
 
   const fetchDataOnError = (error) => {
@@ -333,6 +368,47 @@ export default function Profile() {
     navigate(`/mypage/${params.id}/edit`);
   };
 
+  /** 퍼포머 인증신청 관련 */
+
+  const fetchCertStatus = () => {
+    return instance.get(`/certifications/${memberId}`);
+  };
+
+  const { isLoading: certStatusLoading } = useQuery({
+    enabled: !!certId,
+    queryKey: ["fetchCertReq", memberId],
+    queryFn: fetchCertStatus,
+    onSuccess: (res) => {
+      const status = res.data.data.status.split("_")[1];
+      if (status === "DENIED") {
+        setCertStatus(0);
+      } else if (status === "ASKED") {
+        setCertStatus(2);
+      }
+    },
+  });
+
+  const approveRequest = () => {
+    const data = { memberId };
+    return instance({
+      method: "post",
+      data: data,
+      url: "/certifications",
+    });
+  };
+
+  const { mutate: approveRequestButtonHandler } = useMutation({
+    mutationFn: approveRequest,
+    mutationKey: "performerRequest",
+    onSuccess: (res) => {
+      window.alert("요청되었습니다.");
+      setCertStatus(2);
+    },
+    onError: (err) => {
+      window.alert("요청에 실패했습니다.");
+    },
+  });
+
   return (
     <Container>
       <WithdrawModal />
@@ -344,18 +420,20 @@ export default function Profile() {
       <ContentContainer>
         <ContentInnerContainer>
           <ProfileInfoContainer>
-            <div>
+            <div className="performer-profile-container">
               <img
                 alt="dummy profile"
                 src={profileData && profileData.profile[0].image}
               />
-              <div>
+              <div className="performer-info-container">
                 <span className="performer-nickname">
                   {profileData && profileData.profile[0].nickname}
                 </span>
                 <div>
                   <span className="user-type">퍼포머 회원</span>
-                  <img alt="performer badge" src={performerBadge} />
+                  {certStatus === 1 && (
+                    <img alt="performer badge" src={performerBadge} />
+                  )}
                 </div>
                 <span className="performer-email">
                   {profileData && profileData.email}
@@ -369,6 +447,18 @@ export default function Profile() {
               >
                 프로필 수정하기
               </button>
+              {certStatus === 1 ? (
+                ""
+              ) : certStatus === 2 ? (
+                <p>요청이 처리중입니다.</p>
+              ) : (
+                <button
+                  className="profile-edit-button"
+                  onClick={approveRequestButtonHandler}
+                >
+                  퍼포머 인증 신청하기
+                </button>
+              )}
             </div>
           </ProfileInfoContainer>
           <LocationandAboutContainer>
@@ -391,6 +481,7 @@ export default function Profile() {
           </LocationandAboutContainer>
         </ContentInnerContainer>
         <AllShowListPerformer />
+        {/* <CertLists /> */}
         <button className="withdraw-button" onClick={setOpenModal}>
           회원 탈퇴하기
         </button>

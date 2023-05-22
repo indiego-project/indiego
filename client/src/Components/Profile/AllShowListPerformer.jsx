@@ -88,32 +88,52 @@ export default function AllShowList() {
   const [isExpiredDataExist, setIsExpiredDataExist] = useState(true);
   const [isNotExpiredDataExist, setIsNotExpiredDataExist] = useState(true);
 
-  const fetchData = () => {
-    return instance({
-      method: "get",
-      url: "/shows/seller",
-    });
-  };
-
   const fetchDataOnSuccess = (response) => {
-    setData(response.data.data && response.data.data);
+    const { getShowOfSeller: data } = response.data.data;
+    setData(data);
   };
 
-  const fetchDataOnError = (err) => {
+  const fetchDataOnError = () => {
     window.alert("일시적인 오류입니다. 잠시 후에 다시 시도해주세요.");
+  };
+  // graphQl
+  const gqlFetchData = () => {
+    const query = `
+        query GetShowOfSeller($page: Int, $size: Int) {
+          getShowOfSeller(page: $page, size: $size) {
+              id
+              title
+              nickname
+              showAt
+              expiredAt
+              address
+              detailAddress
+              image
+              emptySeats
+              revenue
+              isExpired
+          }
+        }
+      `;
+
+    const data = { query };
+
+    return instance.post(`${process.env.REACT_APP_SERVER_URI}/graphql`, data);
   };
 
   const { isLoading } = useQuery({
-    queryKey: ["fetchData"],
-    queryFn: fetchData,
+    queryFn: gqlFetchData,
+    queryKey: ["FetchSellShowsGQL"],
     keepPreviousData: true,
     onSuccess: fetchDataOnSuccess,
     onError: fetchDataOnError,
     retry: false,
   });
+  // graphQl
 
-  const notExpiredData = data && data.filter((data) => data.expired === false);
-  const expiredData = data && data.filter((data) => data.expired === true);
+  const notExpiredData =
+    data && data.filter((data) => data.isExpired === false);
+  const expiredData = data && data.filter((data) => data.isExpired === true);
 
   useEffect(() => {
     if (notExpiredData && notExpiredData.length <= 0) {

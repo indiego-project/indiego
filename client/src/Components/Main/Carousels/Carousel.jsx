@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import CarouselItemList from "./CarouselItemList";
 
 import Spinner from "../../Spinner";
 
@@ -13,13 +12,14 @@ import { useInterval } from "../../../utils/useInterval";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { add } from "date-fns";
+import { useUserInfoStore } from "../../../store/useUserInfoStore";
 
 const CarouselContainer = styled.div`
-  width: ${(props) => props.width};
-  max-width: ${(props) => props.maxWidth};
-  min-width: ${(props) => props.minWidth};
-  height: ${(props) => props.height};
+  width: 70%;
+  max-width: 480px;
+  min-width: 350px;
+  height: 100%;
+  min-height: 200px;
   background-color: ${sub.sub200};
   border-radius: 20px;
   display: flex;
@@ -104,31 +104,16 @@ const Rank = styled.h2`
   }
 `;
 
-export default function Carousel({
-  width,
-  height,
-  carouselItemList,
-  isRankMode,
-  minWidth,
-  maxWidth,
-  status,
-  address,
-}) {
+export default function Carousel({ isRankMode, status }) {
   const [currentIdx, setCurrentIdx] = useState(1);
   const [data, setData] = useState([]);
   const [transition, setTransition] = useState(true);
-
-  const CarouselItemList = carouselItemList;
   const serverURI = process.env.REACT_APP_SERVER_URI;
-
-  const fetchShowData = () => {
-    return axios.get(`${serverURI}/shows/sorts`, {
-      params: { status, address },
-    });
-  };
+  const { userInfo } = useUserInfoStore((state) => state);
+  const address = userInfo.address;
 
   const fetchShowDataOnSuccess = (response) => {
-    const data = response.data.data;
+    const data = response.data.data.getSortShows.data;
     if (data.length > 1) {
       data.push(data[0]);
       data.unshift(data[data.length - 1]);
@@ -137,16 +122,45 @@ export default function Carousel({
     setData(data);
   };
 
+  // GraphQl
+  const gqlFetchShowData = () => {
+    const query = `
+    query GetSortShows($address: String, $status: String) {
+      getSortShows(address: $address, status: $status) {
+        data {
+          id
+          nickname
+          image
+          showAt
+          expiredAt
+          address
+          category
+        }
+      }
+    }`;
+    const variables = { address, status };
+    const data = { query, variables };
+
+    return axios.post(`${serverURI}/graphql`, data);
+  };
+
   const { isLoading } = useQuery({
-    queryKey: ["fetchShowData", status],
-    queryFn: fetchShowData,
+    queryKey: ["fetchShowDataGQL", status, address],
+    queryFn: gqlFetchShowData,
     onSuccess: fetchShowDataOnSuccess,
-    keepPreviousData: true,
   });
 
   useInterval(() => {
-    setCurrentIdx(currentIdx + 1);
-    setTransition(true);
+    if (data.length !== 1) {
+      if (data.length > 0) {
+        setCurrentIdx(currentIdx + 1);
+        setTransition(true);
+
+        if (currentIdx > data.length + 1) {
+          setCurrentIdx(1);
+        }
+      }
+    }
   }, 3500);
 
   const pageButtonClickHandler = (num) => {
@@ -157,46 +171,43 @@ export default function Carousel({
   };
 
   useEffect(() => {
-    if (currentIdx === 0) {
-      setTimeout(() => {
-        setCurrentIdx(data.length - 2);
-        setTransition(false);
-      }, 500);
-    } else if (currentIdx === data.length - 1) {
-      setTimeout(() => {
-        setCurrentIdx(1);
-        setTransition(false);
-      }, 500);
+    if (data.length > 1) {
+      if (currentIdx === 0) {
+        setTimeout(() => {
+          setCurrentIdx(data.length - 2);
+          setTransition(false);
+        }, 500);
+      } else if (currentIdx === data.length - 1) {
+        setTimeout(() => {
+          setCurrentIdx(1);
+          setTransition(false);
+        }, 500);
+      }
     }
   }, [currentIdx]);
 
   return (
-    <CarouselContainer
-      width={width}
-      height={height}
-      minWidth={minWidth}
-      maxWidth={maxWidth}
-    >
-      <PrevButton
-        onClick={() => {
-          pageButtonClickHandler(-1);
-        }}
-      >
-        <img src={Arrow} alt="prev" />
-      </PrevButton>
+    <CarouselContainer>
+      {data.length > 0 && (
+        <PrevButton
+          onClick={() => {
+            pageButtonClickHandler(-1);
+          }}>
+          <img src={Arrow} alt="prev" />
+        </PrevButton>
+      )}
       {isLoading ? (
         <Spinner />
       ) : (
-        CarouselItemList &&
         data && (
           <CarouselItemList
             data={data}
-            currentIdx={currentIdx}
+            currentIdx={data.length === 1 ? 0 : currentIdx}
             transition={transition}
           />
         )
       )}
-      {isRankMode && (
+      {isRankMode && data.length > 0 && (
         <Rank>
           {currentIdx === 0
             ? data.length - 2
@@ -205,13 +216,14 @@ export default function Carousel({
             : currentIdx}
         </Rank>
       )}
-      <NextButton
-        onClick={() => {
-          pageButtonClickHandler(1);
-        }}
-      >
-        <img src={Arrow} alt="next" />
-      </NextButton>
+      {data.length > 0 && (
+        <NextButton
+          onClick={() => {
+            pageButtonClickHandler(1);
+          }}>
+          <img src={Arrow} alt="next" />
+        </NextButton>
+      )}
     </CarouselContainer>
   );
 }

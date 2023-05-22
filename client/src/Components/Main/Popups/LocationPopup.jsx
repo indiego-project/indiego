@@ -35,6 +35,12 @@ const PopupContainer = styled.div`
       font-size: ${mbFontSize.large};
     }
   }
+
+  @media screen and (max-width: ${breakpoint.mobile}) {
+    position: absolute;
+    top: 40px;
+    height: 550px;
+  }
 `;
 
 const MapContainer = styled.div`
@@ -299,7 +305,7 @@ const MapContainer = styled.div`
 `;
 
 const CloseButton = styled.button`
-  width: 30%;
+  width: 20%;
   max-width: 180px;
   padding: 10px;
   border-radius: 20px;
@@ -317,7 +323,6 @@ const CloseButton = styled.button`
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     padding: 5px;
-    width: 10%;
     margin: 15px 10px;
   }
 `;
@@ -363,6 +368,8 @@ export default function LocationPopup({ popupHandler }) {
   const [location, setLocation] = useState("없음");
 
   const closePopupHandler = () => {
+    const body = document.querySelector("body");
+    body.classList.remove("modal_open");
     popupHandler(false);
   };
 

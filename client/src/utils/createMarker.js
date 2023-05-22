@@ -7,7 +7,7 @@
  @returns {object} 생성된 마커
 */
 
-const createMarker = (locObj, map, markerImage, kakao) => {
+const createMarker = (locObj, map, markerImage, kakao, popupWindowArray) => {
   const marker = new kakao.maps.Marker({
     position: new kakao.maps.LatLng(locObj.latitude, locObj.longitude),
     clickable: true,
@@ -89,7 +89,7 @@ const createMarker = (locObj, map, markerImage, kakao) => {
   const markerHoverPopup = `
     <div class="hover_container">
     <p class="hover_title">${locObj.title}</p>
-    <p class="hover_date">${locObj.address}</p>
+    <span class="hover_location">${locObj.address}</span>
     </div>`;
   const hoverWindow = new kakao.maps.CustomOverlay({
     content: markerHoverPopup,
@@ -101,6 +101,9 @@ const createMarker = (locObj, map, markerImage, kakao) => {
     "click",
     (() => {
       return function () {
+        popupWindowArray.current.forEach((popUp) => {
+          popUp.setMap(null);
+        });
         popupWindow.setMap(map);
         const moveLocation = new kakao.maps.LatLng(
           locObj.latitude,
@@ -121,7 +124,7 @@ const createMarker = (locObj, map, markerImage, kakao) => {
     hoverWindow.setMap(null);
   });
 
-  return [marker, hoverWindow];
+  return [marker, hoverWindow, popupWindow];
 };
 
 export default createMarker;
