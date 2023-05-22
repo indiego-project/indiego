@@ -3,6 +3,7 @@ package codestates.frogroup.indiego.global.security.config;
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.redis.RedisDao;
+import codestates.frogroup.indiego.global.security.auth.enums.Roles;
 import codestates.frogroup.indiego.global.security.auth.filter.JwtAuthenticationFilter;
 import codestates.frogroup.indiego.global.security.auth.filter.JwtVerificationFilter;
 import codestates.frogroup.indiego.global.security.auth.handler.*;
@@ -55,23 +56,36 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.antMatchers(HttpMethod.POST, "/members/login").permitAll()
 						.antMatchers(HttpMethod.POST, "/members/signup").permitAll()
-						.antMatchers(HttpMethod.POST, "/members/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/members/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/shows").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/shows/**").hasAnyRole("USER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.GET, "/shows/seller").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/shows/*").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/shows/**").hasAnyRole("USER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/shows/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/shows/**").hasAnyRole("USER", "PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.POST, "/articles/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PATCH, "/articles/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.PUT, "/articles/**").hasAnyRole("USER","PERFORMER","ADMIN")
-						.antMatchers(HttpMethod.DELETE, "/articles/**").hasAnyRole("USER","PERFORMER","ADMIN")
+						.antMatchers(HttpMethod.PATCH, "members/performer/*").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/shows").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.GET, "/shows/seller").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/shows/*").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/shows").hasAnyRole(Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/shows/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PATCH, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.PUT, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/articles/**").hasAnyRole(Roles.USER.getRole(),Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(), Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/admins/**").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.GET, "/admins/**").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/admins/**").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.POST, "/certifications").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole())
+						.antMatchers(HttpMethod.GET, "/certifications").hasAnyRole(Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.GET, "/certifications/**").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole(),Roles.PERFORMER.getRole(),Roles.ADMIN.getRole())
+						.antMatchers(HttpMethod.DELETE, "/certifications").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole())
+						.antMatchers(HttpMethod.PUT, "/certifications").hasAnyRole(Roles.NON_CERTIFIED_PERFORMER.getRole())
 						.anyRequest().permitAll()
+				)
+				.addFilterBefore(
+						new ExceptionHandlerFilter(),
+						JwtAuthenticationFilter.class
 				)
 				.oauth2Login(oauth2 -> oauth2
 						.successHandler(new OAuth2MemberSuccessHandler(tokenProvider,memberService,redisDao,aes128Config))
@@ -87,10 +101,15 @@ public class SecurityConfiguration {
 		configuration.setAllowedOrigins(List.of("http://localhost:3000",
 				"http://indiego.site.s3-website.ap-northeast-2.amazonaws.com",
 				"http://indiego.site",
+				"http://devindiego.site",
+				"http://devindiego.site.s3-website.ap-northeast-2.amazonaws.com",
 				"http://localhost", // 로컬환경 OAuth2 테스트용
 				"http://localhost:8080",
+				"https://devindiego.site",
+				"https://www.devindiego.site",
+				"https://indiego.site",
+				"https://www.indiego.site",
 //				"http://13.125.98.211:80",
-				"http://indiego.kro.kr:80",
 				"http://indiego-develop.s3-website.ap-northeast-2.amazonaws.com"));
 		configuration.setAllowCredentials(true);
 		configuration.addExposedHeader("Authorization");

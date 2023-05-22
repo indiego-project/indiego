@@ -17,16 +17,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -98,15 +95,15 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", secretRefreshToken);
 
-        // String serverName = request.getServerName();
+         String serverName = request.getServerName();
         // log.info("# serverName = {}",serverName);
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
-                .host("indiego.site")
+                .scheme("https") // prod = http
+                .host(serverName) // prod = indiego.site
                 //.host("localhost")
-                .port(80) // 기본 포트가 80이기 때문에 괜찮다
+                .port(443) // prod = 80
                 .path("/token")
                 .queryParams(queryParams)
                 .build()

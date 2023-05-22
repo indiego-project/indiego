@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-	// jpa, redis, mail, thymeleaf, validation, web, AWS
+	// jpa, redis, mail, thymeleaf, validation, web, AWS, graphql
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -36,17 +36,20 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+	// file upload
 	implementation 'commons-io:commons-io:2.11.0'
+
+	// gson
 	implementation 'com.google.code.gson:gson'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-	//querydsl
+	// querydsl
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-	//iamport
-	implementation 'com.github.iamport:iamport-rest-client-java:0.2.22'
 
 	// security, jwt, oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -71,6 +74,9 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework:spring-webflux' // graphql
+	testImplementation 'org.springframework.graphql:spring-graphql-test' // graphql
+	testImplementation('junit:junit:4.13')
 }
 
 task copyPrivate(type: Copy) {

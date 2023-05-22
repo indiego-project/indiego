@@ -3,12 +3,15 @@ package codestates.frogroup.indiego.domain.show.controller;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
+import codestates.frogroup.indiego.domain.show.dto.ShowListDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowListResponseDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowMapsResponse;
 import codestates.frogroup.indiego.domain.show.entity.Show;
+import codestates.frogroup.indiego.domain.show.entity.ShowTag;
 import codestates.frogroup.indiego.domain.show.mapper.ShowMapper;
 import codestates.frogroup.indiego.domain.show.service.ShowReservationService;
 import codestates.frogroup.indiego.domain.show.service.ShowService;
+import codestates.frogroup.indiego.domain.show.service.ShowTagService;
 import codestates.frogroup.indiego.global.dto.MultiResponseDto;
 import codestates.frogroup.indiego.global.dto.PagelessMultiResponseDto;
 import codestates.frogroup.indiego.global.dto.SingleResponseDto;
@@ -18,8 +21,12 @@ import codestates.frogroup.indiego.global.security.auth.loginresolver.LoginMembe
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +37,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -42,6 +50,7 @@ public class ShowController {
     private final ShowMapper mapper;
     private final AwsS3Service awsS3Service;
     private final ShowReservationService showReservationService;
+    private final ShowTagService showTagService;
 
 
     @PostMapping
@@ -49,13 +58,11 @@ public class ShowController {
                                    @LoginMemberId Long memberId){
 
         Show show = mapper.showPostDtoToShow(showPostDto);
-        Show createdShow = showService.createShow(show, memberId);
-        ShowDto.postResponse response = mapper.showToShowPostResponse(createdShow);
+        List<ShowTag> showTags = showTagService.createShowTagByShowAndTagsList(show, showPostDto.getTags());
+        Show createdShow = showService.createShow(show, showTags, memberId);
+        ShowDto.PostResponse response = mapper.showToShowPostResponse(createdShow);
 
-        return new ResponseEntity<>(
-                new SingleResponseDto(response)
-                , HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(new SingleResponseDto(response), HttpStatus.CREATED);
     }
 
     @PostMapping("/uploads")
@@ -90,32 +97,36 @@ public class ShowController {
     }
 
 
-    @GetMapping
-    public ResponseEntity getShow(@RequestParam(required = false) String search,
-                                  @RequestParam(required = false) String category,
-                                  @RequestParam(required = false) String address,
-                                  @RequestParam(required = false) String filter,
-                                  @RequestParam(required = false) String start,
-                                  @RequestParam(required = false) String end,
-                                  @PageableDefault(page = 1, size = 12) Pageable pageable){
 
-        Page<ShowListResponseDto> responses = showService.findShows(search, category, address, filter, start, end, pageable);
+    @SchemaMapping(typeName = "Query", value = "getShow")
+    public MultiResponseDto<ShowListDto> getShow(@Argument(name = "search") String search,
+                                                 @Argument(name = "category") String category,
+                                                 @Argument(name = "address") String address,
+                                                 @Argument(name = "filter") String filter,
+                                                 @Argument(name = "start") String start,
+                                                 @Argument(name = "end") String end,
+                                                 @Argument(name = "page") Integer page,
+                                                 @Argument(name = "size") Integer size ){
 
-        return new ResponseEntity<>(new MultiResponseDto<>(responses.getContent(), responses), HttpStatus.OK);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ShowListDto> responses = showService.findShows(search, category, address, filter, start, end, pageable);
+
+        return new MultiResponseDto<>(responses.getContent(), responses);
     }
 
-    @GetMapping("/{show-id}")
-    public ResponseEntity getShow(@PathVariable("show-id") long showId){
-        ShowDto.Response response = showService.findShow(showId);
-        return new ResponseEntity(
-                new SingleResponseDto<>(response),
-                HttpStatus.OK);
+    @SchemaMapping(typeName = "Query", value = "getShowById")
+    public ShowDto.Response getShow(@Argument Long showId){
+
+        return showService.findShow(showId);
 
     }
 
-    @GetMapping("/seller")
-    public ResponseEntity getShowsOfSeller(@PageableDefault(page = 1, size = 3) Pageable pageable,
-                                           @AuthenticationPrincipal Member member){
+    @SchemaMapping(typeName = "Query", value = "getShowOfSeller")
+    public List<ShowDto.showListToShowListResponseOfSeller> getShowsOfSeller(@Argument Integer page,
+                                                                             @Argument Integer size,
+                                                                             @AuthenticationPrincipal Member member){
+
+        Pageable pageable = PageRequest.of(page, size);
         Page<Show> showPage = showService.findShowOfSeller(member.getId(), pageable);
         List<Show> shows = showPage.getContent();
 
@@ -143,24 +154,25 @@ public class ShowController {
             }else{
                 responseOfSeller.setExpired(false);
             }
+            responseOfSeller.setTags(shows.get(i).getShowTags()
+                    .stream()
+                    .map(ShowTag::toResponseDto).
+                    collect(Collectors.toList()));
 
             response.add(responseOfSeller);
         }
 
-        return new ResponseEntity(
-                new SingleResponseDto<>(response), HttpStatus.OK);
+        return response;
     }
 
 
 
 
-    @GetMapping("/sorts")
-    public ResponseEntity getSortShows(@RequestParam(required = false) String address,
-                                       @RequestParam String status) {
-
-        List<ShowListResponseDto> responses = showService.findSortShows(address, status);
-
-        return new ResponseEntity<>(new PagelessMultiResponseDto<>(responses), HttpStatus.OK);
+    @SchemaMapping(typeName = "Query", value = "getSortShows")
+    public PagelessMultiResponseDto<ShowListDto> getSortShows(@Argument String address,
+                                          @Argument String status) {
+        List<ShowListDto> response = showService.findSortShows(address, status);
+        return new PagelessMultiResponseDto<>(response);
     }
 
     @GetMapping("/location")

@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -146,7 +145,7 @@ public class ArticleCommentService {
         return HttpStatus.CREATED;
     }
 
-    private ArticleComment findVerifiedArticleComment(Long articleCommentId) {
+    public ArticleComment findVerifiedArticleComment(Long articleCommentId) {
         return articleCommentRepository.findById(articleCommentId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.ARTICLE_COMMENT_NOT_FOUND));
     }

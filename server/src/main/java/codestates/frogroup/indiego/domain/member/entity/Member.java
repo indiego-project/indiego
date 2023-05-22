@@ -1,7 +1,9 @@
 package codestates.frogroup.indiego.domain.member.entity;
 
+import codestates.frogroup.indiego.domain.admin.Certification;
 import codestates.frogroup.indiego.domain.common.auditing.BaseTime;
 import codestates.frogroup.indiego.domain.common.embedding.Coordinate;
+import codestates.frogroup.indiego.domain.payment.entity.Payment;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,6 +39,17 @@ public class Member extends BaseTime {
     @Setter
     @Enumerated(value = EnumType.STRING)
     private OAuthStatus oAuthStatus;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "certification_id")
+    private Certification certification;
+
+    public void setCertification(Certification certification){
+        this.certification = certification;
+    }
 
     public enum OAuthStatus {
         NORMAL("일반"),
