@@ -11,7 +11,9 @@ import codestates.frogroup.indiego.global.security.auth.oauth.OAuthCustomUser;
 import codestates.frogroup.indiego.global.security.auth.oauth.OAuthUserProfile;
 import codestates.frogroup.indiego.global.security.auth.userdetails.AuthMember;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -95,15 +97,14 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", secretRefreshToken);
 
-        // String serverName = request.getServerName();
-        // log.info("# serverName = {}",serverName);
+        String serverName = request.getServerName();
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("https") // prod = http
-                .host("devindiego.site") // prod = indiego.site
+                .scheme("https")
+                .host(serverName) // prod = indiego.site , server = devindiego.site
                 //.host("localhost")
-                .port(443) // prod = 80
+                .port(443) // https = 443, http = 80
                 .path("/token")
                 .queryParams(queryParams)
                 .build()
