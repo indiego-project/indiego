@@ -1,0 +1,51 @@
+name: client-deploy
+
+on:
+  push:
+    branches: [ "release" ]
+    paths:
+      - client/**
+      - .github/**
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+
+jobs:
+  deploy-front:
+    name: Client Deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/checkout@v3
+      - run: touch ./.env
+      - run: echo "${{ secrets.PROD_ENV_SETTING }}" > ./.env
+      - uses: actions/upload-artifact@v2
+        with:
+          name: .env
+          path: ./.env
+
+      - name: Setup Node
+        uses: actions/setup-node@main
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: ./client/package-lock.json
+
+      - name: Npm Install
+        run: npm ci
+
+      - name: Project Build
+        run: npm run build
+        env:
+          CI: ""
+
+      - name: Upload To S3
+        run: aws s3 sync --region ${{ secrets.AWS_REGION }} ./dist s3://${{ secrets.PROD_CLIENT_S3_BUCKET_NAME }} --delete
