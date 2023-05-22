@@ -40,9 +40,6 @@ public class Member extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private OAuthStatus oAuthStatus;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Payment> payments = new ArrayList<>();
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "certification_id")
     private Certification certification;
