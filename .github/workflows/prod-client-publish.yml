@@ -48,4 +48,4 @@ jobs:
           CI: ""
 
       - name: Upload To S3
-        run: aws s3 sync --region ${{ secrets.AWS_REGION }} ./dist s3://${{ secrets.PROD_CLIENT_S3_BUCKET_NAME }} --delete
+        run: aws s3 sync --region ${{ secrets.AWS_REGION }} ./build s3://${{ secrets.PROD_CLIENT_S3_BUCKET_NAME }} --delete
