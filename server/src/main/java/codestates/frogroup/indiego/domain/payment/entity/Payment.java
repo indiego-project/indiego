@@ -51,7 +51,7 @@ public class Payment extends BaseTime {
     @Column
     private String cancelReason;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer")
     private Member customer;
 
