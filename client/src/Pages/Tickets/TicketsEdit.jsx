@@ -804,7 +804,7 @@ export default function TicketsEditTemp() {
                 if (e.target.value < 100) {
                   setTicketPrice(100);
                 }
-                if (e.target.value > 100000) {
+                if (e.target.value > 1000000) {
                   setTicketPrice(1000000);
                 }
               }}
