@@ -287,12 +287,13 @@ export default function Calendar() {
 
   //보고 있는 달에 공연이 있는지, 오늘과 공연 시작 날짜 중 어느 것이 우선인지, 보고 있는 달이 이번 달인지의 여부에 따라 selectedDay를 조작하는 함수
   useEffect(() => {
-    let filteredArr = daysArr.filter((day) => day.hasShow === false);
-    if (filteredArr.length >= 29) {
+    let filteredArr = daysArr.filter((day) => day.hasShow === true);
+    console.log(filteredArr.length);
+    if (filteredArr.length === 0) {
       setSelectedDay("");
     } else if (
-      filteredArr.length < 29 &&
-      now.format("YYYY-MM-DD") < ticketData.showAt
+      filteredArr.length > 0 &&
+      now.format("YYYY-MM-DD") <= ticketData.showAt
     ) {
       setSelectedDay(Number(ticketData.showAt.slice(8, 10)));
       setReservationDate(
@@ -305,8 +306,8 @@ export default function Calendar() {
         }`
       );
     } else if (
-      filteredArr.length < 29 &&
-      now.format("YYYY-MM-DD") > ticketData.showAt &&
+      filteredArr.length > 0 &&
+      now.format("YYYY-MM-DD") >= ticketData.showAt &&
       selectedMonth - 1 === now.month()
     ) {
       setSelectedDay(now.date());
@@ -315,8 +316,7 @@ export default function Calendar() {
           selectedMonth <= 9 ? "0" + selectedMonth : selectedMonth
         }-${now.date() <= 9 ? "0" + now.date() : now.date()}`
       );
-    }
-    if (filteredArr.length < 29 && selectedMonth - 1 !== now.month()) {
+    } else if (filteredArr.length > 0 && selectedMonth - 1 !== now.month()) {
       setSelectedDay(1);
       setReservationDate(
         `${selectedYear}-${
