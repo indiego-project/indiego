@@ -326,6 +326,14 @@ export default function Calendar() {
     }
   }, [daysArr]);
 
+  useEffect(() => {
+    if (now.month() + 1 < Number(ticketData && ticketData.showAt.slice(5, 7))) {
+      setSelectedMonth(Number(ticketData.showAt.slice(5, 7)));
+    } else {
+      setSelectedMonth(now.month() + 1);
+    }
+  }, [ticketData]);
+
   const dateOnClickHandler = (e) => {
     const selected = parseInt(e.target.textContent);
     setSelectedDay(selected);
