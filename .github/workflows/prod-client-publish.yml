@@ -1,4 +1,4 @@
-name: client-deploy
+name: prod-client-deploy
 
 on:
   push:
