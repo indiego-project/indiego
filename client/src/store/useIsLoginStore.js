@@ -16,8 +16,6 @@ const useIsLoginStore = create((set) => ({
   isLogin: loginStatus.LOADING,
   setIsLogin: (loginstate) =>
     set((state) => {
-      console.log("current login", state.isLogin);
-      console.log(loginstate);
       return { isLogin: loginstate };
     }),
 }));
