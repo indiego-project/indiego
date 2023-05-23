@@ -153,7 +153,7 @@ public class PaymentService {
      * 결제 금액 검증
      */
     private void verifyAmount(Long amount) {
-        if (amount == null || amount < 300) {
+        if (amount == null || amount < 100) {
             log.debug("BusinessLogicException in verifyAmount() : amount={}", amount);
             throw new BusinessLogicException(ExceptionCode.NOT_MINIMUM_AMOUNT);
         }
