@@ -14,7 +14,6 @@ import instance from "../src/api/core/default";
 import styled from "styled-components";
 import Spinner from "./Components/Spinner.jsx";
 import { primary } from "./styles/mixins.js";
-
 const queryClient = new QueryClient();
 
 const LoadingContainer = styled.div`

@@ -122,6 +122,7 @@ export default function Carousel({ isRankMode, status }) {
     setData(data);
   };
 
+
   // GraphQl
   const gqlFetchShowData = () => {
     const query = `

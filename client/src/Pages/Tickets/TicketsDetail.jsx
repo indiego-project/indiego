@@ -233,7 +233,7 @@ const TicketInfoContainer = styled.div`
   flex-direction: column;
   height: min-content;
   margin-left: 10px;
-  min-height: 500px;
+  min-height: 450px;
   padding: 3%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
