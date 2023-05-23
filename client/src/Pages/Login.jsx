@@ -503,7 +503,7 @@ export default function Login() {
             로그인
           </LoginButton>
         </LoginContainer>
-        {isLoginTypeUser ? (
+        {isLoginTypeUser === "USER" ? (
           <div className="social-signup-button-container">
             <button className="google-button" onClick={handleGoogleOauthLogin}>
               <img alt="google icon" src={googleIcon} />
