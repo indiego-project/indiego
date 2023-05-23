@@ -10,6 +10,8 @@ import Aside from "../Aside/Aside.jsx";
 import AnswerList from "../../../Components/Board/Answer/AnswerList";
 import yellowHeart from "../../../assets/yellowHeart.gif";
 import blueHeart from "../../../assets/blueHeart.gif";
+import heart from "../../../assets/heart.svg";
+import grayHeart from "../../../assets/grayHeart.svg";
 
 //로컬 모듈
 import {
@@ -235,7 +237,7 @@ const Board = () => {
             <button className="heartButton" onClick={() => heartCount()}>
               <img
                 width={35}
-                src={boardData.likeStatus ? yellowHeart : blueHeart}
+                src={boardData.likeStatus ? heart : grayHeart}
                 alt="heart"
               ></img>
             </button>
