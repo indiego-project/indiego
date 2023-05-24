@@ -238,6 +238,7 @@ export default function BoardList() {
     }
     PageNationURI += `${queryArr[0]}=${queryArr[1]}&`;
   }
+  PageNationURI = PageNationURI.slice(0, PageNationURI.length - 1);
 
   // 로그인 ID 정보
   const userId = localStorage.getItem("userInfoStorage");
@@ -268,7 +269,7 @@ export default function BoardList() {
 
   const handleWriteButton = () => {
     if (userId === null) {
-      alert("로그인 후 이용할 수 있습니다");
+      alert("로그인 후 이용해주세요.");
       navigate("/login");
       return;
     }
@@ -301,13 +302,11 @@ export default function BoardList() {
         </WriteButtonDiv>
         <PageNation
           location={`${pathname}?${PageNationURI}`}
-          pageData={pageData}
-        ></PageNation>
+          pageData={pageData}></PageNation>
         <SearchBar
           placeholder="검색어를 입력해주세요"
           location={`${pathname}?${SearchBarUri}`}
-          setPageData={setPageData}
-        ></SearchBar>
+          setPageData={setPageData}></SearchBar>
       </BoardWrapper>
     </PageWrapper>
   );

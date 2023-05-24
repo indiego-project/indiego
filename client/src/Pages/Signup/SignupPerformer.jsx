@@ -351,7 +351,7 @@ export default function SignupPerformer() {
     nickname: nickname,
     email: email,
     password: password,
-    role: "NON_CERTIFIED_PERFORMER",
+    role: "PERFORMER",
   };
 
   const postSignupData = () => {

@@ -145,9 +145,10 @@ export const PillButton = styled.button`
 `;
 
 const ContentTopContainer = styled.div`
+  align-items: flex-end;
   display: flex;
   width: 90vw;
-  height: min-content;
+  min-height: min-content;
   justify-content: space-between;
   padding: 2%;
   height: 100vh;
@@ -190,8 +191,8 @@ const PosterAndInfoContainer = styled.div`
 `;
 
 const PosterImage = styled.img`
-  width: 20vw;
-  height: calc(20vw / 3 * 4);
+  width: 16vw;
+  height: calc(16vw / 3 * 4);
   box-shadow: 0 5px 5px #6d6d6d;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -225,12 +226,12 @@ const EmptySeat = styled.span`
 
 const TicketInfoContainer = styled.div`
   display: flex;
-  width: 60%;
+  width: 68%;
   background-color: ${sub.sub100};
   border-radius: 10px;
   justify-content: space-between;
   flex-direction: column;
-  height: 100%;
+  height: min-content;
   margin-left: 10px;
   min-height: 450px;
   padding: 3%;
@@ -359,7 +360,8 @@ const TicketInfoContainer = styled.div`
 const TopLeftContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 90%;
+  justify-content: flex-end;
+  width: 100%;
   height: 100%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
@@ -655,6 +657,9 @@ export default function TicketsDetail() {
       navigate("/");
     } else if (error.response.status === 500) {
       window.alert("일시적인 오류입니다. 잠시 후에 다시 시도해주세요.");
+    } else if (error.response.status === 404) {
+      window.alert("로그인 후 이용해주세요.");
+      navigate("/login");
     }
   };
 
@@ -739,7 +744,7 @@ export default function TicketsDetail() {
                   </div>
                   <div className="location-container">
                     <div>
-                      <span className="location-title">위치</span>
+                      <span className="location-title">공연 장소</span>
                       <span className="location-description">
                         {ticketData.detailAddress}
                       </span>

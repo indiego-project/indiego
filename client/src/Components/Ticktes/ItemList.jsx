@@ -8,14 +8,19 @@ import breakpoint from "../../styles/breakpoint.js";
 const ItemGrid = styled.div`
   width: 90%;
   height: max-content;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 20%));
   position: relative;
-  gap: 40px;
+  justify-content: space-evenly;
+  column-gap: 50px;
+  row-gap: 100px;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 25px;
+    column-gap: 100px;
   }
 
   .null_info {

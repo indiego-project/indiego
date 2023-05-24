@@ -107,6 +107,8 @@ public class SecurityConfiguration {
 				"http://localhost:8080",
 				"https://devindiego.site",
 				"https://www.devindiego.site",
+				"https://indiego.site",
+				"https://www.indiego.site",
 //				"http://13.125.98.211:80",
 				"http://indiego-develop.s3-website.ap-northeast-2.amazonaws.com"));
 		configuration.setAllowCredentials(true);

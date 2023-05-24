@@ -75,10 +75,6 @@ const PostDetailContainer = styled.div`
     overflow: hidden;
     -webkit-box-orient: vertical;
     white-space: normal;
-
-    @media screen and (max-width: ${breakpoint.mobile}) {
-      width: calc(200px + 3vw);
-    }
   }
 
   .content {

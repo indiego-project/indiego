@@ -67,14 +67,10 @@ public class PaymentService {
     @Transactional
     public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount,
                                                   PaymentShowInfo paymentShowInfo, String token) {
-//        PagelessMultiResponseDto response = new PagelessMultiResponseDto<>();
-
         PaymentSuccessDto paymentSuccessDto = null;
+
         try {
             paymentSuccessDto = paymentSuccessAccept(paymentKey, orderId, amount);
-
-//            response.getData().add(paymentSuccessDto);
-//            response.getData().add(responseEntity.getBody());
         } catch (Exception e) {
             throw new BusinessLogicException(ExceptionCode.PAYMENT_AUTHORIZATION_FAILED);
         }
@@ -111,7 +107,7 @@ public class PaymentService {
         params.put("date", paymentShowInfo.getDate());
         params.put("ticketCount", paymentShowInfo.getTicketCount());
         restTemplate.postForObject(
-                "https://api.devindiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
+                "https://api.indiego.site/shows/reservations/" + paymentShowInfo.getShowId(),
                 new HttpEntity<>(params, headers), Map.class);
     }
 
@@ -157,7 +153,7 @@ public class PaymentService {
      * 결제 금액 검증
      */
     private void verifyAmount(Long amount) {
-        if (amount == null || amount < 300) {
+        if (amount == null || amount < 100) {
             log.debug("BusinessLogicException in verifyAmount() : amount={}", amount);
             throw new BusinessLogicException(ExceptionCode.NOT_MINIMUM_AMOUNT);
         }

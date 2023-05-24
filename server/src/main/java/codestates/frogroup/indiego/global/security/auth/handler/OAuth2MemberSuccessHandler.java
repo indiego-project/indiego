@@ -95,15 +95,15 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", secretRefreshToken);
 
-        // String serverName = request.getServerName();
-        // log.info("# serverName = {}",serverName);
+        String serverName = request.getServerName();
+        String clientName = serverName.substring(4, serverName.length());
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
-                .host("indiego.site")
+                .scheme("https")
+                .host(clientName) // prod = indiego.site , server = devindiego.site
                 //.host("localhost")
-                .port(80) // 기본 포트가 80이기 때문에 괜찮다
+                .port(443) // https = 443, http = 80
                 .path("/token")
                 .queryParams(queryParams)
                 .build()

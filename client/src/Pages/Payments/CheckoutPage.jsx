@@ -89,7 +89,7 @@ const PageTitleContainer = styled.div`
     }
   }
 
-  > h2 {
+  > p {
     all: unset;
     color: ${sub.sub400};
     font-size: ${dtFontSize.medium};
@@ -139,7 +139,11 @@ export default function CheckoutPage() {
     <>
       <PageTitleContainer>
         <h1>공연 결제하기</h1>
-        <h2>*테스트 환경에서는 카드 결제만 지원합니다</h2>
+        <p>
+          ∙ 테스트 환경에서는 카드 결제만 지원합니다
+          <br />∙ 테스트 환경이므로 결제시 실제 금액은 빠져나가지 않으며, 본
+          홈페이지는 결제와 관련된 어떤 개인정보도 저장하지 않습니다
+        </p>
       </PageTitleContainer>
       <PaymentContainer>
         <div className="ticket_info_container">

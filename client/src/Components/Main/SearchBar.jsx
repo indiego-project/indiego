@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { primary, dtFontSize, secondary, sub } from "../../styles/mixins";
 import breakpoint from "../../styles/breakpoint";
@@ -149,13 +149,18 @@ const InputContainer = styled.div`
 // 모든 검색 로직 (상세 필터 포함)을 url에 담아 새로고침 시켜야함
 
 export default function SearchBar({ className, children }) {
-  const [isSearchOptionsClicked, setIsSearchOptionsClicked] = useState(false);
-
   const { search } = useTicketSearchStore((state) => state.searchParams);
   const { filter } = useTicketSearchStore((state) => state.searchParams);
   const { setSearch, setFilter, getSearchUrl } = useTicketSearchStore(
     (state) => state
   );
+
+  const [isSearchOptionsClicked, setIsSearchOptionsClicked] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
 
   const searchOptionsContainerEventHandler = (e, props) => {
     if (props === "blur") {
@@ -171,20 +176,16 @@ export default function SearchBar({ className, children }) {
     }
   };
 
-  const searchInputOnChangeHandler = (e) => {
-    setSearch(e.target.value);
-  };
-
   const searchInputOnKeyUpHandler = (e) => {
-    if (search && e.key === "Enter") {
+    if (e.key === "Enter") {
+      setSearch(searchInput);
       window.location.replace(getSearchUrl());
     }
   };
 
   const searchIconClickHandler = () => {
-    if (search) {
-      window.location.replace(getSearchUrl());
-    }
+    setSearch(searchInput);
+    window.location.replace(getSearchUrl());
   };
 
   return (
@@ -196,16 +197,14 @@ export default function SearchBar({ className, children }) {
           onClick={searchOptionsContainerEventHandler}
           onBlur={(e) => {
             searchOptionsContainerEventHandler(e, "blur");
-          }}
-        >
+          }}>
           <p>{filter}</p>
           {/* traingle icon */}
           <svg
             width="20"
             height="20"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 320 512"
-          >
+            viewBox="0 0 320 512">
             <path
               fill="white"
               d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
@@ -220,8 +219,10 @@ export default function SearchBar({ className, children }) {
       <InputContainer className="input_container">
         <input
           placeholder="검색어를 입력하세요."
-          value={search}
-          onChange={searchInputOnChangeHandler}
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
           onKeyUp={searchInputOnKeyUpHandler}
         />
         {/* search icon */}
@@ -230,8 +231,7 @@ export default function SearchBar({ className, children }) {
           height={20}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
-          onClick={searchIconClickHandler}
-        >
+          onClick={searchIconClickHandler}>
           <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
         </svg>
       </InputContainer>

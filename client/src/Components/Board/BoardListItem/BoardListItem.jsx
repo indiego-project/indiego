@@ -16,6 +16,7 @@ const BoardItemContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
 
   @media screen and (max-width: ${breakpoint.mobile}) {
     justify-content: flex-start;
@@ -47,7 +48,7 @@ const BoardItemContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 400px;
+    width: 100%;
     height: 20px;
 
     @media screen and (max-width: ${breakpoint.mobile}) {
@@ -104,8 +105,7 @@ const BoardListItem = (props) => {
               ? "https://elkcitychamber.com/wp-content/uploads/2022/08/Placeholder-Image-Square.png"
               : props.image
           }
-          alt="postImage"
-        ></img>
+          alt="postImage"></img>
       </div>
       <BoardItemContent>
         <Link to={`${pathname}/${props.id}`} className="titleLink">

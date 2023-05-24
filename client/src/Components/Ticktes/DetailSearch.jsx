@@ -195,30 +195,29 @@ export default function DetailSearch({
   trigger,
   handleTransition,
 }) {
-  const { resetSearchParams, getSearchUrl, setAllParams, searchParams } =
+  const { resetSearchParams, getSearchUrl, setAllParams } =
     useTicketSearchStore((state) => state);
 
   const paramsCopy = useRef(
-    JSON.parse(
-      JSON.stringify(useTicketSearchStore((state) => state.searchParams))
-    )
+    useTicketSearchStore((state) => state.searchParams)
   );
 
   const closeButtonHandler = () => {
     const body = document.querySelector("body");
     body.classList.remove("modal_open");
-    setAllParams(paramsCopy.current);
+    setAllParams({ ...paramsCopy.current });
     closeModal(false);
   };
   const removeFilterHandler = () => {
     const body = document.querySelector("body");
     body.classList.remove("modal_open");
     resetSearchParams();
+    window.location.href = "./tickets";
     closeModal(false);
   };
 
   const filterApplyHandler = () => {
-    window.location.replace(getSearchUrl());
+    window.location.href = getSearchUrl();
   };
 
   return (
@@ -265,7 +264,7 @@ export default function DetailSearch({
             </div> */}
           </div>
           <div className="panel footer">
-            <p onClick={removeFilterHandler}>필터 해제</p>
+            <p onClick={removeFilterHandler}>필터 초기화</p>
             <button onClick={filterApplyHandler}>전체 적용</button>
           </div>
         </SearchPanelContainer>
