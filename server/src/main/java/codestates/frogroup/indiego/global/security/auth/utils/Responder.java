@@ -37,7 +37,7 @@ public class Responder {
                 .role(member.getRoles().get(0))
                 .build();
 
-        response.getWriter().write(gson.toJson(new SingleResponseDto<>(loginResponse),SingleResponseDto.class));
+        response.getWriter().write(gson.toJson(new SingleResponseDto<>(loginResponse), SingleResponseDto.class));
     }
 
 }

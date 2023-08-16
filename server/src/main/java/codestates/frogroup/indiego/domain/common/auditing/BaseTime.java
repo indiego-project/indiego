@@ -25,7 +25,6 @@ public abstract class BaseTime {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-
     @Column
     private LocalDateTime deletedAt;
 

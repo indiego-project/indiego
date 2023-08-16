@@ -11,8 +11,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /*
-* WebConfig에서 addArgumentResolvers(); 메서드에 추가할 것
-* */
+ * WebConfig에서 addArgumentResolvers(); 메서드에 추가할 것
+ * */
 public class LoginMemberEmailResolver implements HandlerMethodArgumentResolver {
 
     @Override

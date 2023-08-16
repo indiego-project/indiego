@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 
-
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -57,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // ServletInputSteam을 LoginDto 클래스 객체로 역직렬화 (즉, JSON 객체꺼냄)
         LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
         log.info("# attemptAuthentication : loginDto.getEmail={}, login.getPassword={}, loginDto.getRole={}",
-                loginDto.getEmail(),loginDto.getPassword() ,loginDto.getRole());
+                loginDto.getEmail(), loginDto.getPassword(), loginDto.getRole());
 
         //올바른 권한으로 로그인하는지 확인
         memberService.checkRole(loginDto);
@@ -66,7 +65,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
-
 
 
     @Override
@@ -81,17 +79,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = tokenDto.getRefreshToken(); // refreshToken 만들기
         String secretRefreshToken = aes128Config.encryptAes(refreshToken); // refreshToken 암호화
 
-        tokenProvider.accessTokenSetHeader(accessToken,response); // AccessToken Header response 생성
-        tokenProvider.refreshTokenSetHeader(secretRefreshToken,response); // RefreshToken Header response 생성
+        tokenProvider.accessTokenSetHeader(accessToken, response); // AccessToken Header response 생성
+        tokenProvider.refreshTokenSetHeader(secretRefreshToken, response); // RefreshToken Header response 생성
         // tokenProvider.refreshTokenSetCookie(refreshToken,response); // RefreshToken Cookie로 설정
         Member findMember = memberService.findVerifiedMember(authMember.getId());
 
-        Responder.loginSuccessResponse(response,findMember); // login 완료시 Response 응답 만들기
+        Responder.loginSuccessResponse(response, findMember); // login 완료시 Response 응답 만들기
 
         // 로그인 성공시 Refresh Token Redis 저장 ( key = Refresh Token / value = Access Token )
         int refreshTokenExpirationMinutes = tokenProvider.getRefreshTokenExpirationMinutes();
-        redisDao.setValues(refreshToken,accessToken, Duration.ofMinutes(refreshTokenExpirationMinutes));
+        redisDao.setValues(refreshToken, accessToken, Duration.ofMinutes(refreshTokenExpirationMinutes));
 
-        this.getSuccessHandler().onAuthenticationSuccess(request,response,authResult);
+        this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
 }

@@ -5,9 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ScoreRepository extends RedisDao{
+public class ScoreRepository extends RedisDao {
     public ScoreRepository(RedisTemplate<String, Object> redisTemplate) {
         super(redisTemplate);
     }
-
 }

@@ -25,16 +25,17 @@ public class MemberBookMarkService {
     private final ShowService showService;
     private final MemberBookMarkRepository memberBookMarkRepository;
     private final ShowMapper mapper;
-    public HttpStatus manageBookMark(Long showId, long memberId){
 
-        if( memberBookMarkRepository.findByShowIdAndMemberId(showId, memberId) != null){
+    public HttpStatus manageBookMark(Long showId, long memberId) {
+
+        if (memberBookMarkRepository.findByShowIdAndMemberId(showId, memberId) != null) {
             return deleteBookMark(showId, memberId);
-        }else{
+        } else {
             return createMemberBookMark(showId, memberId);
         }
     }
 
-    public HttpStatus createMemberBookMark(Long showId, Long memberId){
+    public HttpStatus createMemberBookMark(Long showId, Long memberId) {
         ShowDto.Response response = showService.findShow(showId);
         Member member = memberService.findVerifiedMember(memberId);
         MemberBookMark memberBookMark = MemberBookMark.builder()
@@ -45,20 +46,17 @@ public class MemberBookMarkService {
         return HttpStatus.CREATED;
     }
 
-    public HttpStatus deleteBookMark(Long showId, Long memberId){
+    public HttpStatus deleteBookMark(Long showId, Long memberId) {
         MemberBookMark memberBookMark = findVerifiedBookMark(showId, memberId);
         memberBookMarkRepository.delete(memberBookMark);
         return HttpStatus.NO_CONTENT;
     }
 
-
-
-
     private MemberBookMark findVerifiedBookMark(Long showId, Long memberId) {
         Optional<MemberBookMark> optionalBookMark = Optional.ofNullable(memberBookMarkRepository.findByShowIdAndMemberId(showId, memberId));
 
         MemberBookMark findBookMark =
-                optionalBookMark.orElseThrow(()->
+                optionalBookMark.orElseThrow(() ->
                         new BusinessLogicException(ExceptionCode.BOOKMARK_NOT_FOUND));
         return findBookMark;
 

@@ -27,7 +27,7 @@ public class TagService {
 
     public Tag findTagByName(String tagName) {
         Optional<Tag> findTag = tagRepository.findByName(tagName);
-        if(!findTag.isPresent()) {
+        if (!findTag.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
         }
         return findTag.get();
@@ -35,7 +35,7 @@ public class TagService {
 
     public Tag findTagById(Long tagId) {
         Optional<Tag> findTag = tagRepository.findById(tagId);
-        if(!findTag.isPresent()) {
+        if (!findTag.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
         }
         return findTag.get();
@@ -47,7 +47,7 @@ public class TagService {
 
     private void checkTag(String name) {
         Optional<Tag> findTag = tagRepository.findByName(name);
-        if(findTag.isPresent()) {
+        if (findTag.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.TAG_EXIST);
         }
     }

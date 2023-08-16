@@ -1,6 +1,5 @@
 package codestates.frogroup.indiego.config;
 
-
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
 import codestates.frogroup.indiego.global.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Value;

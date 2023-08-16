@@ -122,7 +122,4 @@ public class MemberController {
         MemberDto.PostResponse response = memberMapper.memberToPostResponse(member);
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
-
-
-
 }

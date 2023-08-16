@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CertificationServiceImpl implements CertificationService{
+public class CertificationServiceImpl implements CertificationService {
     private final MemberService memberService;
     private final CertificationRepository certificationRepository;
     private final CertificationMapper certificationMapper;
@@ -29,7 +29,11 @@ public class CertificationServiceImpl implements CertificationService{
     @Override
     public CertificationDto.Response createCertication(Certification certification, Long memberId) {
         Member member = memberService.findVerifiedMember(memberId);
-        if (certificationRepository.findByMemberId(memberId).isPresent()) throw new BusinessLogicException(ExceptionCode.CERTIFICATION_EXIST);
+
+        if (certificationRepository.findByMemberId(memberId).isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.CERTIFICATION_EXIST);
+        }
+
         certification.setMember(member);
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ASKED);
         certificationRepository.save(certification);
@@ -41,7 +45,8 @@ public class CertificationServiceImpl implements CertificationService{
     @Override
     public ResponseEntity deleteCertification(Long certificationId, Long memberId) {
         Certification certification = findVerifiedCertification(certificationId);
-        if(!certification.getMember().getId().equals(memberId)) throw new BusinessLogicException(ExceptionCode.MEMBER_IS_NOT_SAME);
+        if (!certification.getMember().getId().equals(memberId))
+            throw new BusinessLogicException(ExceptionCode.MEMBER_IS_NOT_SAME);
         certificationRepository.delete(certification);
         return new ResponseEntity(new SingleResponseDto<>("퍼포머 인증 요청을 삭제했습니다."), HttpStatus.OK);
     }
@@ -52,8 +57,8 @@ public class CertificationServiceImpl implements CertificationService{
         Certification certification = findVerifiedCertification(certiId);
 
         //어드민이 아니고 토큰 멤버 아이디와 인증요청의 멤버 아이디가 다른 경우 예외처리
-        if(!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
-                !certification.getMember().getId().equals(tokenMeberId)){
+        if (!memberService.findVerifiedMember(tokenMeberId).getRoles().contains(Roles.ADMIN.getRole()) &&
+                !certification.getMember().getId().equals(tokenMeberId)) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
         }
 
@@ -77,17 +82,18 @@ public class CertificationServiceImpl implements CertificationService{
         CertificationDto.Response response = certificationMapper.certificationToResponse(certification);
         return response;
     }
+
     @Override
     public Page<Certification> findAllCertification(int page, int size) {
-        return certificationRepository.findAll(Certification.CertificationStatus.CERTIFICATION_ASKED,PageRequest.of(page, size));
+        return certificationRepository.findAll(Certification.CertificationStatus.CERTIFICATION_ASKED, PageRequest.of(page, size));
     }
 
     @Override
     public CertificationDto.Response patchCertification(Certification certification, Long certificatedId, Long memberId) {
-           Certification findVerifiedCertification = findVerifiedCertification(certificatedId);
-           findVerifiedCertification.setCertificationStatus(certification.getCertificationStatus());
-            CertificationDto.Response response = certificationMapper.certificationToResponse(findVerifiedCertification);
-            response.setMessage("퍼포머 인증이 수정됐습니다.");
+        Certification findVerifiedCertification = findVerifiedCertification(certificatedId);
+        findVerifiedCertification.setCertificationStatus(certification.getCertificationStatus());
+        CertificationDto.Response response = certificationMapper.certificationToResponse(findVerifiedCertification);
+        response.setMessage("퍼포머 인증이 수정됐습니다.");
 
         return response;
     }

@@ -32,14 +32,17 @@ public class Certification extends BaseTime {
     private Member member;
 
 
-    public void setMember(Member member){
+    public void setMember(Member member) {
         this.member = member;
         member.setCertification(this);
     }
-    public void setMessage(String message){this.message = message;}
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     @Getter
-    public enum CertificationStatus{
+    public enum CertificationStatus {
         CERTIFICATION_ASKED("요청됨"),
         CERTIFICATION_ALLOWED("허락됨"),
         CERTIFICATION_DENIED("거절됨");

@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 @Slf4j
 @Service
 @Transactional
@@ -43,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
 
     //퍼포머 인증
     public ResponseEntity certifyPerformer(Long certiId, Long tokenMemberId, String message) {
-        Certification certification= certificationService.findCertification(certiId, tokenMemberId);
+        Certification certification = certificationService.findCertification(certiId, tokenMemberId);
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
         member.setRoles(customAuthorityUtils.createRoles(Roles.PERFORMER.getRole()));
         certification.setCertificationStatus(Certification.CertificationStatus.CERTIFICATION_ALLOWED);
@@ -59,22 +58,23 @@ public class AdminServiceImpl implements AdminService {
         certification.setMessage(message);
         Member member = memberService.findVerifiedMember(certification.getMember().getId());
         this.patchCertification(certification, certificationId, member.getId());
-        return  new ResponseEntity<>(new SingleResponseDto("퍼포머 인증 거부됐습니다."), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto("퍼포머 인증 거부됐습니다."), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity softDeleteComment(Long commentId) {
         ArticleComment comment = articleCommentService.findVerifiedArticleComment(commentId);
         comment.setDeleted(LocalDateTime.now());
-        return new ResponseEntity<>(new SingleResponseDto<>("댓글이 삭제됐습니다."),HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>("댓글이 삭제됐습니다."), HttpStatus.OK);
     }
+
     @Override
-    public ResponseEntity restoreSofeDeletedComment(Long commentId){
+    public ResponseEntity restoreSofeDeletedComment(Long commentId) {
         ArticleComment foundComment = articleCommentRepository.findSoftDeletedArticleCommentById(commentId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.ARTICLE_COMMENT_NOT_FOUND)
         );
         foundComment.setDeleted(null);
-        return new ResponseEntity<>(new SingleResponseDto<>("댓글이 복구됐습니다."),HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>("댓글이 복구됐습니다."), HttpStatus.OK);
     }
 
     @Override
@@ -89,15 +89,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseEntity getSoftDeletedComment(long commentId) {
         ArticleComment articleComment = findVerfiedArticleComment(commentId);
-       ArticleCommentDto.Response response = articleCommentMapper.articleCommentToArticleCommentResponse(articleComment);
-       return new ResponseEntity(response, HttpStatus.OK);
+        ArticleCommentDto.Response response = articleCommentMapper.articleCommentToArticleCommentResponse(articleComment);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity getSoftDeletedComments(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("deleted_at").descending());
+        pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), Sort.by("deleted_at").descending());
         Page<ArticleComment> page = articleCommentRepository.findSoftDeletedArticleComment(pageable);
-        List<ArticleCommentDto.Response> response =articleCommentMapper.articleCommentsToArticleCommentResponses(page.getContent());
+        List<ArticleCommentDto.Response> response = articleCommentMapper.articleCommentsToArticleCommentResponses(page.getContent());
         MultiResponseDto<ArticleCommentDto.Response> multiResponseDto = new MultiResponseDto<>(response, page);
         return ResponseEntity.ok().body(multiResponseDto);
     }
@@ -108,7 +108,6 @@ public class AdminServiceImpl implements AdminService {
         );
         return foundComment;
     }
-
 
 
     public CertificationDto.Response patchCertification(Certification certification, Long certificatedId, Long memberId) {

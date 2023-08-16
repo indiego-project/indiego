@@ -37,9 +37,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                     "/oauth2/authorization/naver");
 
     /* 실제 필터링 로직은 doFilterInternal 에서 수행
-	 * JWT 토큰의 인증 정보를 현재 쓰레드의 SecurityContext 에 저장하는 역할
-	 * 가입/로그인/재발급을 제외한 Request 요청은 모두 이 필터를 거치게 됨
-	 */
+     * JWT 토큰의 인증 정보를 현재 쓰레드의 SecurityContext 에 저장하는 역할
+     * 가입/로그인/재발급을 제외한 Request 요청은 모두 이 필터를 거치게 됨
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -50,7 +50,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             String jwt = tokenProvider.resolveAccessToken(request);
 
             // 토큰 검증을 통과하면 다음 필터 진행
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt,response)) {
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt, response)) {
                 // 토큰으로부터 Authentication 객체를 만듬
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
 
@@ -64,9 +64,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
             if (e instanceof BusinessLogicException) {
                 ObjectMapper objectMapper = new ObjectMapper();
-                String json = objectMapper.writeValueAsString(ErrorResponse.of(((BusinessLogicException)e).getExceptionCode()));
+                String json = objectMapper.writeValueAsString(ErrorResponse.of(((BusinessLogicException) e).getExceptionCode()));
                 response.getWriter().write(json);
-                response.setStatus(((BusinessLogicException)e).getExceptionCode().getStatus());
+                response.setStatus(((BusinessLogicException) e).getExceptionCode().getStatus());
             }
         }
     }
@@ -76,7 +76,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         boolean result = EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-        log.info("# Exclude url check = {}, result check = {}",request.getServletPath(),result);
+        log.info("# Exclude url check = {}, result check = {}", request.getServletPath(), result);
         return result;
     }
 }

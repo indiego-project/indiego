@@ -11,7 +11,7 @@ public class ShowReservationDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class Post{
+    public static class Post {
         @NotNull
         private LocalDate date;
 
@@ -20,11 +20,12 @@ public class ShowReservationDto {
     }
 
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class Response{
+    public static class Response {
         private Long id;
         private String title;
         private String nickname;

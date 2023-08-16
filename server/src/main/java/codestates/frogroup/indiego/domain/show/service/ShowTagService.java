@@ -52,20 +52,20 @@ public class ShowTagService {
         for (int i = 0; i < tags.size(); i++) {
             Tag changeTag = tagService.findTagById(tags.get(i));
             int index = currentTags.indexOf(changeTag);
-            if(this.checkChangeStatus(index)) {
+            if (this.checkChangeStatus(index)) {
                 ShowTag showTag = new ShowTag();
                 showTag.updateTag(changeTag);
                 showTag.updateShow(show);
                 showTags.add(showTag);
             }
         }
-        
+
         // 변경완료 후 없는 태그를 삭제하기
         for (int i = 0; i < showTagSize; i++) {
             Tag currentTag = tagService.findTagById(showTags.get(i).getTag().getId());
             Long currentTagId = currentTag.getId();
             int index = tags.indexOf(currentTagId);
-            if(this.checkChangeStatus(index)) {
+            if (this.checkChangeStatus(index)) {
                 removedShowTagList.add(showTags.get(i));
             }
         }
@@ -84,24 +84,23 @@ public class ShowTagService {
 
     public void checkShowTagExistByShowIdAndTagId(Long showId, Long tagId) {
         ShowTag findShowTag = showTagRepository.findShowTagByShowIdAndTagId(showId, tagId);
-        if(!Objects.isNull(findShowTag)) {
+        if (!Objects.isNull(findShowTag)) {
             throw new BusinessLogicException(ExceptionCode.SHOW_TAG_EXIT);
         }
     }
 
     public ShowTag findShowTagByShowIdAndTagId(Long showId, Long tagId) {
         ShowTag findShowTag = showTagRepository.findShowTagByShowIdAndTagId(showId, tagId);
-        if(Objects.isNull(findShowTag)) {
+        if (Objects.isNull(findShowTag)) {
             throw new BusinessLogicException(ExceptionCode.SHOW_TAG_NOT_FOUND);
         }
         return findShowTag;
     }
 
     private Boolean checkChangeStatus(int index) {
-        if(index >= 0) {
+        if (index >= 0) {
             return false;
         }
         return true;
     }
-
 }

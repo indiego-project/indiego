@@ -69,7 +69,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         log.info("# OAuth2.0 Token generated complete!");
 
         // 리다이렉트를 하기위한 정보들을 보내줌
-        redirect(request,response,accessToken,refreshToken);
+        redirect(request, response, accessToken, refreshToken);
     }
 
     private void redirect(HttpServletRequest request,
@@ -85,13 +85,13 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         // tokenProvider.accessTokenSetHeader(accessToken, response); // Access Token 헤더에 전송
         // tokenProvider.refreshTokenSetHeader(secretRefreshToken,response); // Refresh Token 쿠키에 전송
         int refreshTokenExpirationMinutes = tokenProvider.getRefreshTokenExpirationMinutes();
-        redisDao.setValues(refreshToken,accessToken, Duration.ofMinutes(refreshTokenExpirationMinutes)); // redis 저장
+        redisDao.setValues(refreshToken, accessToken, Duration.ofMinutes(refreshTokenExpirationMinutes)); // redis 저장
 
         // 만든 URI로 리다이렉트 보냄
-        getRedirectStrategy().sendRedirect(request,response,uri);
+        getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
-    private URI createURI(HttpServletRequest request, String accessToken, String secretRefreshToken){
+    private URI createURI(HttpServletRequest request, String accessToken, String secretRefreshToken) {
         // 리다이렉트시 JWT를 URI로 보내는 방법
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("access_token", accessToken);

@@ -16,9 +16,8 @@ public class CustomAuthorityUtils {
     private final List<String> USER_ROLES_STRING = List.of(Roles.USER.getRole());
     private final List<String> NON_CERTIFIED_PERFORMER_ROLES_STRING = List.of(Roles.NON_CERTIFIED_PERFORMER.getRole(),
             Roles.USER.getRole());
-    private final List<String> PERFORMER_ROLES_STRING = List.of(Roles.PERFORMER.getRole(), Roles.USER.getRole() );
+    private final List<String> PERFORMER_ROLES_STRING = List.of(Roles.PERFORMER.getRole(), Roles.USER.getRole());
     private final List<String> ADMIN_ROLES_STRING = List.of(Roles.ADMIN.getRole(), Roles.USER.getRole());
-
 
 
     // DB에 저장된 Role을 기반으로 권한 정보 생성
@@ -32,13 +31,13 @@ public class CustomAuthorityUtils {
     public List<String> createRoles(String role) {
         if (role.equals(Roles.ADMIN.toString())) {
             return ADMIN_ROLES_STRING;
-        } else if(role.equals(Roles.PERFORMER.toString())){
+        } else if (role.equals(Roles.PERFORMER.toString())) {
             return PERFORMER_ROLES_STRING;
-        }else if(role.equals(Roles.NON_CERTIFIED_PERFORMER.toString())){
+        } else if (role.equals(Roles.NON_CERTIFIED_PERFORMER.toString())) {
             return NON_CERTIFIED_PERFORMER_ROLES_STRING;
-        } else if(role.equals(Roles.USER.toString())){
+        } else if (role.equals(Roles.USER.toString())) {
             return USER_ROLES_STRING;
-        } else if(role.equals(Roles.GUEST.toString())){
+        } else if (role.equals(Roles.GUEST.toString())) {
             return GUEST_ROLES_STRING;
         }
         return null;

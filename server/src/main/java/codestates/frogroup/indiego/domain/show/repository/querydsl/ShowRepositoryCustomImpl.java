@@ -1,14 +1,9 @@
 package codestates.frogroup.indiego.domain.show.repository.querydsl;
 
-import codestates.frogroup.indiego.domain.member.entity.QMember;
 import codestates.frogroup.indiego.domain.show.dto.*;
-import codestates.frogroup.indiego.domain.show.entity.QShowTag;
 import codestates.frogroup.indiego.domain.show.entity.Show;
-import codestates.frogroup.indiego.domain.tag.entity.QTag;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +16,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 import static codestates.frogroup.indiego.domain.member.entity.QMember.*;
 import static codestates.frogroup.indiego.domain.show.entity.QShow.show;

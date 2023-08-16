@@ -54,7 +54,7 @@ public class MemberDto {
 
         @Builder
         public GetResponse(Long id, String email, List<String> role, Profile profile,
-                           Double latitude, Double longitude, Long certiId){
+                           Double latitude, Double longitude, Long certiId) {
             this.id = id;
             this.email = email;
             this.role = role.get(0);
@@ -74,7 +74,7 @@ public class MemberDto {
         private String role;
 
         @Builder
-        public PostResponse(Long id, String email, String nickname, List<String> role){
+        public PostResponse(Long id, String email, String nickname, List<String> role) {
             this.id = id;
             this.email = email;
             this.nickname = nickname;

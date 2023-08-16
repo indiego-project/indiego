@@ -21,44 +21,45 @@ public class AdminController {
     @PostMapping("/certifications/{certi-id}")
     public ResponseEntity certifyPerformer(@Positive @PathVariable("certi-id") Long certiId,
                                            @LoginMemberId Long tokenMemberId,
-                                           @Valid @RequestBody CertificationDto.AdminPost adminPostDto){
-        ResponseEntity response =  adminService.certifyPerformer(certiId, tokenMemberId,adminPostDto.getMessage());
+                                           @Valid @RequestBody CertificationDto.AdminPost adminPostDto) {
+        ResponseEntity response = adminService.certifyPerformer(certiId, tokenMemberId, adminPostDto.getMessage());
         return response;
     }
 
     @DeleteMapping("/certifications/{certification-id}")
     public ResponseEntity denyPerformer(@Positive @PathVariable("certification-id") Long certiId,
                                         @LoginMemberId Long tokenMemberId,
-                                        @Valid @RequestBody CertificationDto.AdminPost adminPostDto){
-        ResponseEntity response =  adminService.denyPerformer(certiId, tokenMemberId, adminPostDto.getMessage());
+                                        @Valid @RequestBody CertificationDto.AdminPost adminPostDto) {
+        ResponseEntity response = adminService.denyPerformer(certiId, tokenMemberId, adminPostDto.getMessage());
         return response;
     }
+
     @GetMapping("/comments")
-    public ResponseEntity getComments( @PageableDefault(page = 1, size = 12) Pageable pageable){
-        ResponseEntity response= adminService.getComments(pageable);
+    public ResponseEntity getComments(@PageableDefault(page = 1, size = 12) Pageable pageable) {
+        ResponseEntity response = adminService.getComments(pageable);
         return response;
     }
 
     @PostMapping("/comments/{commentId}")
-    public ResponseEntity restoreSoftDeletedComment(@Positive @PathVariable("commentId") Long commentId){
+    public ResponseEntity restoreSoftDeletedComment(@Positive @PathVariable("commentId") Long commentId) {
         ResponseEntity response = adminService.restoreSofeDeletedComment(commentId);
         return response;
     }
 
     @GetMapping("/deletedComments")
-    public ResponseEntity getSoftDeletedComments( @PageableDefault(page = 1, size = 12) Pageable pageable){
-        ResponseEntity response= adminService.getSoftDeletedComments(pageable);
+    public ResponseEntity getSoftDeletedComments(@PageableDefault(page = 1, size = 12) Pageable pageable) {
+        ResponseEntity response = adminService.getSoftDeletedComments(pageable);
         return response;
     }
 
     @GetMapping("/comments/{comment-id}")
-    public ResponseEntity getSoftDeletedComment(@Positive @PathVariable("comment-id") Long commentId){
+    public ResponseEntity getSoftDeletedComment(@Positive @PathVariable("comment-id") Long commentId) {
         ResponseEntity response = adminService.getSoftDeletedComment(commentId);
         return response;
     }
 
     @DeleteMapping("/comments/{comment-id}")
-    public ResponseEntity softDeleteComment(@Positive @PathVariable("comment-id")Long commentId){
+    public ResponseEntity softDeleteComment(@Positive @PathVariable("comment-id") Long commentId) {
         ResponseEntity response = adminService.softDeleteComment(commentId);
         return response;
     }
