@@ -21,7 +21,7 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
         Responder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED);
     }
 
-    private void logExceptionMessage(AuthenticationException authException, Exception exception){
+    private void logExceptionMessage(AuthenticationException authException, Exception exception) {
         String message = exception != null ? exception.getMessage() : authException.getMessage();
         log.warn("Unauthorized error happened: {}", message);
     }

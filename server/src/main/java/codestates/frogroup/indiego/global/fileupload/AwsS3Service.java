@@ -20,38 +20,38 @@ import java.util.UUID;
 @Service
 public class AwsS3Service implements ImageUploadService {
 
-	private final AmazonS3 amazonS3;
+    private final AmazonS3 amazonS3;
 
-	@Value("${cloud.aws.s3.bucket}")
-	private String bucketName;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
-	public String StoreImage(MultipartFile file, AwsS3Path awsS3Path) {
+    public String StoreImage(MultipartFile file, AwsS3Path awsS3Path) {
 
-		if (file.isEmpty()) {
-			throw new BusinessLogicException(ExceptionCode.UPLOAD_FAILED);
-		}
+        if (file.isEmpty()) {
+            throw new BusinessLogicException(ExceptionCode.UPLOAD_FAILED);
+        }
 
-		String originalFilename = file.getOriginalFilename();
-		String storeFileName = createStoreFileName(originalFilename);
+        String originalFilename = file.getOriginalFilename();
+        String storeFileName = createStoreFileName(originalFilename);
 
-		log.info("# originalFilename = {}", originalFilename);
-		log.info("# storeFileName = {}", storeFileName);
+        log.info("# originalFilename = {}", originalFilename);
+        log.info("# storeFileName = {}", storeFileName);
 
-		try (InputStream inputStream = file.getInputStream()) {
-			amazonS3.putObject(new PutObjectRequest(bucketName + awsS3Path.getPath(), storeFileName, inputStream, null)
-				.withCannedAcl(CannedAccessControlList.PublicRead));
-		} catch (IOException e) {
-			throw new BusinessLogicException(ExceptionCode.UPLOAD_FAILED);
-		}
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucketName + awsS3Path.getPath(), storeFileName, inputStream, null)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
+            throw new BusinessLogicException(ExceptionCode.UPLOAD_FAILED);
+        }
 
-		return amazonS3.getUrl(bucketName + awsS3Path.getPath(), storeFileName).toString();
-	}
+        return amazonS3.getUrl(bucketName + awsS3Path.getPath(), storeFileName).toString();
+    }
 
-	private static String createStoreFileName(String originalFilename) {
-		return UUID.randomUUID().toString() + "." + extractExt(originalFilename);
-	}
+    private static String createStoreFileName(String originalFilename) {
+        return UUID.randomUUID().toString() + "." + extractExt(originalFilename);
+    }
 
-	private static String extractExt(String originalFilename) {
-		return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-	}
+    private static String extractExt(String originalFilename) {
+        return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+    }
 }

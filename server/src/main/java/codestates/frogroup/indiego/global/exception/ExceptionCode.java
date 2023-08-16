@@ -11,10 +11,10 @@ public enum ExceptionCode {
     MEMBER_NO_PERMISSION(406, "권한이 없습니다."),
 
     // JWT, 인증관련
-    ACCESS_TOKEN_NOT_FOUND(404,"Access Token을 찾을 수 없습니다."),
-    REFRESH_TOKEN_NOT_FOUND(404,"Refresh Token을 찾을 수 없습니다."),
-    HEADER_REFRESH_TOKEN_NOT_FOUND(404,"Header 정보에 Refresh Token 정보가 없습니다."),
-    TOKEN_IS_NOT_SAME(404,"Refresh Token과 발급된 Access Token 정보가 일치하지 않습니다."),
+    ACCESS_TOKEN_NOT_FOUND(404, "Access Token을 찾을 수 없습니다."),
+    REFRESH_TOKEN_NOT_FOUND(404, "Refresh Token을 찾을 수 없습니다."),
+    HEADER_REFRESH_TOKEN_NOT_FOUND(404, "Header 정보에 Refresh Token 정보가 없습니다."),
+    TOKEN_IS_NOT_SAME(404, "Refresh Token과 발급된 Access Token 정보가 일치하지 않습니다."),
     NO_ACCESS_TOKEN(403, "권한 정보가 없는 토큰입니다."),
     TOKEN_EXPIRED(400, "Token Expired"),
     TOKEN_INVALID(400, "Token Invalid"),
@@ -39,7 +39,7 @@ public enum ExceptionCode {
     BOOKMARK_NOT_FOUND(404, "북마크가 존재하지 않습니다."),
 
     SHOW_RESERVATION_NOT_FOUND(403, "후기를 작성할 수 있는 권한이 없습니다."),
-    SHOW_RESERVATION_CREATE_FAIL(400,"재고가 부족합니다."),
+    SHOW_RESERVATION_CREATE_FAIL(400, "재고가 부족합니다."),
 
     // Tag
     TAG_NOT_FOUND(404, "찾을 수 없는 태그입니다."),

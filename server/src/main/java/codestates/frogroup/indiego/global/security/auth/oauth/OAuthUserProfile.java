@@ -26,6 +26,6 @@ public class OAuthUserProfile {
         Profile profile = new Profile();
         profile.setNickname(name);
         profile.setImage(image);
-        return new Member(null,email,oauthId,profile,roles,status);
+        return new Member(null, email, oauthId, profile, roles, status);
     }
 }

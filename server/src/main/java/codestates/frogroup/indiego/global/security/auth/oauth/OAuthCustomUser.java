@@ -22,7 +22,7 @@ public class OAuthCustomUser implements OAuth2User, Serializable {
                                      Map<String, Object> attributes,
                                      String registrationId) {
 
-        return new OAuthCustomUser(authorities,attributes,registrationId);
+        return new OAuthCustomUser(authorities, attributes, registrationId);
     }
 
     @Override

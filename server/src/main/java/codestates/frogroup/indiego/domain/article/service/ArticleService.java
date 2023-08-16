@@ -119,10 +119,6 @@ public class ArticleService {
             articleRepository.saveViewCountToRedis(articleId, viewCount);
         }
 
-        // redis의 조회수 증가
-//        viewCount = articleRepository.incrementViewCount(articleId);
-//        log.info("viewCount3={}", viewCount);
-
         ArticleDto.Response response = getResponse(findArticle, member);
 
         response.setView(viewCount);
@@ -133,40 +129,6 @@ public class ArticleService {
     public Long incrementViewCount(Long articleId) {
         return articleRepository.incrementViewCount(articleId);
     }
-
-//    @Transactional // TODO: @Transactional 조금 더 알아보기
-//    public ArticleDto.Response findArticle(Long articleId, HttpServletRequest request) {
-//
-//        Article findArticle = findVerifiedArticle(articleId);
-//
-//        Long viewCount = articleRepository.findViewCountFromRedis(articleId);
-//        log.info("viewCount1={}", viewCount);
-//
-//        if (viewCount == null) {
-//            viewCount = articleRepository.findView(articleId);
-//            log.info("viewCount2={}", viewCount);
-//            articleRepository.saveViewCountToRedis(articleId, viewCount);
-//        }
-//
-//        HttpSession session = request.getSession();
-//        ArticleDto.Response response = getResponse(findArticle);
-//
-//        // 조회한 적이 없는 경우
-//        if (session.getAttribute("articleId:" + articleId) == null) {
-//            viewCount = articleRepository.incrementViewCount(articleId);
-//            response.setView(viewCount);
-//
-//            session.setAttribute("articleId:" + articleId, true);
-//
-//            return response;
-//        }
-//
-//        // 조회한 적이 있는 경우
-//        viewCount = articleRepository.findViewCountFromRedis(articleId);
-//        response.setView(viewCount);
-//
-//        return response;
-//    }
 
     /**
      * 게시글 삭제
@@ -226,18 +188,6 @@ public class ArticleService {
             response.setLikeStatus(articleLike != null);
         }
 
-//        if (member == null) {
-//            response.setLikeStatus(false);
-//        } else {
-//            ArticleLike articleLike =
-//                    articleLikeRepository.findByMemberIdAndArticleId(member.getId(), article.getId());
-//            if (articleLike == null) {
-//                response.setLikeStatus(false);
-//            } else {
-//                response.setLikeStatus(true);
-//            }
-//        }
-
         return response;
     }
 
@@ -278,14 +228,6 @@ public class ArticleService {
         articleRepository.save(article);
 
         return HttpStatus.NO_CONTENT;
-    }
-
-    /**
-     * 조회수 증가
-     */
-    @Transactional
-    public void updateView(Long articleId) {
-        findVerifiedArticle(articleId).updateView();
     }
 
     /**

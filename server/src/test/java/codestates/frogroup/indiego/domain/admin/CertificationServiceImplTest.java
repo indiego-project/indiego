@@ -1,16 +1,8 @@
 package codestates.frogroup.indiego.domain.admin;
 
-import codestates.frogroup.indiego.domain.common.embedding.Coordinate;
 import codestates.frogroup.indiego.domain.common.utils.CustomBeanUtils;
-import codestates.frogroup.indiego.domain.member.dto.MemberDto;
 import codestates.frogroup.indiego.domain.member.entity.Member;
-import codestates.frogroup.indiego.domain.member.entity.MemberBookMark;
-import codestates.frogroup.indiego.domain.member.entity.Profile;
-import codestates.frogroup.indiego.domain.member.mapper.MemberMapper;
-import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
-import codestates.frogroup.indiego.global.security.auth.enums.Roles;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
+
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -32,8 +20,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.ExpectedCount.times;
-
 
 @RunWith(MockitoJUnitRunner.class)
 @Transactional
@@ -117,5 +103,4 @@ class CertificationServiceImplTest {
         assertThat(actualResponse).isEqualTo(expectedResponse);
 
     }
-
 }

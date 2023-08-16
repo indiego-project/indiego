@@ -111,18 +111,10 @@ public class ArticleCommentService {
 
         findVerifiedArticle(articleId);
         ArticleComment findArticleComment = findVerifiedArticleComment(commentId);
-        // TODO: 리팩토링 memberService에서 사용하자
-//        Member findMember = findVerifiedMember(memberId);
         Member findMember = memberService.findVerifiedMember(memberId);
 
         ArticleCommentLike articleCommentLike =
                 articleCommentLikeRepository.findByMemberIdAndArticleCommentId(memberId, commentId);
-
-//        if (articleCommentLike == null) {
-//            return createArticleCommentLike(findArticleComment, findMember);
-//        } else {
-//            return deleteArticleCommentLike(articleCommentLike);
-//        }
 
         return articleCommentLike == null ?
                 createArticleCommentLike(findArticleComment, findMember) : deleteArticleCommentLike(articleCommentLike);
@@ -155,28 +147,4 @@ public class ArticleCommentService {
         return articleRepository.findById(articleId).orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND));
     }
-
-//    // TODO: 리팩토링 memberService에서 사용하자
-//    private Member findVerifiedMember(Long memberId) {
-//        return memberRepository.findById(memberId).orElseThrow(
-//                () -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-//    }
-
-//    private ArticleCommentDto.Response getResponse(ArticleComment articleComment) {
-//
-//        ArticleCommentDto.Response response = mapper.articleCommentToArticleCommentResponse(articleComment);
-//        List<ArticleCommentLike> articleCommentLikes =
-//                articleCommentLikeRepository.findAllByArticleCommentId(articleComment.getId());
-//
-//        log.info("list<ArticleCommentLike> = {}", articleCommentLikes.toString());
-//
-//        if (articleCommentLikes.isEmpty()) {
-//            response.setLikeCount(0);
-//        } else {
-//            response.setLikeCount(articleCommentLikes.size());
-//        }
-//
-//        return response;
-//    }
-
 }

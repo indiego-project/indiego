@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface CertificationRepository extends JpaRepository<Certification,Long> {
+public interface CertificationRepository extends JpaRepository<Certification, Long> {
     Optional<Certification> findByMemberId(Long memberId);
+
     @Query("SELECT c FROM Certification c WHERE c.certificationStatus = :status")
     Page<Certification> findAll(Certification.CertificationStatus status, PageRequest pageRequest);
 

@@ -1,11 +1,9 @@
 package codestates.frogroup.indiego.global.security.auth.filter;
 
-
 import codestates.frogroup.indiego.config.AES128Config;
 import codestates.frogroup.indiego.domain.common.embedding.Coordinate;
 import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.entity.Profile;
-import codestates.frogroup.indiego.domain.member.mapper.MemberMapper;
 import codestates.frogroup.indiego.domain.member.repository.MemberRepository;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.global.exception.BusinessLogicException;
@@ -17,21 +15,16 @@ import codestates.frogroup.indiego.global.security.auth.dto.LoginDto;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import codestates.frogroup.indiego.global.security.auth.enums.Roles;
 import codestates.frogroup.indiego.global.security.auth.jwt.TokenProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -89,8 +82,6 @@ public class JwtAuthenticationFilterTest {
         // then
         assertDoesNotThrow(() -> memberService.checkRole(loginDto));
     }
-
-
 
     @Test
     public void givenIncorrectRole_whenCheckRole_thenThrowException() {

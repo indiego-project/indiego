@@ -33,11 +33,10 @@ public class TagController {
         return new ResponseEntity<>(new SingleResponseDto<>(tagListResponseDto), HttpStatus.OK);
     }
 
-
     /*
-    * 추후 Admin 계정에서 태그관리를 하도록
-    * 사용한다면 type에 대한 정의가 필요, 현재는 카테고리 이름을 되어있음.
-    * */
+     * 추후 Admin 계정에서 태그관리를 하도록
+     * 사용한다면 type에 대한 정의가 필요, 현재는 카테고리 이름을 되어있음.
+     * */
     @PostMapping
     public ResponseEntity postTag(@Valid @RequestBody TagDto.Post tagDto) {
         Tag tag = tagMapper.tagDtoToTag(tagDto);

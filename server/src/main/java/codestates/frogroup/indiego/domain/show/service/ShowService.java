@@ -5,7 +5,6 @@ import codestates.frogroup.indiego.domain.member.entity.Member;
 import codestates.frogroup.indiego.domain.member.service.MemberService;
 import codestates.frogroup.indiego.domain.show.dto.ShowDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowListDto;
-import codestates.frogroup.indiego.domain.show.dto.ShowListResponseDto;
 import codestates.frogroup.indiego.domain.show.dto.ShowMapsResponse;
 import codestates.frogroup.indiego.domain.show.entity.Show;
 import codestates.frogroup.indiego.domain.show.entity.Show.ShowStatus;
@@ -29,7 +28,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 
 //테스트해보고 페이지네이션 마저 작성
 @Slf4j
@@ -56,7 +54,7 @@ public class ShowService {
         Show savedShow = showRepository.save(show);
 
         String key = redisKey.getScoreAverageKey(show.getId());
-        scoreRepository.setValues(key,"0");
+        scoreRepository.setValues(key, "0");
 
         return savedShow;
     }
@@ -64,7 +62,7 @@ public class ShowService {
     @Transactional
     public Show updateShow(ShowDto.Patch patchShow, long memberId, long showId) {
         Show findShow = this.findVerifiedShow(showId);
-        memberService.verifiedMemberId(memberId,findShow.getMember().getId());
+        memberService.verifiedMemberId(memberId, findShow.getMember().getId());
         findShow.changeShow(patchShow);
         showTagService.updateShowTagByDto(findShow, patchShow.getTags());
         return findShow;
@@ -74,21 +72,21 @@ public class ShowService {
     public void deleteShow(Long id, Long memberId) {
 
         Show findShow = findVerifiedShow(id);
-        if(memberId != findShow.getMember().getId()){
+        if (memberId != findShow.getMember().getId()) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_NO_PERMISSION);
         }
         showRepository.delete(findShow);
 
     }
 
-    public List<Show> findShows(String address){
+    public List<Show> findShows(String address) {
         List<Show> shows = showRepository.findByShowBoardAddressAndStatus(address, ShowStatus.SALE,
                 Sort.by(Sort.Order.desc("createdAt")));
         findVerifiedShows(shows);
         return shows;
     }
 
-    public int[] findMarkerShows(Integer year, Integer month){
+    public int[] findMarkerShows(Integer year, Integer month) {
 
         Integer day = getCalendarTotalDay(year, month);
         LocalDate startTime = LocalDate.of(year, month, 1);
@@ -99,14 +97,14 @@ public class ShowService {
         findVerifiedShows(shows);
 
         int[] hasShow = new int[shows.size()];
-        for (int i=0; i<shows.size(); i++){
+        for (int i = 0; i < shows.size(); i++) {
             String showAt = shows.get(i).getShowBoard().getShowAt().toString();
             hasShow[i] = Integer.parseInt(showAt.substring(showAt.length() - 2));
         }
         return Arrays.stream(hasShow).distinct().toArray();
     }
 
-    public List<Show> findCalendarShows(Integer year, Integer month, Integer day){
+    public List<Show> findCalendarShows(Integer year, Integer month, Integer day) {
 
         LocalDate startTime = LocalDate.of(year, month, day);
         LocalDate endTime = LocalDate.of(year, month, day);
@@ -117,13 +115,13 @@ public class ShowService {
         return shows;
     }
 
-    public List<ShowMapsResponse> findMapShows(Double x1, Double x2, Double y1, Double y2){
+    public List<ShowMapsResponse> findMapShows(Double x1, Double x2, Double y1, Double y2) {
         List<ShowMapsResponse> showMapsResponse = showRepository.findAllByShowMapsSearch(x1, x2, y1, y2);
         findVerifiedMapShows(showMapsResponse);
         return showMapsResponse;
     }
 
-    public List<ShowMapsResponse> findMapShows(String search, String filter){
+    public List<ShowMapsResponse> findMapShows(String search, String filter) {
         List<ShowMapsResponse> showMapsResponse = showRepository.findAllByShowMapsSearch(search, filter);
         findVerifiedMapShows(showMapsResponse);
         return showMapsResponse;
@@ -131,26 +129,26 @@ public class ShowService {
 
 
     //판매자용 공연 조회
-    public Page<Show> findShowOfSeller(Long memberId, Pageable pageable){
+    public Page<Show> findShowOfSeller(Long memberId, Pageable pageable) {
 
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
 
         return showRepository.findByMember_IdOrderByCreatedAtDesc(memberId, pageable);
     }
 
-    public Integer getRevenue(Long showId){
+    public Integer getRevenue(Long showId) {
         return reservationService.countReservation(showId) * showRepository.findById(showId).get().getShowBoard().getPrice();
     }
 
-    public ShowDto.Response findShow(long showId){
+    public ShowDto.Response findShow(long showId) {
         Show show = findVerifiedShow(showId);
         String key = redisKey.getScoreAverageKey(showId);
-        if(scoreRepository.getValues(key).equals("false")){
+        if (scoreRepository.getValues(key).equals("false")) {
             scoreRepository.setValues(key, String.valueOf(show.getScoreAverage()));
         }
 
         ShowDto.Response response = mapper.showToShowResponse(show);
-        response.setScoreAverage( Double.valueOf(scoreRepository.getValues(key)));
+        response.setScoreAverage(Double.valueOf(scoreRepository.getValues(key)));
         response.setEmptySeats(reservationService.getEmptySeats(show, showId));
         response.setSellerId(show.getMember().getId());
         return response;
@@ -161,12 +159,12 @@ public class ShowService {
     }
 
     public Page<ShowListDto> findShows(String search, String category, String address, String filter,
-                                       String start, String end, Pageable pageable){
+                                       String start, String end, Pageable pageable) {
 
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
 
         Page<ShowListDto> allByShowSearch = showRepository.findAllByShowSearch(search, category, address, filter, start, end, pageable);
-        for(int i =0; i<allByShowSearch.getContent().size(); i++){
+        for (int i = 0; i < allByShowSearch.getContent().size(); i++) {
             ShowListDto responseDto = allByShowSearch.getContent().get(i);
             responseDto.setScoreAverage(responseDto.getId());
         }
@@ -182,13 +180,13 @@ public class ShowService {
     }
 
     private void findVerifiedShows(List<Show> shows) {
-        if(shows == null){
+        if (shows == null) {
             throw new BusinessLogicException(ExceptionCode.SHOW_NOT_FOUND);
         }
     }
 
     private void findVerifiedMapShows(List<ShowMapsResponse> showMapsResponse) {
-        if(showMapsResponse == null){
+        if (showMapsResponse == null) {
             throw new BusinessLogicException(ExceptionCode.SHOW_NOT_FOUND);
         }
     }
@@ -197,13 +195,13 @@ public class ShowService {
         Optional<Show> optionalShow = showRepository.findById(id);
 
         Show findShow =
-                optionalShow.orElseThrow(()->
+                optionalShow.orElseThrow(() ->
                         new BusinessLogicException(ExceptionCode.SHOW_NOT_FOUND));
-                return findShow;
+        return findShow;
 
     }
 
-    private Integer getCalendarTotalDay(Integer year, Integer month){
+    private Integer getCalendarTotalDay(Integer year, Integer month) {
 
         Integer day = null;
 
@@ -220,6 +218,4 @@ public class ShowService {
         }
         return day;
     }
-
-
 }

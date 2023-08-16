@@ -44,7 +44,7 @@ public class Member extends BaseTime {
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
-    public void setCertification(Certification certification){
+    public void setCertification(Certification certification) {
         this.certification = certification;
     }
 
@@ -62,7 +62,7 @@ public class Member extends BaseTime {
 
     @Builder
     public Member(Long id, String email, String password, Profile profile, String roles,
-                  Coordinate coordinate){
+                  Coordinate coordinate) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -71,7 +71,7 @@ public class Member extends BaseTime {
         this.coordinate = coordinate;
     }
 
-    public Member(Long id, String email, String password, Profile profile, List<String> roles, OAuthStatus status){
+    public Member(Long id, String email, String password, Profile profile, List<String> roles, OAuthStatus status) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -80,15 +80,15 @@ public class Member extends BaseTime {
         this.oAuthStatus = status;
     }
 
-    public void setPassword(String encryptedPassword){
+    public void setPassword(String encryptedPassword) {
         this.password = encryptedPassword;
     }
 
-    public void setCoordinate(Coordinate coordinate){
+    public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
     }
 
-    public void setRoles(List<String> roles){
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 

@@ -48,7 +48,7 @@ public class Show extends BaseTime {
     @Column(nullable = false)
     private int total; // 정원
 
-    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShowTag> showTags = new ArrayList<>();
 
     public enum ShowStatus {
@@ -59,7 +59,7 @@ public class Show extends BaseTime {
         @Getter
         private String status;
 
-        ShowStatus(String status){
+        ShowStatus(String status) {
             this.status = status;
         }
     }

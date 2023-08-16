@@ -15,12 +15,12 @@ import java.util.List;
 @Component
 public class GraphQLExceptionHandler implements DataFetcherExceptionResolver {
 
-	@Override
-	public Mono<List<GraphQLError>> resolveException(Throwable exception, DataFetchingEnvironment environment) {
-		if (exception instanceof BusinessLogicException) {
-			BusinessLogicException businessLogicException = (BusinessLogicException) exception;
-			return Mono.just(Collections.singletonList(businessLogicException));
-		}
-		return Mono.empty();
-	}
+    @Override
+    public Mono<List<GraphQLError>> resolveException(Throwable exception, DataFetchingEnvironment environment) {
+        if (exception instanceof BusinessLogicException) {
+            BusinessLogicException businessLogicException = (BusinessLogicException) exception;
+            return Mono.just(Collections.singletonList(businessLogicException));
+        }
+        return Mono.empty();
+    }
 }

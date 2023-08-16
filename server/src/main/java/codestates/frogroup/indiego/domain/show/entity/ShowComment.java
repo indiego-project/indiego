@@ -33,11 +33,11 @@ public class ShowComment extends BaseTime {
     @Setter
     private String comment;
 
-    public void addShow(Show show){
+    public void addShow(Show show) {
         this.show = show;
     }
 
-    public void addMember(Member member){
+    public void addMember(Member member) {
         this.member = member;
     }
 }

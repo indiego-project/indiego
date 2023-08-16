@@ -15,9 +15,10 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberBookMarkController {
     private final MemberBookMarkService bookMarkService;
+
     @PutMapping("/{show-id}")
     public ResponseEntity putBookMark(@PathVariable("show-id") long showId,
-                                      @LoginMemberId long memnerId){
+                                      @LoginMemberId long memnerId) {
         HttpStatus httpStatus = bookMarkService.manageBookMark(showId, memnerId);
         return new ResponseEntity<>(
                 httpStatus

@@ -23,8 +23,8 @@ public class TagRepositoryCustomImpl extends QuerydslRepositorySupport implement
 
 
     /*
-    * 타입 = 카테고리 : 공연,연극 카테고리에 맞는 목록을 반환해주기
-    * */
+     * 타입 = 카테고리 : 공연,연극 카테고리에 맞는 목록을 반환해주기
+     * */
     @Override
     public List<Tag> findByType(String type) {
         return queryFactory

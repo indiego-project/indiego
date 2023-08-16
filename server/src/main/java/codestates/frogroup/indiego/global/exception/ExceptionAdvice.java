@@ -62,8 +62,8 @@ public class ExceptionAdvice {
     }
 
     /*
-    * 파일 업로드시 허용 용량을 초과하였을 경우 예외처리
-    * */
+     * 파일 업로드시 허용 용량을 초과하였을 경우 예외처리
+     * */
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleException(MaxUploadSizeExceededException e) {
 

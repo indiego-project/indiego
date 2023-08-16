@@ -35,30 +35,30 @@ public class ShowCommentController {
     @PostMapping("/{show-id}/comments")
     public ResponseEntity postComment(@PathVariable("show-id") Long showId,
                                       @LoginMemberId Long memberId,
-                                      @Valid @RequestBody ShowCommentDto.Post showPostDto){
+                                      @Valid @RequestBody ShowCommentDto.Post showPostDto) {
         ShowDto.Response response = showService.findShow(showId);
         Show show = showMapper.showResponseToShow(response);
         Member member = memberService.findVerifiedMember(memberId);
         ShowComment showComment = showCommentMapper.commentDtoToComment(showPostDto);
-        ShowComment saveShowComment = showCommentService.createShowComment(showComment,show,member);
+        ShowComment saveShowComment = showCommentService.createShowComment(showComment, show, member);
         ShowCommentDto.Response showCommentResponse = showCommentMapper.commentToResponseDto(saveShowComment);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(showCommentResponse),HttpStatus.CREATED);
+        return new ResponseEntity<>(new SingleResponseDto<>(showCommentResponse), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{show-id}/comments/{comment-id}")
     public ResponseEntity patchComment(@PathVariable("show-id") Long showId,
                                        @PathVariable("comment-id") Long commentId,
                                        @LoginMemberId Long memberId,
-                                       @Valid @RequestBody ShowCommentDto.Patch showPatchDto){
+                                       @Valid @RequestBody ShowCommentDto.Patch showPatchDto) {
         ShowDto.Response response = showService.findShow(showId);
         Show show = showMapper.showResponseToShow(response);
         Member member = memberService.findVerifiedMember(memberId);
         ShowComment findShowComment = showCommentService.findShowComment(commentId);
         ShowComment showComment = showCommentMapper.commentDtoToComment(showPatchDto);
-        ShowComment updateShowComment = showCommentService.updateShowComment(showComment,findShowComment,show,member);
+        ShowComment updateShowComment = showCommentService.updateShowComment(showComment, findShowComment, show, member);
         ShowCommentDto.Response showCommentResponse = showCommentMapper.commentToResponseDto(updateShowComment);
-        return new ResponseEntity<>(new SingleResponseDto<>(showCommentResponse),HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(showCommentResponse), HttpStatus.OK);
     }
 
     @DeleteMapping("/{show-id}/comments/{comment-id}")
@@ -67,13 +67,13 @@ public class ShowCommentController {
                                         @LoginMemberId Long memberId) {
         ShowDto.Response response = showService.findShow(showId);
         Show show = showMapper.showResponseToShow(response);
-        showCommentService.deleteShowComment(commentId,memberId,show);
+        showCommentService.deleteShowComment(commentId, memberId, show);
 
-        return new ResponseEntity<>(new SingleResponseDto<>("공연 후기가 삭제되었습니다"),HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new SingleResponseDto<>("공연 후기가 삭제되었습니다"), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{show-id}/comments")
-    public ResponseEntity getComments(@PathVariable("show-id") long showId){
+    public ResponseEntity getComments(@PathVariable("show-id") long showId) {
 
         List<ShowComment> showCommentList = showCommentService.findShowCommentList(showId);
         List<ShowCommentDto.Response> responses = showCommentMapper.commentListToResponseDtoList(showCommentList);
