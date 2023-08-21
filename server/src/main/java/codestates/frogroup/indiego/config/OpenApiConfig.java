@@ -1,5 +1,6 @@
 package codestates.frogroup.indiego.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
@@ -10,12 +11,15 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
+        return new OpenAPI()
+                .components(new Components())
+                .info(apiInfo());
+    }
 
-        Info info = new Info()
-                .version("v0.0.3")
+    private Info apiInfo() {
+        return new Info()
                 .title("indiego")
-                .description("REST API docs");
-
-        return new OpenAPI().info(info);
+                .description("REST API docs")
+                .version("v0.0.3");
     }
 }
