@@ -52,6 +52,7 @@ dependencies {
 
 	// springdoc-openapi-ui
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.7.0'
 
 	// security, jwt, oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-security'
