@@ -37,7 +37,6 @@ import java.util.Optional;
 public class ShowService {
     private final ShowRepository showRepository;
     private final MemberService memberService;
-    private final CustomBeanUtils<Show> utils;
     private final ShowReservationService reservationService;
     private final ShowTagService showTagService;
     private final ScoreRepository scoreRepository;

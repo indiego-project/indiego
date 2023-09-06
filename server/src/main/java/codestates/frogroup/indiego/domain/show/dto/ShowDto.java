@@ -17,6 +17,7 @@ public class ShowDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     @Setter
     @Builder
     public static class Post{
