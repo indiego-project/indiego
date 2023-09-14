@@ -1,0 +1,17 @@
+.react-datepicker__triangle {
+  transform: translate(
+    80px,
+    0px
+  ) !important; /* css 적용 우선순위가 가장 높아진다 */
+}
+
+.example-custom-input {
+  background-color: #487eeb;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  width: 150px;
+  height: 30px;
+  font-size: medium;
+}

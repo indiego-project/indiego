@@ -1,37 +1,6 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "node": true,
-    "commonjs": true
-  },
   "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:import/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:prettier/recommended"
-  ],
-  "overrides": [],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
-  "plugins": ["react"],
-  "rules": {
-    "prettier/prettier": ["warn", { "endOfLine": "auto" }],
-    "no-unused-vars": [
-      "warn",
-      { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
-    ],
-    "camelcase": ["warn", { "properties": "always" }],
-    "curly": "error",
-    "eqeqeq": "error",
-    "func-name-matching": "error",
-    "init-declarations": "error",
-    "react/prop-types": "off",
-    "no-extra-boolean-cast": "off",
-    "import/no-unresolved": "off",
-    "react/display-name": "off"
-  }
+    "next/core-web-vitals",
+    "plugin:storybook/recommended"
+  ]
 }

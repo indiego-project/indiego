@@ -1,0 +1,84 @@
+{
+  "name": "test2",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@tanstack/react-query": "^4.20.9",
+    "@tanstack/react-query-devtools": "^4.22.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@tosspayments/payment-widget-sdk": "^0.7.1",
+    "assert": "^2.0.0",
+    "axios": "^1.2.2",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "constants-browserify": "^1.0.0",
+    "date-fns": "^2.29.3",
+    "dayjs": "^1.11.7",
+    "json-server": "^0.17.1",
+    "path-browserify": "^1.0.1",
+    "prettier": "^2.8.1",
+    "process": "^0.11.10",
+    "quill-image-resize": "^3.0.9",
+    "react": "^18.2.0",
+    "react-date-range": "^1.4.0",
+    "react-datepicker": "^4.8.0",
+    "react-daum-postcode": "^3.1.1",
+    "react-dom": "^18.2.0",
+    "react-quill": "^2.0.0",
+    "react-router-dom": "^6.6.1",
+    "react-scripts": "^5.0.1",
+    "styled-components": "^5.3.6",
+    "util": "^0.12.5",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.3.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "serve-dummy": "npx json-server --watch src/jsonserver/db.json -p 8000 --routes src/jsonserver/routes.json",
+    "start_https": "HTTPS=true SSL_CRT_FILE=cert.pem SSL_KEY_FILE=key.pem react-scripts start"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "crypto-browserify": "^3.12.0",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "https-browserify": "^1.0.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "os-browserify": "^0.3.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0"
+  }
+}
