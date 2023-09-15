@@ -30,6 +30,12 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.Embeddable")
+	annotation("jakarta.persistence.MappedSuperclass")
+}
+
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs += "-Xjsr305=strict"
