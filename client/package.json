@@ -33,12 +33,16 @@
     "@storybook/addon-interactions": "^7.4.1",
     "@storybook/addon-links": "^7.4.1",
     "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/addon-styling-webpack": "^0.0.4",
     "@storybook/blocks": "^7.4.1",
     "@storybook/nextjs": "^7.4.1",
     "@storybook/react": "^7.4.1",
     "@storybook/testing-library": "^0.2.0",
     "@svgr/webpack": "^8.1.0",
+    "css-loader": "^6.8.1",
     "eslint-plugin-storybook": "^0.6.13",
-    "storybook": "^7.4.1"
+    "postcss-loader": "^7.3.3",
+    "storybook": "^7.4.1",
+    "style-loader": "^3.3.3"
   }
 }
