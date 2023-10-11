@@ -31,7 +31,7 @@ const Navbar = ({ links = defaultLinks }: INavbarProps) => {
   };
 
   return (
-    <div className="grid grid-cols-4 max-w-mb_base w-full h-20 absolute bottom-0 bg-[#f1f1f1] border-b-0 border border-[#828282] rounded-tl-[20px] rounded-tr-[20px]">
+    <div className="grid grid-cols-4 max-w-mb_base w-full h-20 absolute bottom-0 bg-[#f1f1f1] border border-[#828282] border-b-0 rounded-tl-[20px] rounded-tr-[20px]">
       {links.map((link) => (
         <NavbarLink
           icon={link.icon}

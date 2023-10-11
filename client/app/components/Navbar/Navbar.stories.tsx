@@ -12,7 +12,7 @@ export const Default: Story = {
   args: {},
   decorators: [
     (Story) => (
-      <div className="flex w-screen h-max justify-center items-center">
+      <div className="flex w-screen h-screen bg-white justify-center items-center">
         <Story />
       </div>
     ),
