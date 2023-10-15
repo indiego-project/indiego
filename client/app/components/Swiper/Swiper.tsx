@@ -216,5 +216,4 @@ export const SwiperFallback = () => {
   return <div className="w-32 h-32 bg-red-500"></div>;
 };
 
-Swiper.Content = SwiperContent;
 Swiper.Fallback = SwiperFallback;
