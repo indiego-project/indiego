@@ -26,6 +26,9 @@ const config: Config = {
       fontFamily: {
         spoqa: ["SPOQA", "sans-serif"],
       },
+      boxShadow: {
+        strong: "0 30px 40px -15px rgba(0, 0, 0, 0.6)",
+      },
     },
   },
   plugins: [],
